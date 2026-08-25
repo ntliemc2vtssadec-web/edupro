@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quản lý Lớp & Học sinh — EduPro THCS</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f4f8;
+  --surface: #ffffff;
+  --surface2: #f7f9fc;
+  --ink: #1a202c;
+  --ink2: #4a5568;
+  --ink3: #718096;
+  --border: #e2e8f0;
+  --jade: #0d9488;
+  --jade-light: #ccfbf1;
+  --jade-dark: #0f766e;
+  --amber: #d97706;
+  --amber-light: #fef3c7;
+  --red: #dc2626;
+  --red-light: #fee2e2;
+  --blue: #2563eb;
+  --blue-light: #dbeafe;
+  --purple: #7c3aed;
+  --purple-light: #ede9fe;
+  --r: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  min-height: 100vh;
+}
+
+/* LAYOUT */
+.app { display:flex; min-height:100vh; }
+.sidebar {
+  width: 220px;
+  background: var(--ink);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top:0; left:0; bottom:0;
+  z-index:100;
+}
+.sidebar-logo {
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.sidebar-logo .app-name {
+  font-size:15px; font-weight:800;
+  color:#fff; letter-spacing:-.01em;
+}
+.sidebar-logo .app-sub {
+  font-size:11px; color:rgba(255,255,255,0.4);
+  margin-top:2px;
+}
+.sidebar-nav { padding:12px 10px; flex:1; overflow-y:auto; }
+.nav-section-label {
+  font-size:10px; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:rgba(255,255,255,0.3);
+  padding: 8px 8px 4px;
+}
+.nav-item {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 10px; border-radius:8px;
+  color:rgba(255,255,255,0.55);
+  font-size:13px; font-weight:500;
+  cursor:pointer;
+  transition:all .15s;
+  margin-bottom:2px;
+}
+.nav-item:hover { background:rgba(255,255,255,0.07); color:rgba(255,255,255,0.9); }
+.nav-item.active { background:var(--jade); color:#fff; }
+.nav-item .nav-icon { font-size:16px; width:20px; text-align:center; flex-shrink:0; }
+.sidebar-bottom {
+  padding:14px 10px;
+  border-top:1px solid rgba(255,255,255,0.07);
+}
+.teacher-card {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 10px; border-radius:8px;
+}
+.teacher-avatar {
+  width:34px; height:34px; border-radius:50%;
+  background: var(--jade);
+  display:flex; align-items:center; justify-content:center;
+  font-size:13px; font-weight:700; color:#fff;
+  flex-shrink:0;
+}
+.teacher-name { font-size:12px; font-weight:600; color:#fff; }
+.teacher-role { font-size:11px; color:rgba(255,255,255,0.4); }
+
+/* MAIN */
+.main {
+  margin-left: 220px;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+.topbar {
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:14px 28px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:50;
+}
+.topbar-left h1 { font-size:17px; font-weight:700; }
+.topbar-left p { font-size:12px; color:var(--ink3); margin-top:1px; }
+.topbar-right { display:flex; align-items:center; gap:10px; }
+.search-box {
+  display:flex; align-items:center; gap:8px;
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:8px; padding:7px 12px;
+}
+.search-box input {
+  border:none; background:transparent; font-family:inherit;
+  font-size:13px; color:var(--ink); width:180px; outline:none;
+}
+.search-box input::placeholder { color:var(--ink3); }
+.btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 14px; border-radius:8px;
+  font-size:13px; font-weight:600;
+  cursor:pointer; border:none; font-family:inherit;
+  transition:all .15s;
+}
+.btn:active { transform:scale(0.97); }
+.btn-jade { background:var(--jade); color:#fff; }
+.btn-jade:hover { background:var(--jade-dark); }
+.btn-outline { background:transparent; border:1px solid var(--border); color:var(--ink); }
+.btn-outline:hover { background:var(--surface2); }
+.btn-sm { padding:5px 10px; font-size:12px; border-radius:6px; }
+
+/* CONTENT */
+.content { padding:24px 28px; flex:1; }
+
+/* STAT CARDS */
+.stats-row {
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:14px;
+  margin-bottom:24px;
+}
+.stat-card {
+  background:var(--surface);
+  border-radius:var(--r);
+  border:1px solid var(--border);
+  padding:16px 18px;
+  box-shadow:var(--shadow);
+}
+.stat-card .stat-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.07em; color:var(--ink3); margin-bottom:8px; }
+.stat-card .stat-value { font-size:26px; font-weight:800; line-height:1; margin-bottom:4px; }
+.stat-card .stat-sub { font-size:12px; color:var(--ink3); }
+.stat-card .stat-icon {
+  width:36px; height:36px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; margin-bottom:10px;
+}
+
+/* CLASS TABS */
+.class-tabs {
+  display:flex; gap:6px; margin-bottom:20px;
+  flex-wrap:wrap;
+}
+.class-tab {
+  padding:6px 14px; border-radius:100px;
+  font-size:12px; font-weight:600;
+  cursor:pointer; border:1px solid var(--border);
+  background:var(--surface); color:var(--ink2);
+  transition:all .15s;
+}
+.class-tab:hover { border-color:var(--jade); color:var(--jade); }
+.class-tab.active { background:var(--jade); border-color:var(--jade); color:#fff; }
+
+/* PANEL LAYOUT */
+.panel-row { display:grid; grid-template-columns:1fr 340px; gap:16px; }
+
+/* STUDENT TABLE */
+.card {
+  background:var(--surface); border-radius:var(--r);
+  border:1px solid var(--border); box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.card-header {
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.card-header h2 { font-size:14px; font-weight:700; }
+.card-header .card-actions { display:flex; gap:8px; }
+
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; }
+thead th {
+  background:var(--surface2);
+  padding:9px 14px; text-align:left;
+  font-size:11px; font-weight:700; text-transform:uppercase;
+  letter-spacing:.07em; color:var(--ink3);
+  border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+tbody tr {
+  border-bottom:1px solid var(--border);
+  cursor:pointer; transition:background .12s;
+}
+tbody tr:hover { background:var(--surface2); }
+tbody tr:last-child { border-bottom:none; }
+tbody td {
+  padding:10px 14px; font-size:13px;
+}
+.student-name-cell {
+  display:flex; align-items:center; gap:10px;
+}
+.avatar {
+  width:30px; height:30px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700;
+  flex-shrink:0;
+}
+.student-name { font-weight:600; font-size:13px; }
+.student-code { font-size:11px; color:var(--ink3); }
+
+/* BADGES */
+.badge {
+  display:inline-flex; align-items:center;
+  padding:3px 8px; border-radius:100px;
+  font-size:11px; font-weight:600;
+}
+.badge-green { background:var(--jade-light); color:var(--jade-dark); }
+.badge-amber { background:var(--amber-light); color:var(--amber); }
+.badge-red { background:var(--red-light); color:var(--red); }
+.badge-blue { background:var(--blue-light); color:var(--blue); }
+.badge-purple { background:var(--purple-light); color:var(--purple); }
+
+/* ATTENDANCE DOTS */
+.attend-dots { display:flex; gap:3px; }
+.dot {
+  width:9px; height:9px; border-radius:50%;
+}
+.dot-present { background:var(--jade); }
+.dot-absent { background:var(--red); }
+.dot-late { background:var(--amber); }
+.dot-none { background:#e2e8f0; }
+
+/* RIGHT PANEL */
+.panel-right { display:flex; flex-direction:column; gap:14px; }
+
+/* ATTENDANCE TODAY */
+.attend-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:10px; padding:16px 18px;
+}
+.attend-item {
+  border-radius:8px; padding:12px;
+  text-align:center;
+}
+.attend-item .num { font-size:22px; font-weight:800; line-height:1; margin-bottom:4px; }
+.attend-item .lbl { font-size:11px; font-weight:600; }
+.attend-item.present { background:var(--jade-light); color:var(--jade-dark); }
+.attend-item.absent { background:var(--red-light); color:var(--red); }
+.attend-item.late { background:var(--amber-light); color:var(--amber); }
+.attend-item.total { background:var(--blue-light); color:var(--blue); }
+
+/* QUICK ATTENDANCE */
+.quick-attend { padding:14px 18px; }
+.quick-attend h3 { font-size:13px; font-weight:700; margin-bottom:12px; }
+.student-row {
+  display:flex; align-items:center; gap:10px;
+  padding:7px 0;
+  border-bottom:1px solid var(--border);
+}
+.student-row:last-child { border-bottom:none; }
+.student-row .sname { font-size:13px; font-weight:500; flex:1; }
+.attend-btns { display:flex; gap:4px; }
+.attend-btn {
+  width:28px; height:28px; border-radius:6px;
+  border:1.5px solid var(--border);
+  background:transparent; cursor:pointer;
+  font-size:13px; display:flex; align-items:center; justify-content:center;
+  transition:all .12s;
+}
+.attend-btn.checked-P { background:var(--jade); border-color:var(--jade); }
+.attend-btn.checked-A { background:var(--red); border-color:var(--red); }
+.attend-btn.checked-L { background:var(--amber); border-color:var(--amber); }
+
+/* NOTICE MINI */
+.notice-list { padding:12px 18px; }
+.notice-item {
+  display:flex; gap:10px; align-items:flex-start;
+  padding:8px 0; border-bottom:1px solid var(--border);
+}
+.notice-item:last-child { border-bottom:none; }
+.notice-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.notice-text { font-size:12px; color:var(--ink2); line-height:1.5; }
+.notice-time { font-size:11px; color:var(--ink3); margin-top:2px; }
+
+/* STUDENT PROFILE MODAL */
+.overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.4);
+  z-index:200; display:none; align-items:center; justify-content:center;
+  padding:20px;
+}
+.overlay.open { display:flex; }
+.modal {
+  background:var(--surface); border-radius:16px;
+  width:100%; max-width:480px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  overflow:hidden; animation:slideUp .2s ease;
+}
+@keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+.modal-header {
+  background: linear-gradient(135deg, var(--jade) 0%, var(--jade-dark) 100%);
+  padding:24px 24px 20px;
+  color:#fff;
+  display:flex; align-items:flex-start; justify-content:space-between;
+}
+.modal-avatar {
+  width:56px; height:56px; border-radius:50%;
+  background:rgba(255,255,255,0.25);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; font-weight:800; color:#fff;
+  margin-bottom:12px;
+}
+.modal-name { font-size:18px; font-weight:800; }
+.modal-meta { font-size:13px; opacity:.75; margin-top:2px; }
+.close-btn {
+  background:rgba(255,255,255,0.2); border:none; color:#fff;
+  width:30px; height:30px; border-radius:50%;
+  cursor:pointer; font-size:16px;
+  display:flex; align-items:center; justify-content:center;
+}
+.modal-body { padding:20px 24px; }
+.info-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  margin-bottom:18px;
+}
+.info-item label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink3); }
+.info-item p { font-size:13px; font-weight:600; margin-top:3px; }
+.attend-history h4 { font-size:13px; font-weight:700; margin-bottom:10px; }
+.month-dots { display:flex; gap:3px; flex-wrap:wrap; margin-bottom:6px; }
+.score-row {
+  display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;
+}
+.score-chip {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:8px; padding:6px 10px; font-size:12px;
+}
+.score-chip strong { font-size:15px; font-weight:800; display:block; }
+.score-chip span { color:var(--ink3); }
+.modal-footer {
+  padding:14px 24px;
+  border-top:1px solid var(--border);
+  display:flex; gap:8px;
+}
+
+/* SELECTION BAR */
+.selection-bar {
+  display:none; align-items:center; gap:12px;
+  background:#1e293b; color:#fff;
+  padding:10px 18px; border-radius:8px;
+  margin-bottom:12px; font-size:13px;
+}
+.selection-bar.visible { display:flex; }
+.selection-bar .sel-count { font-weight:700; flex:1; }
+.btn-danger { background:var(--red); color:#fff; border:none; }
+.btn-danger:hover { background:#b91c1c; }
+
+/* CHECKBOX */
+.row-check { width:16px; height:16px; cursor:pointer; accent-color:var(--jade); }
+
+/* ADD MODAL */
+.add-modal { max-width:540px; }
+.add-modal .modal-header { background:linear-gradient(135deg,#2563eb,#1d4ed8); }
+.bulk-modal { max-width:600px; }
+.bulk-modal .modal-header { background:linear-gradient(135deg,#7c3aed,#6d28d9); }
+.form-group { margin-bottom:14px; }
+.form-group label { display:block; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink3); margin-bottom:5px; }
+.form-input {
+  width:100%; padding:9px 12px;
+  border:1px solid var(--border); border-radius:8px;
+  font-family:inherit; font-size:13px; color:var(--ink);
+  background:var(--surface2); outline:none;
+  transition:border-color .15s;
+}
+.form-input:focus { border-color:var(--jade); background:#fff; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.form-select {
+  width:100%; padding:9px 12px;
+  border:1px solid var(--border); border-radius:8px;
+  font-family:inherit; font-size:13px; color:var(--ink);
+  background:var(--surface2); outline:none; cursor:pointer;
+}
+.form-select:focus { border-color:var(--jade); }
+textarea.form-input { resize:vertical; min-height:120px; font-size:12px; line-height:1.6; }
+.bulk-hint {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:8px; padding:10px 14px; margin-bottom:12px;
+  font-size:12px; color:var(--ink2); line-height:1.6;
+}
+.bulk-hint strong { color:var(--ink); }
+.bulk-preview {
+  margin-top:12px; border-radius:8px; overflow:hidden;
+  border:1px solid var(--border);
+}
+.bulk-preview-header {
+  background:var(--surface2); padding:8px 14px;
+  font-size:12px; font-weight:700; color:var(--ink2);
+  border-bottom:1px solid var(--border);
+  display:flex; justify-content:space-between;
+}
+.bulk-preview-rows { max-height:160px; overflow-y:auto; }
+.bulk-row {
+  display:grid; grid-template-columns:28px 1fr 90px 50px;
+  padding:7px 14px; border-bottom:1px solid var(--border);
+  font-size:12px; gap:8px; align-items:center;
+}
+.bulk-row:last-child { border-bottom:none; }
+.bulk-row-num { color:var(--ink3); font-size:11px; }
+.bulk-row.error { background:#fff5f5; }
+.bulk-row .err-badge { background:var(--red-light); color:var(--red); font-size:10px; font-weight:700; padding:1px 6px; border-radius:100px; }
+.bulk-row .ok-badge { background:var(--jade-light); color:var(--jade-dark); font-size:10px; font-weight:700; padding:1px 6px; border-radius:100px; }
+
+/* CONFIRM MODAL */
+.confirm-modal { max-width:400px; }
+.confirm-modal .modal-header { background:linear-gradient(135deg,var(--red),#b91c1c); }
+.confirm-body { padding:20px 24px; }
+.confirm-body p { font-size:14px; color:var(--ink2); line-height:1.6; }
+.confirm-body .del-list { margin-top:12px; max-height:120px; overflow-y:auto; }
+.confirm-body .del-item { font-size:13px; font-weight:600; padding:4px 0; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; }
+.confirm-body .del-item:last-child { border-bottom:none; }
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:24px; right:24px;
+  background:var(--ink); color:#fff;
+  padding:10px 18px; border-radius:10px;
+  font-size:13px; font-weight:500;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  z-index:999; opacity:0; transform:translateY(10px);
+  transition:all .25s; pointer-events:none;
+}
+.toast.show { opacity:1; transform:translateY(0); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:#cbd5e0; border-radius:99px; }
+</style>
+
+<script>
+// ══ EDUPRO SHARED STATE ══
+const EduPro = {
+  get: (key) => { try { return JSON.parse(localStorage.getItem('edupro_'+key)||'null'); } catch(e) { return null; } },
+  set: (key, val) => {
+    try { localStorage.setItem('edupro_'+key, JSON.stringify(val)); } catch(e) {}
+    // ─ DriveSync: tự động đồng bộ lên Drive ─
+    if (window.EduProSync) { EduProSync.save(key, val); }
+  },
+  currentClass: () => EduPro.get('currentClass') || '8A1',
+  teacher: () => EduPro.get('teacher') || {name:'Nguyễn Thanh Liêm', school:'THCS Hùng Vương'},
+};
+</script>
+
+<!-- ═══ EDUPRO DRIVESYNC ═══════════════════════════════════════════ -->
+<script>
+/* --- EduPro DriveSync Embedded --- */
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║        EDUPRO DRIVESYNC — Thư viện đồng bộ Google Drive        ║
+// ║  Nhúng vào mỗi module HTML để tự động lưu dữ liệu lên Drive    ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+window.EduProSync = (function () {
+
+  // ── CẤU HÌNH — ĐỔI URL NÀY SAU KHI DEPLOY APPS SCRIPT ──────────
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec';
+  //  Ví dụ: 'https://script.google.com/macros/s/AKfycb.../exec'
+
+  const DEBOUNCE_MS  = 1500;   // Đợi 1.5 giây sau thay đổi cuối cùng rồi mới lưu
+  const RETRY_MAX    = 3;       // Thử lại tối đa 3 lần nếu lỗi mạng
+  const RETRY_DELAY  = 2000;    // Đợi 2 giây giữa mỗi lần retry
+
+  let _module   = 'unknown';
+  let _timers   = {};           // Debounce timers theo key
+  let _queue    = [];           // Hàng chờ khi offline
+  let _online   = navigator.onLine;
+  let _statusEl = null;
+
+  // ── KHỞI TẠO ─────────────────────────────────────────────────────
+  function init(moduleName) {
+    _module = moduleName;
+    _injectStatusBar();
+    _listenNetworkEvents();
+    _processQueue();           // Xử lý hàng đợi offline khi vừa load
+    _pingServer();             // Kiểm tra kết nối server
+    console.log(`[EduProSync] Module "${_module}" đã khởi tạo`);
+  }
+
+  // ── LƯU DỮ LIỆU (có debounce) ────────────────────────────────────
+  function save(key, data, immediate = false) {
+    // Luôn lưu localStorage trước (fallback tức thì)
+    try {
+      localStorage.setItem('edupro_' + key, JSON.stringify(data));
+    } catch (e) {}
+
+    if (immediate) {
+      _doSave(key, data);
+    } else {
+      // Debounce: hủy timer cũ, đặt timer mới
+      clearTimeout(_timers[key]);
+      _timers[key] = setTimeout(() => _doSave(key, data), DEBOUNCE_MS);
+    }
+  }
+
+  // ── LƯU NGAY (không debounce) ─────────────────────────────────────
+  function saveNow(key, data) {
+    return save(key, data, true);
+  }
+
+  // ── TẢI DỮ LIỆU ──────────────────────────────────────────────────
+  async function load(key) {
+    if (!_online || !_isConfigured()) {
+      // Fallback: đọc từ localStorage
+      try {
+        const val = localStorage.getItem('edupro_' + key);
+        return val ? JSON.parse(val) : null;
+      } catch { return null; }
+    }
+
+    try {
+      const res = await _post({ action: 'load', module: _module, key });
+      if (res.found) {
+        // Cập nhật localStorage với dữ liệu mới nhất từ Drive
+        localStorage.setItem('edupro_' + key, JSON.stringify(res.data));
+        return res.data;
+      }
+      // Key chưa có trên Drive → đọc localStorage
+      const local = localStorage.getItem('edupro_' + key);
+      return local ? JSON.parse(local) : null;
+    } catch (e) {
+      console.warn('[EduProSync] load error, dùng localStorage:', e);
+      try {
+        const val = localStorage.getItem('edupro_' + key);
+        return val ? JSON.parse(val) : null;
+      } catch { return null; }
+    }
+  }
+
+  // ── TẢI TOÀN BỘ DỮ LIỆU MODULE (khi trang tải) ───────────────────
+  async function loadAll() {
+    if (!_online || !_isConfigured()) return null;
+    try {
+      const res = await _post({ action: 'loadAll', module: _module });
+      if (res.found && res.data) {
+        // Ghi vào localStorage để dùng offline
+        Object.entries(res.data).forEach(([k, v]) => {
+          localStorage.setItem('edupro_' + k, JSON.stringify(v));
+        });
+        return res.data;
+      }
+      return null;
+    } catch (e) {
+      console.warn('[EduProSync] loadAll error:', e);
+      return null;
+    }
+  }
+
+  // ── XOÁ DỮ LIỆU ──────────────────────────────────────────────────
+  function remove(key) {
+    try { localStorage.removeItem('edupro_' + key); } catch {}
+    if (_online && _isConfigured()) {
+      _post({ action: 'delete', module: _module, key }).catch(console.warn);
+    }
+  }
+
+  // ── NỘI BỘ: THỰC HIỆN LƯU LÊN DRIVE ─────────────────────────────
+  async function _doSave(key, data, attempt = 1) {
+    if (!_isConfigured()) {
+      _setStatus('warning', '⚠️ Chưa cấu hình Script URL');
+      return;
+    }
+
+    if (!_online) {
+      // Đưa vào hàng chờ offline
+      _queue = _queue.filter(q => !(q.key === key && q.module === _module));
+      _queue.push({ module: _module, key, data, time: Date.now() });
+      _setStatus('offline', '📶 Offline — dữ liệu sẽ đồng bộ khi có mạng');
+      return;
+    }
+
+    _setStatus('saving', '⏫ Đang lưu...');
+    try {
+      const res = await _post({ action: 'save', module: _module, key, data });
+      if (res.ok && res.saved) {
+        _setStatus('ok', '☁️ Đã lưu lên Drive ' + _fmtTime(res.timestamp));
+        _processQueue();
+      } else {
+        throw new Error(res.error || 'Save failed');
+      }
+    } catch (e) {
+      if (attempt < RETRY_MAX) {
+        _setStatus('retry', `🔄 Thử lại (${attempt}/${RETRY_MAX})...`);
+        setTimeout(() => _doSave(key, data, attempt + 1), RETRY_DELAY * attempt);
+      } else {
+        _setStatus('error', '❌ Lỗi đồng bộ — đã lưu cục bộ');
+        _queue.push({ module: _module, key, data, time: Date.now() });
+        console.error('[EduProSync] Lỗi lưu sau', RETRY_MAX, 'lần:', e);
+      }
+    }
+  }
+
+  // ── POST REQUEST ──────────────────────────────────────────────────
+  function _getUrl() {
+    // Ưu tiên URL đã lưu qua showSetup(), rồi mới dùng hardcoded SCRIPT_URL
+    const stored = localStorage.getItem('edupro_scriptUrl');
+    return (stored && stored.startsWith('https://script.google.com')) ? stored : SCRIPT_URL;
+  }
+
+  async function _post(payload, timeout = 10000) {
+    const url  = _getUrl();
+    const ctrl = new AbortController();
+    const id   = setTimeout(() => ctrl.abort(), timeout);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        signal: ctrl.signal,
+        headers: { 'Content-Type': 'text/plain' }
+      });
+      clearTimeout(id);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } catch (e) {
+      clearTimeout(id);
+      throw e;
+    }
+  }
+
+  // ── XỬ LÝ HÀNG ĐỢI OFFLINE ───────────────────────────────────────
+  async function _processQueue() {
+    if (!_online || _queue.length === 0) return;
+    const pending = [..._queue];
+    _queue = [];
+    for (const item of pending) {
+      await _doSave(item.key, item.data);
+      await new Promise(r => setTimeout(r, 300)); // Tránh quá nhiều request cùng lúc
+    }
+  }
+
+  // ── KIỂM TRA KẾT NỐI SERVER ──────────────────────────────────────
+  async function _pingServer() {
+    if (!_isConfigured()) {
+      _setStatus('warning', '⚠️ Chưa cấu hình — xem hướng dẫn cài đặt');
+      return;
+    }
+    try {
+      const res = await _post({ action: 'ping' }, 5000);
+      if (res.ok) _setStatus('ok', '☁️ Drive đã kết nối · ' + (_getUrl().substring(40,60) + '...'))
+    } catch {
+      _setStatus('warning', '⚠️ Không kết nối được Drive — dùng chế độ cục bộ');
+    }
+  }
+
+  // ── THANH TRẠNG THÁI ─────────────────────────────────────────────
+  function _injectStatusBar() {
+    if (document.getElementById('edupro-sync-bar')) return;
+    const bar = document.createElement('div');
+    bar.id = 'edupro-sync-bar';
+    bar.style.cssText = `
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 5px 16px; font-size: 11px; font-family: inherit;
+      background: #f0fdf4; border-top: 1px solid #bbf7d0;
+      color: #166534; transition: all .3s; gap: 12px;
+      box-shadow: 0 -2px 8px rgba(0,0,0,.06);
+    `;
+    bar.innerHTML = `
+      <span id="edupro-sync-msg" style="display:flex;align-items:center;gap:6px">
+        🔄 Đang kiểm tra kết nối Drive...
+      </span>
+      <span style="display:flex;align-items:center;gap:8px;opacity:.7">
+        <span id="edupro-sync-module" style="font-weight:700"></span>
+        <button onclick="EduProSync.showSetup()" style="border:1px solid currentColor;background:transparent;cursor:pointer;padding:1px 8px;border-radius:4px;font-size:10px;font-family:inherit;color:inherit">⚙️ Cấu hình</button>
+      </span>
+    `;
+    document.body.appendChild(bar);
+    _statusEl = bar;
+    document.getElementById('edupro-sync-module').textContent = _module;
+  }
+
+  const STATUS_STYLES = {
+    ok:      { bg: '#f0fdf4', border: '#bbf7d0', color: '#166534' },
+    saving:  { bg: '#eff6ff', border: '#bfdbfe', color: '#1d4ed8' },
+    retry:   { bg: '#fffbeb', border: '#fde68a', color: '#92400e' },
+    error:   { bg: '#fff1f2', border: '#fecdd3', color: '#be123c' },
+    offline: { bg: '#f8fafc', border: '#e2e8f0', color: '#475569' },
+    warning: { bg: '#fffbeb', border: '#fde68a', color: '#92400e' },
+  };
+
+  function _setStatus(type, msg) {
+    if (!_statusEl) return;
+    const s = STATUS_STYLES[type] || STATUS_STYLES.ok;
+    _statusEl.style.background  = s.bg;
+    _statusEl.style.borderColor = s.border;
+    _statusEl.style.color       = s.color;
+    const msgEl = document.getElementById('edupro-sync-msg');
+    if (msgEl) msgEl.textContent = msg;
+  }
+
+  // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
+  function showSetup() {
+    const current = _getUrl() === 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec' ? '' : _getUrl();
+    const url = prompt(
+      '🔧 Nhập URL Google Apps Script:\n\n' +
+      'Cách lấy URL:\n' +
+      '1. Mở script.google.com\n' +
+      '2. Dán nội dung EduPro_DriveSync.gs\n' +
+      '3. Deploy → New deployment → Web app\n' +
+      '4. Sao chép URL và dán vào đây\n\n' +
+      'URL hiện tại: ' + (current || '(chưa cấu hình)'),
+      current
+    );
+    if (url && url.startsWith('https://script.google.com')) {
+      // Lưu URL vào localStorage để các module dùng lại
+      localStorage.setItem('edupro_scriptUrl', url);
+      alert('✅ Đã lưu URL!\n\nVui lòng tải lại trang để áp dụng.\n\n⚠️ Lưu ý: Để cố định vĩnh viễn, cần cập nhật SCRIPT_URL trong mã nguồn.');
+      location.reload();
+    } else if (url !== null) {
+      alert('❌ URL không hợp lệ. Phải bắt đầu bằng https://script.google.com');
+    }
+  }
+
+  // ── NETWORK EVENTS ────────────────────────────────────────────────
+  function _listenNetworkEvents() {
+    window.addEventListener('online', () => {
+      _online = true;
+      _setStatus('ok', '📶 Đã kết nối mạng — đang đồng bộ...');
+      _processQueue();
+    });
+    window.addEventListener('offline', () => {
+      _online = false;
+      _setStatus('offline', '📴 Mất kết nối — dữ liệu lưu cục bộ');
+    });
+    // Lưu hàng chờ trước khi đóng trang
+    window.addEventListener('beforeunload', () => {
+      if (_queue.length > 0) {
+        localStorage.setItem('edupro_offline_queue_' + _module, JSON.stringify(_queue));
+      }
+    });
+    // Khôi phục hàng chờ khi mở lại trang
+    const savedQueue = localStorage.getItem('edupro_offline_queue_' + _module);
+    if (savedQueue) {
+      try {
+        _queue = JSON.parse(savedQueue);
+        localStorage.removeItem('edupro_offline_queue_' + _module);
+      } catch {}
+    }
+  }
+
+  function _isConfigured() {
+    const url = _getUrl();
+    return url !== 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec' && url.startsWith('https://script.google.com');
+  }
+
+  function _fmtTime(iso) {
+    if (!iso) return '';
+    try {
+      return new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    } catch { return ''; }
+  }
+
+  // ── API CÔNG KHAI ─────────────────────────────────────────────────
+  return { init, save, saveNow, load, loadAll, remove, showSetup };
+
+})();
+
+</script>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+</head>
+<body>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="app-name">🎓 EduPro</div>
+      <div class="app-sub">THCS All-in-One</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Trang chủ</div>
+      <div class="nav-item" onclick="window.location='edupro-home.html'"><span class="nav-icon">🏠</span>Trang chủ</div>
+      <div class="nav-section-label">Quản lý</div>
+      <div class="nav-item active" onclick="window.location='module1-quan-ly-lop.html'"><span class="nav-icon">👥</span>Lớp & Học sinh</div>
+      <div class="nav-item" onclick="window.location='module2-quan-ly-diem.html'"><span class="nav-icon">📊</span>Điểm số</div>
+      <div class="nav-item" onclick="window.location='module3-soan-giao-an.html'"><span class="nav-icon">📋</span>Giáo án</div>
+      <div class="nav-item" onclick="window.location='module4-de-kiem-tra.html'"><span class="nav-icon">🎯</span>Đề kiểm tra</div>
+      <div class="nav-section-label" style="margin-top:8px">Công cụ</div>
+      <div class="nav-item" onclick="window.location='module5-tkb-lich.html'"><span class="nav-icon">📅</span>Thời khoá biểu</div>
+      <div class="nav-item" onclick="window.location='module6-tro-choi.html'"><span class="nav-icon">🎮</span>Trò chơi</div>
+      <div class="nav-item" onclick="window.location='module7-kho-tai-lieu.html'"><span class="nav-icon">📁</span>Tài liệu</div>
+      <div class="nav-item" onclick="window.location='module8-thong-bao.html'"><span class="nav-icon">📣</span>Thông báo</div>
+      <div class="nav-item" onclick="window.location='module9-tro-ly-ai.html'"><span class="nav-icon">🤖</span>Trợ lý AI</div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="teacher-card">
+        <div class="teacher-avatar">NL</div>
+        <div>
+          <div class="teacher-name">Nguyễn Thanh Liêm</div>
+          <div class="teacher-role">GV GDCD · THCS Hùng Vương</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1>Quản lý Lớp & Học sinh</h1>
+        <p>Năm học 2025–2026 · 16 lớp · 752 học sinh</p>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-ol btn-sm" onclick="window.location='edupro-home.html'" style="font-size:11px;padding:4px 10px">🏠 Trang chủ</button>
+        <div class="search-box">
+          <span>🔍</span>
+          <input type="text" placeholder="Tìm học sinh..." id="searchInput" oninput="filterStudents()">
+        </div>
+        <button class="btn btn-outline" onclick="openClassConfig()" style="gap:6px">⚙️ Cấu hình lớp</button>
+        <div style="position:relative">
+          <button class="btn btn-jade" onclick="toggleAddMenu()" id="addMenuBtn">+ Thêm học sinh ▾</button>
+          <div id="addMenu" style="display:none;position:absolute;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,0.12);min-width:200px;z-index:200;overflow:hidden;">
+            <div onclick="openAddOneMenu()" style="padding:11px 16px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:10px;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+              <span>👤</span> Thêm 1 học sinh
+            </div>
+            <div style="height:1px;background:var(--border)"></div>
+            <div onclick="openBulkAddMenu()" style="padding:11px 16px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:10px;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+              <span>👥</span> Thêm hàng loạt
+            </div>
+            <div style="height:1px;background:var(--border)"></div>
+            <div onclick="closeAddMenu();openNewClass()" style="padding:11px 16px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:10px;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+              <span>🏫</span> Thêm lớp học mới
+            </div>
+            <div style="height:1px;background:var(--border)"></div>
+            <div onclick="closeAddMenu();openEditClass()" style="padding:11px 16px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:10px;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''">
+              <span>✏️</span> Sửa lớp học
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- STATS -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#ccfbf1">🏫</div>
+          <div class="stat-label">Tổng lớp phụ trách</div>
+          <div class="stat-value" style="color:var(--jade)">16</div>
+          <div class="stat-sub">Khối 6, 7, 8</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#dbeafe">👦</div>
+          <div class="stat-label">Tổng học sinh</div>
+          <div class="stat-value" style="color:var(--blue)">752</div>
+          <div class="stat-sub">~47 HS / lớp</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#d1fae5">✅</div>
+          <div class="stat-label">Có mặt hôm nay</div>
+          <div class="stat-value" style="color:#059669">41</div>
+          <div class="stat-sub">Lớp 8A1 · 87.2%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#fee2e2">⚠️</div>
+          <div class="stat-label">Vắng không phép</div>
+          <div class="stat-value" style="color:var(--red)">3</div>
+          <div class="stat-sub">Cần liên hệ PH</div>
+        </div>
+      </div>
+
+      <!-- CƠ SỞ + CLASS TABS -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:5px 10px 5px 12px">
+          <span style="font-size:12px;font-weight:700;color:var(--ink3);white-space:nowrap;text-transform:uppercase;letter-spacing:.05em">🏫 Cơ sở</span>
+          <select id="selCoso" onchange="filterByCoso(this.value)" style="border:none;background:transparent;font-size:13px;font-weight:600;color:var(--ink1);cursor:pointer;padding:2px 4px;outline:none;font-family:inherit;min-width:160px">
+            <option value="all">📋 Tất cả cơ sở</option>
+            <option value="chinh">🏛 Trường chính</option>
+            <option value="vts">🏠 Điểm trường VTS</option>
+          </select>
+        </div>
+        <div id="coso-badge" style="display:none;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:#dbeafe;color:#1d4ed8"></div>
+      </div>
+      <div class="class-tabs" id="classTabs">
+        <div class="class-tab active" data-coso="chinh" onclick="selectClass(this,'8A1')">8A1</div>
+        <div class="class-tab" data-coso="chinh" onclick="selectClass(this,'8A2')">8A2</div>
+        <div class="class-tab" data-coso="chinh" onclick="selectClass(this,'8A3')">8A3</div>
+        <div class="class-tab" data-coso="chinh" onclick="selectClass(this,'7B1')">7B1</div>
+        <div class="class-tab" data-coso="chinh" onclick="selectClass(this,'7B2')">7B2</div>
+        <div class="class-tab" data-coso="chinh" onclick="selectClass(this,'7B3')">7B3</div>
+        <div class="class-tab" data-coso="vts" onclick="selectClass(this,'6C1')">6C1</div>
+        <div class="class-tab" data-coso="vts" onclick="selectClass(this,'6C2')">6C2</div>
+        <div class="class-tab" data-coso="vts" onclick="selectClass(this,'6C3')">6C3</div>
+        <div class="class-tab" data-coso="chinh" onclick="selectClass(this,'...')">+7 lớp</div>
+      </div>
+
+      <!-- PANEL ROW -->
+      <div class="panel-row">
+        <!-- STUDENT TABLE -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Danh sách · Lớp <span id="currentClass">8A1</span> · <span id="studentCount">47</span> học sinh</h2>
+            <div class="card-actions">
+              <button class="btn btn-outline btn-sm" onclick="exportStudentsExcel()">⬇ Xuất DS</button>
+              <button class="btn btn-outline btn-sm" onclick="printList()">🖨 In DS</button>
+              <button class="btn btn-outline btn-sm" onclick="showToast('📋 Đã sao chép!')">📋 Sao chép</button>
+            </div>
+          </div>
+          <!-- SELECTION BAR -->
+          <div class="selection-bar" id="selectionBar" style="margin:10px 18px 0;">
+            <span class="sel-count" id="selCount">0 học sinh được chọn</span>
+            <button class="btn btn-outline btn-sm" onclick="clearSelection()">Bỏ chọn</button>
+            <button class="btn btn-danger btn-sm" onclick="openDeleteConfirm()">🗑 Xoá đã chọn</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:36px"><input type="checkbox" class="row-check" id="checkAll" onchange="toggleCheckAll(this)"></th>
+                  <th>STT</th>
+                  <th>Họ và tên</th>
+                  <th>Ngày sinh</th>
+                  <th>Hạnh kiểm</th>
+                  <th>ĐTB</th>
+                  <th>Chuyên cần</th>
+                  <th>Hôm nay</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="studentTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="panel-right">
+          <!-- ATTENDANCE TODAY -->
+          <div class="card">
+            <div class="card-header">
+              <h2>📅 Điểm danh hôm nay</h2>
+              <span class="badge badge-amber">8A1</span>
+            </div>
+            <div class="attend-grid">
+              <div class="attend-item total"><div class="num">47</div><div class="lbl">Tổng số</div></div>
+              <div class="attend-item present"><div class="num" id="presentCount">41</div><div class="lbl">Có mặt</div></div>
+              <div class="attend-item absent"><div class="num" id="absentCount">3</div><div class="lbl">Vắng</div></div>
+              <div class="attend-item late"><div class="num" id="lateCount">3</div><div class="lbl">Đi muộn</div></div>
+            </div>
+          </div>
+
+          <!-- QUICK ATTENDANCE -->
+          <div class="card">
+            <div class="card-header">
+              <h2>⚡ Điểm danh nhanh</h2>
+              <button class="btn btn-jade btn-sm" onclick="saveAttendance()">💾 Lưu</button>
+            </div>
+            <div class="quick-attend" id="quickAttend"></div>
+          </div>
+
+          <!-- NOTICES -->
+          <div class="card">
+            <div class="card-header">
+              <h2>🔔 Lưu ý</h2>
+            </div>
+            <div class="notice-list">
+              <div class="notice-item">
+                <div class="notice-dot" style="background:var(--red)"></div>
+                <div>
+                  <div class="notice-text">Nguyễn Văn An (8A1) — vắng 3 buổi liên tiếp, chưa có phép</div>
+                  <div class="notice-time">Hôm nay</div>
+                </div>
+              </div>
+              <div class="notice-item">
+                <div class="notice-dot" style="background:var(--amber)"></div>
+                <div>
+                  <div class="notice-text">Trần Thị Bình (8A1) — ĐTB HK1 dưới 5.0, cần hỗ trợ thêm</div>
+                  <div class="notice-time">2 ngày trước</div>
+                </div>
+              </div>
+              <div class="notice-item">
+                <div class="notice-dot" style="background:var(--jade)"></div>
+                <div>
+                  <div class="notice-text">Lê Minh Đức (8A1) — đạt HS xuất sắc cấp quận tháng 4</div>
+                  <div class="notice-time">3 ngày trước</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- STUDENT PROFILE MODAL -->
+<div class="overlay" id="profileOverlay" onclick="closeModal(event)">
+  <div class="modal" id="profileModal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-avatar" id="mAvatar">NV</div>
+        <div class="modal-name" id="mName">Nguyễn Văn A</div>
+        <div class="modal-meta" id="mMeta">Lớp 8A1 · HS001</div>
+      </div>
+      <button class="close-btn" onclick="document.getElementById('profileOverlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="info-grid">
+        <div class="info-item">
+          <label>Ngày sinh</label>
+          <p id="mDob">—</p>
+        </div>
+        <div class="info-item">
+          <label>Giới tính</label>
+          <p id="mGender">—</p>
+        </div>
+        <div class="info-item">
+          <label>Hạnh kiểm</label>
+          <p id="mConduct">—</p>
+        </div>
+        <div class="info-item">
+          <label>Học lực</label>
+          <p id="mAcademic">—</p>
+        </div>
+        <div class="info-item">
+          <label>SĐT Phụ huynh</label>
+          <p id="mPhone">—</p>
+        </div>
+        <div class="info-item">
+          <label>Chuyên cần</label>
+          <p id="mAttend">—</p>
+        </div>
+      </div>
+      <div class="attend-history">
+        <h4>Chuyên cần tháng này</h4>
+        <div class="month-dots" id="mDots"></div>
+      </div>
+      <div class="score-row" id="mScores"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-jade btn-sm" onclick="showToast('📞 Đang gọi phụ huynh...')">📞 Liên hệ PH</button>
+      <button class="btn btn-outline btn-sm" onclick="showToast('📝 Mở hồ sơ chi tiết')">📄 Hồ sơ đầy đủ</button>
+      <button class="btn btn-outline btn-sm" onclick="showToast('📊 Đang xem báo cáo...')">📊 Kết quả học tập</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD ONE MODAL -->
+<div class="overlay" id="addOneOverlay" onclick="closeOverlay('addOneOverlay',event)">
+  <div class="modal add-modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-avatar">👤</div>
+        <div class="modal-name">Thêm học sinh mới</div>
+        <div class="modal-meta">Lớp <span id="addOneClass">8A1</span></div>
+      </div>
+      <button class="close-btn" onclick="document.getElementById('addOneOverlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Họ và tên *</label>
+          <input type="text" class="form-input" id="f_name" placeholder="Nguyễn Văn A">
+        </div>
+        <div class="form-group">
+          <label>Ngày sinh *</label>
+          <input type="text" class="form-input" id="f_dob" placeholder="01/01/2012">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Giới tính</label>
+          <select class="form-select" id="f_gender">
+            <option value="Nam">Nam</option>
+            <option value="Nữ">Nữ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>SĐT phụ huynh</label>
+          <input type="text" class="form-input" id="f_phone" placeholder="0912345678">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Hạnh kiểm</label>
+          <select class="form-select" id="f_conduct">
+            <option>Tốt</option><option>Khá</option><option>Đạt</option><option>Yếu</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Học lực</label>
+          <select class="form-select" id="f_academic">
+            <option>Giỏi</option><option>Khá</option><option>Đạt</option><option>Yếu</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-jade" onclick="submitAddOne()">✅ Thêm học sinh</button>
+      <button class="btn btn-outline" onclick="document.getElementById('addOneOverlay').classList.remove('open')">Huỷ</button>
+    </div>
+  </div>
+</div>
+
+<!-- BULK ADD MODAL -->
+<div class="overlay" id="bulkOverlay" onclick="closeOverlay('bulkOverlay',event)">
+  <div class="modal bulk-modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-avatar">👥</div>
+        <div class="modal-name">Thêm hàng loạt</div>
+        <div class="modal-meta">Dán danh sách từ Excel hoặc nhập tay</div>
+      </div>
+      <button class="close-btn" onclick="document.getElementById('bulkOverlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="bulk-hint">
+        <strong>Định dạng mỗi dòng:</strong> Họ tên &nbsp;|&nbsp; Ngày sinh &nbsp;|&nbsp; Giới tính &nbsp;|&nbsp; SĐT phụ huynh<br>
+        Ví dụ: <code>Nguyễn Văn An | 15/03/2012 | Nam | 0912345678</code><br>
+        <em style="color:var(--ink3)">Có thể bỏ qua ngày sinh, giới tính, SĐT — chỉ cần cột Họ tên.</em>
+      </div>
+      <div class="form-group">
+        <label>Danh sách học sinh</label>
+        <textarea class="form-input" id="bulkInput" placeholder="Nguyễn Văn An | 15/03/2012 | Nam | 0912345678&#10;Trần Thị Bình | 20/07/2012 | Nữ | 0987654321&#10;Lê Minh Đức&#10;..." oninput="parseBulk()"></textarea>
+      </div>
+      <div id="bulkPreview" style="display:none" class="bulk-preview">
+        <div class="bulk-preview-header">
+          <span id="bulkPreviewLabel">Xem trước</span>
+          <span id="bulkErrCount" style="color:var(--red)"></span>
+        </div>
+        <div class="bulk-preview-rows" id="bulkPreviewRows"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-jade" onclick="submitBulk()" id="bulkSubmitBtn" disabled style="opacity:.5">✅ Thêm tất cả</button>
+      <button class="btn btn-outline" onclick="document.getElementById('bulkOverlay').classList.remove('open')">Huỷ</button>
+      <span id="bulkCountLabel" style="font-size:12px;color:var(--ink3);margin-left:auto;align-self:center"></span>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE MODAL -->
+<div class="overlay" id="deleteOverlay" onclick="closeOverlay('deleteOverlay',event)">
+  <div class="modal confirm-modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-avatar">🗑</div>
+        <div class="modal-name">Xác nhận xoá</div>
+        <div class="modal-meta" id="delModalMeta">Xoá học sinh khỏi danh sách</div>
+      </div>
+      <button class="close-btn" onclick="document.getElementById('deleteOverlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="confirm-body">
+      <p>Bạn sắp xoá <strong id="delCount" style="color:var(--red)">0</strong> học sinh khỏi lớp <strong id="delClass">8A1</strong>. Hành động này không thể hoàn tác.</p>
+      <div class="del-list" id="delList"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" onclick="confirmDelete()">🗑 Xoá vĩnh viễn</button>
+      <button class="btn btn-outline" onclick="document.getElementById('deleteOverlay').classList.remove('open')">Huỷ bỏ</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// DATA
+const COLORS = ['#0d9488','#2563eb','#7c3aed','#d97706','#dc2626','#059669','#0891b2','#9333ea'];
+const firstNames = ['Nguyễn','Trần','Lê','Phạm','Hoàng','Phan','Vũ','Đặng','Bùi','Đỗ'];
+const lastNames = ['An','Bình','Cường','Dung','Đức','Hà','Hùng','Lan','Linh','Mai','Nam','Phúc','Quân','Sơn','Thảo','Trung','Tú','Uyên','Vân','Xuân'];
+const CONDUCTS = ['Tốt','Tốt','Tốt','Khá','Khá','Đạt'];
+const ACADEMICS = ['Giỏi','Giỏi','Khá','Khá','Đạt'];
+
+function randEl(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function randInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function initials(name){ const p=name.trim().split(' '); return p.length>=2?(p[0][0]+(p[p.length-1][0])).toUpperCase():name.slice(0,2).toUpperCase(); }
+function makeColor(id){ return COLORS[id % COLORS.length]; }
+
+let nextId = 48;
+let selectedIds = new Set();
+let currentClassName = '8A1';
+
+let students = [];
+for(let i=1;i<=47;i++){
+  const gender = Math.random()>.5?'Nam':'Nữ';
+  const fn = randEl(firstNames);
+  const mn = gender==='Nam'?randEl(['Văn','Minh','Quốc','Đức','Bảo']):randEl(['Thị','Hồng','Thanh','Kim','Ngọc']);
+  const ln = randEl(lastNames);
+  const name = `${fn} ${mn} ${ln}`;
+  const conduct = randEl(CONDUCTS);
+  const academic = randEl(ACADEMICS);
+  const dtb = academic==='Giỏi'?randInt(80,95)/10:academic==='Khá'?randInt(65,79)/10:randInt(50,64)/10;
+  const dob = `${String(randInt(1,28)).padStart(2,'0')}/${String(randInt(1,12)).padStart(2,'0')}/2012`;
+  const phone = `09${randInt(10,99)}${randInt(100000,999999)}`;
+  const absent = randInt(0,5);
+  const status = i===3?'A':i===15?'L':i===28?'A':i===35?'A':'P';
+  const color = makeColor(i);
+  const hist = Array.from({length:20},(_,j)=>j<17?['P','P','P','L','P','P','A','P','P','P','P','L','P','P','P','P','P'][j%17]:randEl(['P','P','P','L']));
+  students.push({id:i,name,gender,dob,conduct,academic,dtb,phone,absent,status,color,hist,
+    scores:{m1:randInt(60,98)/10, m2:randInt(60,98)/10, hk:randInt(60,98)/10}});
+}
+
+let attendState = {};
+students.slice(0,8).forEach(s=>{ attendState[s.id]=s.status; });
+
+// BADGES
+function absentWarning(absent){
+  if(absent>=5) return '<span style="color:var(--red);font-weight:700;font-size:11px">⚠️ '+absent+' buổi</span>';
+  if(absent>=3) return '<span style="color:var(--amber);font-weight:700;font-size:11px">⚠️ '+absent+' buổi</span>';
+  return '<span style="color:var(--ink3);font-size:11px">'+absent+' buổi</span>';
+}
+
+function conductBadge(c){ 
+  if(c==='Tốt') return '<span class="badge badge-green">'+c+'</span>';
+  if(c==='Khá') return '<span class="badge badge-blue">'+c+'</span>';
+  return '<span class="badge badge-amber">'+c+'</span>';
+}
+function statusBadge(st){
+  if(st==='P') return '<span class="badge badge-green">✓ Có mặt</span>';
+  if(st==='A') return '<span class="badge badge-red">✗ Vắng</span>';
+  if(st==='L') return '<span class="badge badge-amber">⏰ Muộn</span>';
+  return '<span class="badge" style="background:#f1f5f9;color:#64748b">— Chưa</span>';
+}
+function histDots(hist){
+  return hist.map(h=>`<div class="dot ${h==='P'?'dot-present':h==='A'?'dot-absent':h==='L'?'dot-late':'dot-none'}" title="${h==='P'?'Có mặt':h==='A'?'Vắng':h==='L'?'Đi muộn':'Chưa điểm danh'}"></div>`).join('');
+}
+
+// RENDER TABLE
+function renderTable(data){
+  const tbody = document.getElementById('studentTable');
+  tbody.innerHTML = data.map((s,idx)=>`
+    <tr onclick="openProfile(${s.id})" id="row-${s.id}">
+      <td onclick="event.stopPropagation()">
+        <input type="checkbox" class="row-check" data-id="${s.id}" onchange="toggleRow(${s.id},this.checked)">
+      </td>
+      <td style="color:var(--ink3);font-size:12px">${idx+1}</td>
+      <td>
+        <div class="student-name-cell">
+          <div class="avatar" style="background:${s.color}20;color:${s.color}">${initials(s.name)}</div>
+          <div>
+            <div class="student-name">${s.name}</div>
+            <div class="student-code">HS${String(s.id).padStart(3,'0')} · ${s.gender}</div>
+          </div>
+        </div>
+      </td>
+      <td style="color:var(--ink3)">${s.dob}</td>
+      <td>${conductBadge(s.conduct)}</td>
+      <td><strong style="font-size:14px">${s.dtb.toFixed(1)}</strong></td>
+      <td>
+        <div class="attend-dots">
+          ${s.hist.slice(0,10).map(h=>`<div class="dot ${h==='P'?'dot-present':h==='A'?'dot-absent':h==='L'?'dot-late':'dot-none'}"></div>`).join('')}
+        </div>
+      </td>
+      <td>${statusBadge(s.status)}</td>
+      <td onclick="event.stopPropagation()" style="display:flex;gap:4px;align-items:center">
+        <button class="btn btn-outline btn-sm" onclick="openProfile(${s.id})">👁</button>
+        <button class="btn btn-sm" style="background:var(--red-light);color:var(--red);border:none" onclick="quickDelete(${s.id})">🗑</button>
+      </td>
+    </tr>
+  `).join('');
+  document.getElementById('studentCount').textContent = data.length;
+  syncCheckboxState();
+}
+
+// SELECTION
+function toggleRow(id, checked){
+  if(checked) selectedIds.add(id); else selectedIds.delete(id);
+  updateSelectionBar();
+}
+function toggleCheckAll(cb){
+  const allVisible = Array.from(document.querySelectorAll('#studentTable .row-check'));
+  allVisible.forEach(c=>{
+    c.checked = cb.checked;
+    const id = parseInt(c.dataset.id);
+    if(cb.checked) selectedIds.add(id); else selectedIds.delete(id);
+  });
+  updateSelectionBar();
+}
+function syncCheckboxState(){
+  document.querySelectorAll('#studentTable .row-check').forEach(c=>{
+    c.checked = selectedIds.has(parseInt(c.dataset.id));
+  });
+  updateSelectionBar();
+}
+function updateSelectionBar(){
+  const bar = document.getElementById('selectionBar');
+  const n = selectedIds.size;
+  if(n>0){
+    bar.classList.add('visible');
+    document.getElementById('selCount').textContent = `Đã chọn ${n} học sinh`;
+  } else {
+    bar.classList.remove('visible');
+    document.getElementById('checkAll').checked = false;
+  }
+}
+function clearSelection(){
+  selectedIds.clear();
+  document.querySelectorAll('#studentTable .row-check').forEach(c=>c.checked=false);
+  document.getElementById('checkAll').checked = false;
+  updateSelectionBar();
+}
+
+// DELETE
+function quickDelete(id){
+  selectedIds.clear();
+  selectedIds.add(id);
+  openDeleteConfirm();
+}
+function openDeleteConfirm(){
+  if(selectedIds.size===0) return;
+  const toDelete = students.filter(s=>selectedIds.has(s.id));
+  document.getElementById('delCount').textContent = toDelete.length;
+  document.getElementById('delClass').textContent = currentClassName;
+  document.getElementById('delModalMeta').textContent = `Xoá khỏi lớp ${currentClassName}`;
+  document.getElementById('delList').innerHTML = toDelete.map(s=>`
+    <div class="del-item">
+      <div class="avatar" style="width:22px;height:22px;font-size:9px;background:${s.color}20;color:${s.color};flex-shrink:0">${initials(s.name)}</div>
+      ${s.name} <span style="color:var(--ink3);font-size:11px;margin-left:auto">HS${String(s.id).padStart(3,'0')}</span>
+    </div>
+  `).join('');
+  document.getElementById('deleteOverlay').classList.add('open');
+}
+function confirmDelete(){
+  const names = students.filter(s=>selectedIds.has(s.id)).map(s=>s.name);
+  students = students.filter(s=>!selectedIds.has(s.id));
+  selectedIds.clear();
+  document.getElementById('deleteOverlay').classList.remove('open');
+  renderTable(students);
+  renderQuickAttend();
+  updateCounts();
+  showToast(`🗑 Đã xoá ${names.length} học sinh khỏi lớp ${currentClassName}`);
+}
+
+// ADD ONE
+function openAddOne(){
+  document.getElementById('addOneClass').textContent = currentClassName;
+  ['f_name','f_dob','f_phone'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('addOneOverlay').classList.add('open');
+}
+function submitAddOne(){
+  const name = document.getElementById('f_name').value.trim();
+  if(!name){ showToast('⚠️ Vui lòng nhập họ tên!'); return; }
+  const dob = document.getElementById('f_dob').value.trim() || `${String(randInt(1,28)).padStart(2,'0')}/01/2012`;
+  const gender = document.getElementById('f_gender').value;
+  const phone = document.getElementById('f_phone').value.trim() || `09${randInt(10,99)}${randInt(100000,999999)}`;
+  const conduct = document.getElementById('f_conduct').value;
+  const academic = document.getElementById('f_academic').value;
+  const dtb = academic==='Giỏi'?randInt(80,95)/10:academic==='Khá'?randInt(65,79)/10:randInt(50,64)/10;
+  const hist = Array.from({length:20},()=>'P');
+  const newS = {id:nextId++,name,gender,dob,conduct,academic,dtb,phone,absent:0,status:'P',color:makeColor(nextId),hist,
+    scores:{m1:dtb,m2:dtb,hk:dtb}};
+  students.push(newS);
+  document.getElementById('addOneOverlay').classList.remove('open');
+  renderTable(students);
+  renderQuickAttend();
+  showToast(`✅ Đã thêm "${name}" vào lớp ${currentClassName}`);
+}
+
+// BULK ADD
+let parsedBulk = [];
+function openBulkAdd(){
+  document.getElementById('bulkInput').value='';
+  document.getElementById('bulkPreview').style.display='none';
+  document.getElementById('bulkSubmitBtn').disabled=true;
+  document.getElementById('bulkSubmitBtn').style.opacity='.5';
+  document.getElementById('bulkCountLabel').textContent='';
+  parsedBulk=[];
+  document.getElementById('bulkOverlay').classList.add('open');
+}
+function parseBulk(){
+  const raw = document.getElementById('bulkInput').value;
+  const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
+  parsedBulk = lines.map((line,i)=>{
+    const parts = line.split('|').map(p=>p.trim());
+    const name = parts[0]||'';
+    const dob = parts[1]||`01/01/2012`;
+    const gender = parts[2]||'Nam';
+    const phone = parts[3]||'';
+    const isValid = name.length>=2;
+    return {line:i+1,name,dob,gender,phone,valid:isValid};
+  });
+  const valid = parsedBulk.filter(r=>r.valid);
+  const errs = parsedBulk.filter(r=>!r.valid);
+  const preview = document.getElementById('bulkPreview');
+  const rows = document.getElementById('bulkPreviewRows');
+  if(parsedBulk.length===0){ preview.style.display='none'; return; }
+  preview.style.display='block';
+  document.getElementById('bulkPreviewLabel').textContent=`Xem trước — ${parsedBulk.length} dòng`;
+  document.getElementById('bulkErrCount').textContent=errs.length>0?`${errs.length} lỗi`:'';
+  rows.innerHTML=parsedBulk.map(r=>`
+    <div class="bulk-row ${r.valid?'':'error'}">
+      <span class="bulk-row-num">${r.line}</span>
+      <span style="font-weight:${r.valid?600:400};color:${r.valid?'var(--ink)':'var(--red)'}">${r.name||'(trống)'}</span>
+      <span style="color:var(--ink3)">${r.dob} · ${r.gender}</span>
+      <span>${r.valid?'<span class="ok-badge">OK</span>':'<span class="err-badge">Lỗi</span>'}</span>
+    </div>
+  `).join('');
+  const btn = document.getElementById('bulkSubmitBtn');
+  const lbl = document.getElementById('bulkCountLabel');
+  if(valid.length>0){
+    btn.disabled=false; btn.style.opacity='1';
+    btn.textContent=`✅ Thêm ${valid.length} học sinh`;
+    lbl.textContent = errs.length>0?`(bỏ qua ${errs.length} dòng lỗi)`:'';
+  } else {
+    btn.disabled=true; btn.style.opacity='.5';
+    btn.textContent='✅ Thêm tất cả';
+    lbl.textContent='';
+  }
+}
+function submitBulk(){
+  const valid = parsedBulk.filter(r=>r.valid);
+  valid.forEach(r=>{
+    const academic = randEl(ACADEMICS);
+    const dtb = academic==='Giỏi'?randInt(80,95)/10:academic==='Khá'?randInt(65,79)/10:randInt(50,64)/10;
+    const hist = Array.from({length:20},()=>'P');
+    students.push({id:nextId++,name:r.name,gender:r.gender,dob:r.dob,conduct:'Tốt',academic,dtb,
+      phone:r.phone||`09${randInt(10,99)}${randInt(100000,999999)}`,absent:0,status:'P',color:makeColor(nextId),hist,
+      scores:{m1:dtb,m2:dtb,hk:dtb}});
+  });
+  document.getElementById('bulkOverlay').classList.remove('open');
+  renderTable(students);
+  renderQuickAttend();
+  showToast(`✅ Đã thêm ${valid.length} học sinh vào lớp ${currentClassName}`);
+}
+
+// ATTENDANCE
+function renderQuickAttend(){
+  const qa = document.getElementById('quickAttend');
+  const list = students.slice(0,8);
+  qa.innerHTML = list.map(s=>`
+    <div class="student-row">
+      <div class="avatar" style="width:26px;height:26px;font-size:10px;background:${s.color}20;color:${s.color}">${initials(s.name)}</div>
+      <div class="sname">${s.name.split(' ').slice(-2).join(' ')}</div>
+      <div class="attend-btns">
+        <button class="attend-btn ${attendState[s.id]==='P'?'checked-P':''}" onclick="setAttend(${s.id},'P',this)" title="Có mặt">✓</button>
+        <button class="attend-btn ${attendState[s.id]==='L'?'checked-L':''}" onclick="setAttend(${s.id},'L',this)" title="Đi muộn">⏰</button>
+        <button class="attend-btn ${attendState[s.id]==='A'?'checked-A':''}" onclick="setAttend(${s.id},'A',this)" title="Vắng">✗</button>
+      </div>
+    </div>
+  `).join('');
+}
+function setAttend(id,status,btn){
+  attendState[id]=status;
+  btn.closest('.student-row').querySelectorAll('.attend-btn').forEach(b=>b.classList.remove('checked-P','checked-A','checked-L'));
+  btn.classList.add(`checked-${status}`);
+  updateCounts();
+  const s=students.find(x=>x.id===id);
+  if(s) s.status=status;
+  renderTable(students);
+}
+function updateCounts(){
+  const vals=Object.values(attendState);
+  const base=Math.max(0,students.length-8);
+  document.getElementById('presentCount').textContent=vals.filter(v=>v==='P').length+base;
+  document.getElementById('absentCount').textContent=vals.filter(v=>v==='A').length;
+  document.getElementById('lateCount').textContent=vals.filter(v=>v==='L').length;
+}
+function printList(){
+  const cls = currentClassName;
+  const rows = students.map((s,i)=>`<tr><td>${i+1}</td><td>${s.name}</td><td>${s.gender}</td><td>${s.dob}</td><td>${s.conduct}</td><td>${s.dtb.toFixed(1)}</td><td></td></tr>`).join('');
+  const win = window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Danh sách lớp ${cls}</title>
+  <style>body{font-family:Arial,sans-serif;font-size:13px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:6px 10px;text-align:left}th{background:#f0f0f0;font-weight:700}h2{text-align:center}</style>
+  </head><body><h2>DANH SÁCH LỚP ${cls} — MÔN GDCD</h2>
+  <p>Năm học 2025–2026 · GV: Nguyễn Thanh Liêm · THCS Hùng Vương</p>
+  <table><thead><tr><th>STT</th><th>Họ và tên</th><th>Giới tính</th><th>Ngày sinh</th><th>Hạnh kiểm</th><th>ĐTB</th><th>Chữ ký</th></tr></thead><tbody>${rows}</tbody></table>
+  <p style="margin-top:20px;text-align:right">P. Sa Đéc, tỉnh Đồng Tháp, ngày ... tháng ... năm 2026<br><br>Giáo viên<br><br><strong>Nguyễn Thanh Liêm</strong></p>
+  
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- EDUPRO FOOTER -->
+<footer style="
+  background:linear-gradient(135deg,#0f172a 0%,#1a2744 60%,#0d1f35 100%);
+  padding:20px 32px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:14px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  position:relative;overflow:hidden;
+">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 15% 50%,rgba(13,148,136,.1),transparent 45%),radial-gradient(ellipse at 85% 50%,rgba(37,99,235,.07),transparent 45%);pointer-events:none"></div>
+
+  <!-- Logo Left -->
+  <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1">
+    <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#0d9488,#0f766e);display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 3px 10px rgba(13,148,136,.35);flex-shrink:0">🎓</div>
+    <div>
+      <div style="font-size:14px;font-weight:900;color:#fff;letter-spacing:-.01em;line-height:1.1">EduPro <span style="color:#2dd4bf">All‑in‑One</span></div>
+      <div style="font-size:10px;color:rgba(255,255,255,.38);margin-top:2px;letter-spacing:.02em">Trợ lý Giáo viên THCS · 9 Module</div>
+    </div>
+  </div>
+
+  <!-- Center: Copyright -->
+  <div style="position:relative;z-index:1;text-align:center">
+    <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:100px;padding:8px 18px">
+      <span style="font-size:13px;color:rgba(255,255,255,.4)">©</span>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#e2e8f0;letter-spacing:.01em">Copyright belongs to <span style="color:#2dd4bf">Liemnguyen</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:1px">
+          <span style="color:#60a5fa;font-weight:600">Zalo</span>&nbsp;·&nbsp;<span style="color:#e2e8f0;font-weight:600;letter-spacing:.04em">0815 899 878</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Zalo Button + Version -->
+  <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1">
+    <a href="https://zalo.me/0815899878" target="_blank" rel="noopener" style="
+      display:inline-flex;align-items:center;gap:7px;
+      padding:8px 16px;border-radius:100px;
+      background:linear-gradient(135deg,#0068ff,#0050d0);
+      color:#fff;text-decoration:none;font-size:12px;font-weight:700;
+      box-shadow:0 3px 12px rgba(0,104,255,.3);
+      transition:transform .18s,box-shadow .18s;
+    " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 18px rgba(0,104,255,.45)'"
+       onmouseout="this.style.transform='';this.style.boxShadow='0 3px 12px rgba(0,104,255,.3)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.02 2 11c0 2.88 1.34 5.46 3.44 7.18L4 22l4.1-1.29C9.31 21.21 10.62 21.5 12 21.5 17.52 21.5 22 17.48 22 13c0-4.97-4.48-9-10-9z"/>
+      </svg>
+      Liên hệ Zalo
+    </a>
+    <div style="text-align:right;line-height:1.5">
+      <div style="font-size:10px;color:rgba(255,255,255,.22);font-weight:600">v1.0 · 2026</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.18)">THCS Hùng Vương</div>
+    </div>
+  </div>
+</footer>
+</body></html>`);
+  win.document.close();
+  win.print();
+  showToast('🖨 Đang in danh sách lớp '+cls+'!');
+}
+
+function saveAttendance(){
+  const present = Object.values(attendState).filter(v=>v==='P').length;
+  const absent = Object.values(attendState).filter(v=>v==='A').length;
+  EduPro.set('todayAttendance', {present, absent, late: Object.values(attendState).filter(v=>v==='L').length, class: currentClassName, date: new Date().toISOString().split('T')[0]});
+  showToast('✅ Đã lưu điểm danh hôm nay!');
+}
+
+// PROFILE MODAL
+function openProfile(id){
+  const s=students.find(x=>x.id===id);
+  if(!s) return;
+  document.getElementById('mAvatar').textContent=initials(s.name);
+  document.getElementById('mAvatar').style.background=s.color+'44';
+  document.getElementById('mName').textContent=s.name;
+  document.getElementById('mMeta').textContent=`Lớp ${currentClassName} · HS${String(s.id).padStart(3,'0')} · ${s.gender}`;
+  document.getElementById('mDob').textContent=s.dob;
+  document.getElementById('mGender').textContent=s.gender;
+  document.getElementById('mConduct').innerHTML=conductBadge(s.conduct);
+  document.getElementById('mAcademic').textContent=s.academic;
+  document.getElementById('mPhone').textContent=s.phone;
+  document.getElementById('mAttend').textContent=`Vắng ${s.absent} buổi`;
+  document.getElementById('mDots').innerHTML=histDots(s.hist);
+  document.getElementById('mScores').innerHTML=`
+    <div class="score-chip"><strong style="color:var(--blue)">${s.scores.m1.toFixed(1)}</strong><span>Miệng/15'</span></div>
+    <div class="score-chip"><strong style="color:var(--jade)">${s.scores.m2.toFixed(1)}</strong><span>1 tiết</span></div>
+    <div class="score-chip"><strong style="color:var(--purple)">${s.scores.hk.toFixed(1)}</strong><span>Học kỳ</span></div>
+    <div class="score-chip"><strong style="color:var(--amber)">${s.dtb.toFixed(1)}</strong><span>ĐTB</span></div>
+  `;
+  document.getElementById('profileOverlay').classList.add('open');
+}
+
+// OVERLAY HELPERS
+function closeOverlay(id,e){ if(e.target===document.getElementById(id)) document.getElementById(id).classList.remove('open'); }
+function closeModal(e){ closeOverlay('profileOverlay',e); }
+
+// ADD MENU
+function toggleAddMenu(){
+  const m=document.getElementById('addMenu');
+  m.style.display=m.style.display==='none'?'block':'none';
+}
+function closeAddMenu(){ document.getElementById('addMenu').style.display='none'; }
+document.addEventListener('click',e=>{ if(!document.getElementById('addMenuBtn').contains(e.target)) closeAddMenu(); });
+
+// CLASS TAB
+function selectClass(el,name){
+  currentClassName=name;
+  document.querySelectorAll('.class-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('currentClass').textContent=name;
+  document.getElementById('addOneClass').textContent=name;
+  selectedIds.clear();
+  updateSelectionBar();
+  renderTable(students);
+  showToast(`📚 Đã chuyển sang lớp ${name}`);
+}
+
+// SEARCH
+function filterStudents(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const filtered=q?students.filter(s=>s.name.toLowerCase().includes(q)):students;
+  renderTable(filtered);
+}
+
+// TOAST
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+// COMPOUND MENU ACTIONS
+function openAddOneMenu(){ closeAddMenu(); openAddOne(); }
+function openBulkAddMenu(){ closeAddMenu(); openBulkAdd(); }
+
+// CLASS CONFIG
+function openClassConfig(){
+  // Populate current class info
+  document.getElementById('cfg_className').value = currentClassName;
+  document.getElementById('cfg_ssi').value = students.length;
+  document.getElementById('cfgOverlay').classList.add('open');
+}
+function saveClassConfig(){
+  const newName = document.getElementById('cfg_className').value.trim();
+  const homeroomTeacher = document.getElementById('cfg_gvcn').value.trim();
+  const room = document.getElementById('cfg_room').value.trim();
+  if(!newName){ showToast('⚠️ Vui lòng nhập tên lớp!'); return; }
+  // Update tab label if name changed
+  if(newName !== currentClassName){
+    document.querySelectorAll('.class-tab').forEach(t=>{
+      if(t.textContent===currentClassName){ t.textContent=newName; t.onclick=()=>selectClass(t,newName); }
+    });
+    currentClassName = newName;
+    document.getElementById('currentClass').textContent = newName;
+    document.getElementById('addOneClass').textContent = newName;
+  }
+  document.getElementById('cfgOverlay').classList.remove('open');
+  showToast(`✅ Đã lưu cấu hình lớp ${newName}${homeroomTeacher?' · GVCN: '+homeroomTeacher:''}${room?' · Phòng: '+room:''}`);
+}
+
+// NEW CLASS
+function openNewClass(){
+  document.getElementById('nc_name').value='';
+  document.getElementById('nc_grade').value='8';
+  document.getElementById('nc_gvcn').value='';
+  document.getElementById('newClassOverlay').classList.add('open');
+}
+function saveNewClass(){
+  const name = document.getElementById('nc_name').value.trim();
+  const grade = document.getElementById('nc_grade').value;
+  const gvcn = document.getElementById('nc_gvcn').value.trim();
+  const coso = document.getElementById('nc_coso') ? document.getElementById('nc_coso').value : 'chinh';
+  if(!name){ showToast('⚠️ Vui lòng nhập tên lớp!'); return; }
+  // Add new tab with campus tag
+  const tabs = document.getElementById('classTabs');
+  const plusTab = tabs.querySelector('[onclick*="..."]');
+  const newTab = document.createElement('div');
+  newTab.className = 'class-tab';
+  newTab.setAttribute('data-coso', coso);
+  newTab.textContent = name;
+  newTab.onclick = ()=>selectClass(newTab, name);
+  tabs.insertBefore(newTab, plusTab);
+  // Respect current coso filter
+  const curCoso = document.getElementById('selCoso').value;
+  if(curCoso !== 'all' && curCoso !== coso) newTab.style.display='none';
+  document.getElementById('newClassOverlay').classList.remove('open');
+  selectClass(newTab, name);
+  // Update total count display
+  const totalEl = document.querySelector('.topbar-left p');
+  if(totalEl) {
+    const m = totalEl.textContent.match(/(\d+) lớp/);
+    if(m) totalEl.textContent = totalEl.textContent.replace(m[0], (parseInt(m[1])+1)+' lớp');
+  }
+  showToast(`🏫 Đã tạo lớp ${name}${gvcn?' · GVCN: '+gvcn:''}!`);
+}
+
+// CƠ SỞ FILTER
+function filterByCoso(val){
+  const tabs = document.querySelectorAll('#classTabs .class-tab');
+  const badge = document.getElementById('coso-badge');
+  const labels = {all:'Tất cả cơ sở', chinh:'Trường chính', vts:'Điểm trường VTS'};
+  tabs.forEach(t => {
+    const tc = t.getAttribute('data-coso') || 'chinh';
+    t.style.display = (val==='all' || tc===val) ? '' : 'none';
+  });
+  if(val==='all'){
+    badge.style.display='none';
+  } else {
+    badge.style.display='inline-block';
+    badge.textContent = (val==='vts'?'🏠':'🏛') + ' ' + labels[val];
+    badge.style.background = val==='vts' ? '#fef3c7' : '#dbeafe';
+    badge.style.color = val==='vts' ? '#92400e' : '#1d4ed8';
+  }
+  // Auto-select first visible tab
+  const firstVisible = [...tabs].find(t=>t.style.display!=='none' && !t.getAttribute('onclick')?.includes("'...'"));
+  if(firstVisible && !firstVisible.classList.contains('active')){
+    const name = firstVisible.textContent.trim();
+    selectClass(firstVisible, name);
+  }
+  EduPro.set('lastCoso', val);
+}
+
+// EDIT CLASS
+function openEditClass(){
+  const tabs = document.querySelectorAll('.class-tab');
+  const classes = [];
+  tabs.forEach(t => {
+    if(!t.getAttribute('onclick') || !t.getAttribute('onclick').includes("'...'")) {
+      classes.push(t.textContent.trim());
+    }
+  });
+  const list = document.getElementById('editClass_list');
+  list.innerHTML = classes.map(name => `
+    <div class="edit-class-row" id="ecrow_${name}" style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;border:1.5px solid var(--border);margin-bottom:8px;background:${currentClassName===name?'var(--jade-light)':'var(--surface2)'};border-color:${currentClassName===name?'var(--jade)':'var(--border)'}">
+      <div style="font-size:18px;flex-shrink:0">🏫</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700;margin-bottom:2px">Lớp ${name}${currentClassName===name?' <span style=\'font-size:10px;background:var(--jade);color:#fff;padding:1px 7px;border-radius:100px;font-weight:600\'>Đang xem</span>':''}</div>
+        <div style="font-size:11px;color:var(--ink3)">${(currentClassName===name ? students.length : Math.floor(Math.random()*10+40))} học sinh</div>
+      </div>
+      <button class="btn btn-sm btn-ol" onclick="openEditClassForm('${name}')" style="flex-shrink:0;gap:5px">✏️ Sửa</button>
+    </div>
+  `).join('');
+  document.getElementById('editClass_form').style.display='none';
+  document.getElementById('editClassOverlay').classList.add('open');
+}
+
+function openEditClassForm(name){
+  document.getElementById('ec_oldName').value = name;
+  document.getElementById('ec_newName').value = name;
+  document.getElementById('ec_gvcn').value = '';
+  document.getElementById('ec_room').value = '';
+  document.getElementById('ec_note').value = '';
+  document.getElementById('ec_formTitle').textContent = `Chỉnh sửa: Lớp ${name}`;
+  document.getElementById('editClass_form').style.display = 'block';
+  document.getElementById('editClass_form').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function saveEditClass(){
+  const oldName = document.getElementById('ec_oldName').value;
+  const newName = document.getElementById('ec_newName').value.trim();
+  const gvcn   = document.getElementById('ec_gvcn').value.trim();
+  const room   = document.getElementById('ec_room').value.trim();
+  if(!newName){ showToast('⚠️ Tên lớp không được để trống!'); return; }
+
+  // Update tab label
+  document.querySelectorAll('.class-tab').forEach(t => {
+    if(t.textContent.trim() === oldName){
+      t.textContent = newName;
+      t.onclick = ()=>selectClass(t, newName);
+      if(t.classList.contains('active')){
+        currentClassName = newName;
+        document.getElementById('currentClass').textContent = newName;
+        document.getElementById('addOneClass').textContent = newName;
+      }
+    }
+  });
+
+  document.getElementById('editClassOverlay').classList.remove('open');
+  let msg = `✅ Đã cập nhật lớp ${oldName}`;
+  if(newName !== oldName) msg += ` → ${newName}`;
+  if(gvcn) msg += ` · GVCN: ${gvcn}`;
+  if(room) msg += ` · Phòng: ${room}`;
+  showToast(msg);
+}
+
+// INIT
+renderTable(students);
+renderQuickAttend();
+updateCounts();
+// Khôi phục bộ lọc cơ sở đã chọn
+(function(){
+  const saved = EduPro.get('lastCoso') || 'all';
+  const sel = document.getElementById('selCoso');
+  if(sel && saved !== 'all'){ sel.value = saved; filterByCoso(saved); }
+})();
+
+// Tải dữ liệu từ Drive khi mở module
+  EduProSync.init('module1_lop');
+
+// ── ĐỒNG BỘ NĂM HỌC & CƠ SỞ TỪ TRANG CHỦ ─────────────────────────
+(function syncSharedSettings(){
+  const namHoc = localStorage.getItem('edupro_namHoc');
+  if(namHoc){
+    const display = namHoc.replace('-','–');
+    document.querySelectorAll('.topbar-left p, [id*="topSub"]').forEach(el=>{
+      el.textContent = el.textContent.replace(/Năm học [0-9–]+/, 'Năm học ' + display);
+    });
+    document.querySelectorAll('.sb-bot .tr, .sb-bot .tr-r').forEach(el=>{
+      el.textContent = el.textContent.replace(/[0-9]{4}–[0-9]{4}/, display);
+    });
+  }
+})();
+  EduProSync.loadAll().then(driveData => {
+    if (driveData && driveData.students) {
+      try { students = JSON.parse(JSON.stringify(driveData.students)); renderTable(students); renderQuickAttend(); updateCounts(); } catch(e) {}
+    }
+  });
+</script>
+
+<!-- CLASS CONFIG MODAL -->
+<div class="overlay" id="cfgOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal add-modal" style="max-width:500px">
+    <div class="modal-header" style="background:linear-gradient(135deg,#0d9488,#0f766e)">
+      <div>
+        <div class="modal-name">⚙️ Cấu hình lớp học</div>
+        <div class="modal-meta">Chỉnh sửa thông tin và thiết lập lớp</div>
+      </div>
+      <button class="close-btn" onclick="document.getElementById('cfgOverlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">Tên lớp</label>
+          <input class="form-input" id="cfg_className" type="text" placeholder="VD: 8A1">
+        </div>
+        <div class="form-group">
+          <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">Khối</label>
+          <select class="form-select" id="cfg_grade">
+            <option value="6">Khối 6</option>
+            <option value="7">Khối 7</option>
+            <option value="8" selected>Khối 8</option>
+            <option value="9">Khối 9</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">GVCN (Giáo viên chủ nhiệm)</label>
+        <input class="form-input" id="cfg_gvcn" type="text" placeholder="Họ và tên GVCN...">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">Phòng học</label>
+          <input class="form-input" id="cfg_room" type="text" placeholder="VD: P.201">
+        </div>
+        <div class="form-group">
+          <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">Sĩ số</label>
+          <input class="form-input" id="cfg_ssi" type="number" min="1" max="60" placeholder="47">
+        </div>
+      </div>
+      <div class="form-group">
+        <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">Ghi chú</label>
+        <textarea class="form-input" id="cfg_note" rows="2" placeholder="Đặc điểm lớp, lưu ý riêng..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-jade" onclick="saveClassConfig()">💾 Lưu cấu hình</button>
+      <button class="btn btn-outline" onclick="document.getElementById('cfgOverlay').classList.remove('open')">Huỷ</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW CLASS MODAL -->
+<div class="overlay" id="newClassOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal add-modal" style="max-width:460px">
+    <div class="modal-header" style="background:linear-gradient(135deg,#059669,#047857)">
+      <div>
+        <div class="modal-name">🏫 Thêm lớp học mới</div>
+        <div class="modal-meta">Tạo lớp mới và bắt đầu quản lý</div>
+      </div>
+      <button class="close-btn" onclick="document.getElementById('newClassOverlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">Tên lớp <span style="color:var(--red)">*</span></label>
+          <input class="form-input" id="nc_name" type="text" placeholder="VD: 8A4, 9B2...">
+        </div>
+        <div class="form-group">
+          <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">Khối</label>
+          <select class="form-select" id="nc_grade">
+            <option value="6">Khối 6</option>
+            <option value="7">Khối 7</option>
+            <option value="8" selected>Khối 8</option>
+            <option value="9">Khối 9</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">Giáo viên chủ nhiệm</label>
+        <input class="form-input" id="nc_gvcn" type="text" placeholder="Họ và tên GVCN...">
+      </div>
+      <div class="form-group">
+        <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">🏫 Cơ sở <span style="color:var(--red)">*</span></label>
+        <select class="form-select" id="nc_coso">
+          <option value="chinh">🏛 Trường chính</option>
+          <option value="vts">🏠 Điểm trường VTS</option>
+        </select>
+      </div>
+      <div style="background:var(--blue-light);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--blue);margin-bottom:4px">
+        💡 Sau khi tạo lớp, dùng nút <strong>+ Thêm học sinh</strong> để nhập danh sách.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-jade" onclick="saveNewClass()">✅ Tạo lớp mới</button>
+      <button class="btn btn-outline" onclick="document.getElementById('newClassOverlay').classList.remove('open')">Huỷ</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT CLASS MODAL -->
+<div class="overlay" id="editClassOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal add-modal" style="max-width:500px">
+    <div class="modal-header" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)">
+      <div>
+        <div class="modal-name">✏️ Sửa lớp học</div>
+        <div class="modal-meta">Chọn lớp cần chỉnh sửa thông tin</div>
+      </div>
+      <button class="close-btn" onclick="document.getElementById('editClassOverlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="editClass_list"></div>
+
+      <!-- INLINE EDIT FORM (hidden until a class is selected) -->
+      <div id="editClass_form" style="display:none;margin-top:4px;border-top:1px solid var(--border);padding-top:16px">
+        <input type="hidden" id="ec_oldName">
+        <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:12px" id="ec_formTitle">Chỉnh sửa lớp</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">Tên lớp mới <span style="color:var(--red)">*</span></label>
+            <input class="form-input" id="ec_newName" type="text" placeholder="VD: 8A1">
+          </div>
+          <div class="form-group">
+            <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">Khối</label>
+            <select class="form-select" id="ec_grade">
+              <option value="6">Khối 6</option>
+              <option value="7">Khối 7</option>
+              <option value="8" selected>Khối 8</option>
+              <option value="9">Khối 9</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">GVCN</label>
+            <input class="form-input" id="ec_gvcn" type="text" placeholder="Họ và tên GVCN...">
+          </div>
+          <div class="form-group">
+            <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">Phòng học</label>
+            <input class="form-input" id="ec_room" type="text" placeholder="VD: P.201">
+          </div>
+        </div>
+        <div class="form-group">
+          <label style="display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px">Ghi chú</label>
+          <textarea class="form-input" id="ec_note" rows="2" placeholder="Đặc điểm lớp, lưu ý riêng..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-jade" onclick="saveEditClass()" id="ec_saveBtn">💾 Lưu thay đổi</button>
+      <button class="btn btn-outline" onclick="document.getElementById('editClassOverlay').classList.remove('open')">Đóng</button>
+    </div>
+  </div>
+</div>
+
+</body></html>

@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soạn Giáo án — EduPro THCS</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f4f8;--surface:#fff;--surface2:#f7f9fc;--ink:#1a202c;--ink2:#4a5568;--ink3:#718096;
+  --border:#e2e8f0;--jade:#0d9488;--jade-l:#ccfbf1;--jade-d:#0f766e;
+  --blue:#2563eb;--blue-l:#dbeafe;--amber:#d97706;--amber-l:#fef3c7;
+  --red:#dc2626;--red-l:#fee2e2;--purple:#7c3aed;--purple-l:#ede9fe;
+  --r:12px;--sh:0 1px 3px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;min-height:100vh}
+.app{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--ink);flex-shrink:0;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-logo .an{font-size:15px;font-weight:800;color:#fff}.sb-logo .as{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.sb-nav{padding:12px 10px;flex:1;overflow-y:auto}
+.nl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:8px 8px 4px}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;color:rgba(255,255,255,.55);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;margin-bottom:2px}
+.ni:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9)}.ni.active{background:var(--jade);color:#fff}
+.ni .ic{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.sb-bot{padding:14px 10px;border-top:1px solid rgba(255,255,255,.07)}
+.tc{display:flex;align-items:center;gap:10px;padding:8px 10px}
+.ta{width:34px;height:34px;border-radius:50%;background:var(--jade);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.tn{font-size:12px;font-weight:600;color:#fff}.tr-r{font-size:11px;color:rgba(255,255,255,.4)}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.tl h1{font-size:17px;font-weight:700}.tl p{font-size:12px;color:var(--ink3);margin-top:1px}
+.tr2{display:flex;align-items:center;gap:10px}
+
+/* BTN */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.btn:active{transform:scale(.97)}
+.btn-jade{background:var(--jade);color:#fff}.btn-jade:hover{background:var(--jade-d)}
+.btn-ol{background:transparent;border:1px solid var(--border);color:var(--ink)}.btn-ol:hover{background:var(--surface2)}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#1d4ed8}
+.btn-purple{background:var(--purple);color:#fff}.btn-purple:hover{background:#6d28d9}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:6px}
+.btn-amber{background:var(--amber);color:#fff}
+
+/* CONTENT */
+.content{padding:24px 28px;flex:1;display:flex;flex-direction:column;gap:0}
+
+/* TWO-PANEL */
+.panel-wrap{display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:start}
+
+/* LEFT: LIBRARY */
+.lib-panel{display:flex;flex-direction:column;gap:12px;position:sticky;top:80px}
+.card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden}
+.ch{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ch h2{font-size:13px;font-weight:700}.ca{display:flex;gap:6px}
+
+/* TEMPLATE LIST */
+.tpl-list{padding:8px}
+.tpl-item{padding:10px 12px;border-radius:8px;cursor:pointer;transition:all .15s;border:1.5px solid transparent;margin-bottom:4px}
+.tpl-item:hover{background:var(--surface2);border-color:var(--border)}
+.tpl-item.active{background:var(--jade-l);border-color:var(--jade)}
+.tpl-title{font-size:13px;font-weight:600;margin-bottom:3px}
+.tpl-meta{font-size:11px;color:var(--ink3)}
+.tpl-badge{display:inline-block;font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;margin-top:4px}
+
+/* SAVED LIST */
+.saved-list{padding:8px;max-height:220px;overflow-y:auto}
+.saved-item{padding:9px 12px;border-radius:8px;cursor:pointer;transition:all .15s;border:1px solid var(--border);margin-bottom:6px;display:flex;align-items:flex-start;gap:8px}
+.saved-item:hover{border-color:var(--jade);background:var(--jade-l)}
+.saved-icon{font-size:18px;flex-shrink:0}
+.saved-text .st{font-size:12px;font-weight:600}.saved-text .sm{font-size:11px;color:var(--ink3)}
+
+/* RIGHT: EDITOR */
+.editor-panel{display:flex;flex-direction:column;gap:14px}
+.editor-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.editor-header h2{font-size:16px;font-weight:800}
+
+/* SECTION CARD */
+.section-card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
+.sc-head{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;transition:background .12s}
+.sc-head:hover{background:var(--surface2)}
+.sc-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.sc-title{font-size:14px;font-weight:700;flex:1}
+.sc-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px}
+.sc-arrow{font-size:12px;color:var(--ink3);transition:transform .2s}
+.sc-arrow.open{transform:rotate(180deg)}
+.sc-body{padding:16px 18px;border-top:0}
+.sc-body.collapsed{display:none}
+
+/* FORM ELEMENTS */
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px}
+.fi{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;color:var(--ink);background:var(--surface2);outline:none;transition:border-color .15s,background .15s}
+.fi:focus{border-color:var(--jade);background:#fff}
+textarea.fi{resize:vertical;min-height:80px;line-height:1.6}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.select-fi{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;color:var(--ink);background:var(--surface2);outline:none;cursor:pointer}
+.select-fi:focus{border-color:var(--jade)}
+
+/* ACTIVITY BLOCK */
+.activity-list{display:flex;flex-direction:column;gap:10px}
+.activity-item{border:1.5px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .15s}
+.activity-item:focus-within{border-color:var(--jade)}
+.act-head{padding:10px 14px;background:var(--surface2);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.act-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;background:var(--jade);color:#fff;flex-shrink:0}
+.act-name-inp{flex:1;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);outline:none}
+.act-time{width:60px;border:1px solid var(--border);border-radius:6px;padding:4px 6px;font-size:12px;font-family:inherit;text-align:center;background:var(--surface)}
+.act-del{width:24px;height:24px;border-radius:50%;border:none;background:var(--red-l);color:var(--red);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.act-body{padding:10px 14px}
+.act-body textarea{width:100%;border:none;background:transparent;font-family:inherit;font-size:13px;color:var(--ink2);outline:none;resize:none;line-height:1.6;min-height:60px}
+.add-act-btn{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px dashed var(--border);border-radius:10px;cursor:pointer;color:var(--jade);font-size:13px;font-weight:600;transition:all .15s;background:transparent;font-family:inherit;width:100%}
+.add-act-btn:hover{border-color:var(--jade);background:var(--jade-l)}
+
+/* AI PANEL */
+.ai-panel{background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:var(--r);padding:16px 18px;color:#fff;margin-bottom:14px}
+.ai-panel h3{font-size:14px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.ai-panel p{font-size:12px;opacity:.7;margin-bottom:12px;line-height:1.5}
+.ai-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.ai-chip{padding:5px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;color:#fff}
+.ai-chip:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.4)}
+.ai-result{background:rgba(255,255,255,.1);border-radius:8px;padding:12px;font-size:13px;line-height:1.7;display:none;margin-top:10px;border:1px solid rgba(255,255,255,.15)}
+.ai-result.show{display:block}
+.ai-loading{display:none;align-items:center;gap:10px;margin-top:10px;font-size:13px;opacity:.8}
+.ai-loading.show{display:flex}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* PREVIEW MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.overlay.open{display:flex}
+.preview-modal{background:var(--surface);border-radius:16px;width:100%;max-width:780px;box-shadow:0 24px 64px rgba(0,0,0,.2);animation:su .2s ease;margin:auto}
+@keyframes su{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+.pm-head{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.pm-head h3{font-size:16px;font-weight:700}
+.pm-body{padding:28px 36px;line-height:1.8}
+.pm-title{text-align:center;margin-bottom:24px}
+.pm-title h2{font-size:20px;font-weight:800;margin-bottom:4px}
+.pm-title p{font-size:13px;color:var(--ink3)}
+.pm-section{margin-bottom:20px}
+.pm-section h4{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--jade);border-bottom:2px solid var(--jade-l);padding-bottom:6px;margin-bottom:12px}
+.pm-section p,.pm-section li{font-size:13px;color:var(--ink2);margin-bottom:6px}
+.pm-section ul{padding-left:18px}
+.pm-act{background:var(--surface2);border-radius:8px;padding:12px 14px;margin-bottom:8px;border-left:3px solid var(--jade)}
+.pm-act .pa-title{font-size:13px;font-weight:700;margin-bottom:4px}
+.pm-act .pa-body{font-size:13px;color:var(--ink2)}
+.pm-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px}
+.xbtn{background:var(--surface2);border:1px solid var(--border);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:999;opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#cbd5e0;border-radius:99px}
+</style>
+
+<script>
+// ══ EDUPRO SHARED STATE ══
+const EduPro = {
+  get: (key) => { try { return JSON.parse(localStorage.getItem('edupro_'+key)||'null'); } catch(e) { return null; } },
+  set: (key, val) => {
+    try { localStorage.setItem('edupro_'+key, JSON.stringify(val)); } catch(e) {}
+    // ─ DriveSync: tự động đồng bộ lên Drive ─
+    if (window.EduProSync) { EduProSync.save(key, val); }
+  },
+  currentClass: () => EduPro.get('currentClass') || '8A1',
+  teacher: () => EduPro.get('teacher') || {name:'Nguyễn Thanh Liêm', school:'THCS Hùng Vương'},
+};
+</script>
+
+<!-- ═══ EDUPRO DRIVESYNC ═══════════════════════════════════════════ -->
+<script>
+/* --- EduPro DriveSync Embedded --- */
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║        EDUPRO DRIVESYNC — Thư viện đồng bộ Google Drive        ║
+// ║  Nhúng vào mỗi module HTML để tự động lưu dữ liệu lên Drive    ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+window.EduProSync = (function () {
+
+  // ── CẤU HÌNH — ĐỔI URL NÀY SAU KHI DEPLOY APPS SCRIPT ──────────
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec';
+  //  Ví dụ: 'https://script.google.com/macros/s/AKfycb.../exec'
+
+  const DEBOUNCE_MS  = 1500;   // Đợi 1.5 giây sau thay đổi cuối cùng rồi mới lưu
+  const RETRY_MAX    = 3;       // Thử lại tối đa 3 lần nếu lỗi mạng
+  const RETRY_DELAY  = 2000;    // Đợi 2 giây giữa mỗi lần retry
+
+  let _module   = 'unknown';
+  let _timers   = {};           // Debounce timers theo key
+  let _queue    = [];           // Hàng chờ khi offline
+  let _online   = navigator.onLine;
+  let _statusEl = null;
+
+  // ── KHỞI TẠO ─────────────────────────────────────────────────────
+  function init(moduleName) {
+    _module = moduleName;
+    _injectStatusBar();
+    _listenNetworkEvents();
+    _processQueue();           // Xử lý hàng đợi offline khi vừa load
+    _pingServer();             // Kiểm tra kết nối server
+    console.log(`[EduProSync] Module "${_module}" đã khởi tạo`);
+  }
+
+  // ── LƯU DỮ LIỆU (có debounce) ────────────────────────────────────
+  function save(key, data, immediate = false) {
+    // Luôn lưu localStorage trước (fallback tức thì)
+    try {
+      localStorage.setItem('edupro_' + key, JSON.stringify(data));
+    } catch (e) {}
+
+    if (immediate) {
+      _doSave(key, data);
+    } else {
+      // Debounce: hủy timer cũ, đặt timer mới
+      clearTimeout(_timers[key]);
+      _timers[key] = setTimeout(() => _doSave(key, data), DEBOUNCE_MS);
+    }
+  }
+
+  // ── LƯU NGAY (không debounce) ─────────────────────────────────────
+  function saveNow(key, data) {
+    return save(key, data, true);
+  }
+
+  // ── TẢI DỮ LIỆU ──────────────────────────────────────────────────
+  async function load(key) {
+    if (!_online || !_isConfigured()) {
+      // Fallback: đọc từ localStorage
+      try {
+        const val = localStorage.getItem('edupro_' + key);
+        return val ? JSON.parse(val) : null;
+      } catch { return null; }
+    }
+
+    try {
+      const res = await _post({ action: 'load', module: _module, key });
+      if (res.found) {
+        // Cập nhật localStorage với dữ liệu mới nhất từ Drive
+        localStorage.setItem('edupro_' + key, JSON.stringify(res.data));
+        return res.data;
+      }
+      // Key chưa có trên Drive → đọc localStorage
+      const local = localStorage.getItem('edupro_' + key);
+      return local ? JSON.parse(local) : null;
+    } catch (e) {
+      console.warn('[EduProSync] load error, dùng localStorage:', e);
+      try {
+        const val = localStorage.getItem('edupro_' + key);
+        return val ? JSON.parse(val) : null;
+      } catch { return null; }
+    }
+  }
+
+  // ── TẢI TOÀN BỘ DỮ LIỆU MODULE (khi trang tải) ───────────────────
+  async function loadAll() {
+    if (!_online || !_isConfigured()) return null;
+    try {
+      const res = await _post({ action: 'loadAll', module: _module });
+      if (res.found && res.data) {
+        // Ghi vào localStorage để dùng offline
+        Object.entries(res.data).forEach(([k, v]) => {
+          localStorage.setItem('edupro_' + k, JSON.stringify(v));
+        });
+        return res.data;
+      }
+      return null;
+    } catch (e) {
+      console.warn('[EduProSync] loadAll error:', e);
+      return null;
+    }
+  }
+
+  // ── XOÁ DỮ LIỆU ──────────────────────────────────────────────────
+  function remove(key) {
+    try { localStorage.removeItem('edupro_' + key); } catch {}
+    if (_online && _isConfigured()) {
+      _post({ action: 'delete', module: _module, key }).catch(console.warn);
+    }
+  }
+
+  // ── NỘI BỘ: THỰC HIỆN LƯU LÊN DRIVE ─────────────────────────────
+  async function _doSave(key, data, attempt = 1) {
+    if (!_isConfigured()) {
+      _setStatus('warning', '⚠️ Chưa cấu hình Script URL');
+      return;
+    }
+
+    if (!_online) {
+      // Đưa vào hàng chờ offline
+      _queue = _queue.filter(q => !(q.key === key && q.module === _module));
+      _queue.push({ module: _module, key, data, time: Date.now() });
+      _setStatus('offline', '📶 Offline — dữ liệu sẽ đồng bộ khi có mạng');
+      return;
+    }
+
+    _setStatus('saving', '⏫ Đang lưu...');
+    try {
+      const res = await _post({ action: 'save', module: _module, key, data });
+      if (res.ok && res.saved) {
+        _setStatus('ok', '☁️ Đã lưu lên Drive ' + _fmtTime(res.timestamp));
+        _processQueue();
+      } else {
+        throw new Error(res.error || 'Save failed');
+      }
+    } catch (e) {
+      if (attempt < RETRY_MAX) {
+        _setStatus('retry', `🔄 Thử lại (${attempt}/${RETRY_MAX})...`);
+        setTimeout(() => _doSave(key, data, attempt + 1), RETRY_DELAY * attempt);
+      } else {
+        _setStatus('error', '❌ Lỗi đồng bộ — đã lưu cục bộ');
+        _queue.push({ module: _module, key, data, time: Date.now() });
+        console.error('[EduProSync] Lỗi lưu sau', RETRY_MAX, 'lần:', e);
+      }
+    }
+  }
+
+  // ── POST REQUEST ──────────────────────────────────────────────────
+  function _getUrl() {
+    // Ưu tiên URL đã lưu qua showSetup(), rồi mới dùng hardcoded SCRIPT_URL
+    const stored = localStorage.getItem('edupro_scriptUrl');
+    return (stored && stored.startsWith('https://script.google.com')) ? stored : SCRIPT_URL;
+  }
+
+  async function _post(payload, timeout = 10000) {
+    const url  = _getUrl();
+    const ctrl = new AbortController();
+    const id   = setTimeout(() => ctrl.abort(), timeout);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        signal: ctrl.signal,
+        headers: { 'Content-Type': 'text/plain' }
+      });
+      clearTimeout(id);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } catch (e) {
+      clearTimeout(id);
+      throw e;
+    }
+  }
+
+  // ── XỬ LÝ HÀNG ĐỢI OFFLINE ───────────────────────────────────────
+  async function _processQueue() {
+    if (!_online || _queue.length === 0) return;
+    const pending = [..._queue];
+    _queue = [];
+    for (const item of pending) {
+      await _doSave(item.key, item.data);
+      await new Promise(r => setTimeout(r, 300)); // Tránh quá nhiều request cùng lúc
+    }
+  }
+
+  // ── KIỂM TRA KẾT NỐI SERVER ──────────────────────────────────────
+  async function _pingServer() {
+    if (!_isConfigured()) {
+      _setStatus('warning', '⚠️ Chưa cấu hình — xem hướng dẫn cài đặt');
+      return;
+    }
+    try {
+      const res = await _post({ action: 'ping' }, 5000);
+      if (res.ok) _setStatus('ok', '☁️ Drive đã kết nối · ' + (_getUrl().substring(40,60) + '...'))
+    } catch {
+      _setStatus('warning', '⚠️ Không kết nối được Drive — dùng chế độ cục bộ');
+    }
+  }
+
+  // ── THANH TRẠNG THÁI ─────────────────────────────────────────────
+  function _injectStatusBar() {
+    if (document.getElementById('edupro-sync-bar')) return;
+    const bar = document.createElement('div');
+    bar.id = 'edupro-sync-bar';
+    bar.style.cssText = `
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 5px 16px; font-size: 11px; font-family: inherit;
+      background: #f0fdf4; border-top: 1px solid #bbf7d0;
+      color: #166534; transition: all .3s; gap: 12px;
+      box-shadow: 0 -2px 8px rgba(0,0,0,.06);
+    `;
+    bar.innerHTML = `
+      <span id="edupro-sync-msg" style="display:flex;align-items:center;gap:6px">
+        🔄 Đang kiểm tra kết nối Drive...
+      </span>
+      <span style="display:flex;align-items:center;gap:8px;opacity:.7">
+        <span id="edupro-sync-module" style="font-weight:700"></span>
+        <button onclick="EduProSync.showSetup()" style="border:1px solid currentColor;background:transparent;cursor:pointer;padding:1px 8px;border-radius:4px;font-size:10px;font-family:inherit;color:inherit">⚙️ Cấu hình</button>
+      </span>
+    `;
+    document.body.appendChild(bar);
+    _statusEl = bar;
+    document.getElementById('edupro-sync-module').textContent = _module;
+  }
+
+  const STATUS_STYLES = {
+    ok:      { bg: '#f0fdf4', border: '#bbf7d0', color: '#166534' },
+    saving:  { bg: '#eff6ff', border: '#bfdbfe', color: '#1d4ed8' },
+    retry:   { bg: '#fffbeb', border: '#fde68a', color: '#92400e' },
+    error:   { bg: '#fff1f2', border: '#fecdd3', color: '#be123c' },
+    offline: { bg: '#f8fafc', border: '#e2e8f0', color: '#475569' },
+    warning: { bg: '#fffbeb', border: '#fde68a', color: '#92400e' },
+  };
+
+  function _setStatus(type, msg) {
+    if (!_statusEl) return;
+    const s = STATUS_STYLES[type] || STATUS_STYLES.ok;
+    _statusEl.style.background  = s.bg;
+    _statusEl.style.borderColor = s.border;
+    _statusEl.style.color       = s.color;
+    const msgEl = document.getElementById('edupro-sync-msg');
+    if (msgEl) msgEl.textContent = msg;
+  }
+
+  // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
+  function showSetup() {
+    const current = _getUrl() === 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec' ? '' : _getUrl();
+    const url = prompt(
+      '🔧 Nhập URL Google Apps Script:\n\n' +
+      'Cách lấy URL:\n' +
+      '1. Mở script.google.com\n' +
+      '2. Dán nội dung EduPro_DriveSync.gs\n' +
+      '3. Deploy → New deployment → Web app\n' +
+      '4. Sao chép URL và dán vào đây\n\n' +
+      'URL hiện tại: ' + (current || '(chưa cấu hình)'),
+      current
+    );
+    if (url && url.startsWith('https://script.google.com')) {
+      // Lưu URL vào localStorage để các module dùng lại
+      localStorage.setItem('edupro_scriptUrl', url);
+      alert('✅ Đã lưu URL!\n\nVui lòng tải lại trang để áp dụng.\n\n⚠️ Lưu ý: Để cố định vĩnh viễn, cần cập nhật SCRIPT_URL trong mã nguồn.');
+      location.reload();
+    } else if (url !== null) {
+      alert('❌ URL không hợp lệ. Phải bắt đầu bằng https://script.google.com');
+    }
+  }
+
+  // ── NETWORK EVENTS ────────────────────────────────────────────────
+  function _listenNetworkEvents() {
+    window.addEventListener('online', () => {
+      _online = true;
+      _setStatus('ok', '📶 Đã kết nối mạng — đang đồng bộ...');
+      _processQueue();
+    });
+    window.addEventListener('offline', () => {
+      _online = false;
+      _setStatus('offline', '📴 Mất kết nối — dữ liệu lưu cục bộ');
+    });
+    // Lưu hàng chờ trước khi đóng trang
+    window.addEventListener('beforeunload', () => {
+      if (_queue.length > 0) {
+        localStorage.setItem('edupro_offline_queue_' + _module, JSON.stringify(_queue));
+      }
+    });
+    // Khôi phục hàng chờ khi mở lại trang
+    const savedQueue = localStorage.getItem('edupro_offline_queue_' + _module);
+    if (savedQueue) {
+      try {
+        _queue = JSON.parse(savedQueue);
+        localStorage.removeItem('edupro_offline_queue_' + _module);
+      } catch {}
+    }
+  }
+
+  function _isConfigured() {
+    const url = _getUrl();
+    return url !== 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec' && url.startsWith('https://script.google.com');
+  }
+
+  function _fmtTime(iso) {
+    if (!iso) return '';
+    try {
+      return new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    } catch { return ''; }
+  }
+
+  // ── API CÔNG KHAI ─────────────────────────────────────────────────
+  return { init, save, saveNow, load, loadAll, remove, showSetup };
+
+})();
+
+</script>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo"><div class="an">🎓 EduPro</div><div class="as">THCS All-in-One</div></div>
+    <nav class="sb-nav">
+      <div class="nl">Trang chủ</div>
+      <div class="ni" onclick="window.location='edupro-home.html'"><span class="ic">🏠</span>Trang chủ</div>
+      <div class="nl">Quản lý</div>
+      <div class="ni" onclick="window.location='module1-quan-ly-lop.html'"><span class="ic">👥</span>Lớp & Học sinh</div>
+      <div class="ni" onclick="window.location='module2-quan-ly-diem.html'"><span class="ic">📊</span>Điểm số</div>
+      <div class="ni active" onclick="window.location='module3-soan-giao-an.html'"><span class="ic">📋</span>Giáo án</div>
+      <div class="ni" onclick="window.location='module4-de-kiem-tra.html'"><span class="ic">🎯</span>Đề kiểm tra</div>
+      <div class="nl" style="margin-top:8px">Công cụ</div>
+      <div class="ni" onclick="window.location='module5-tkb-lich.html'"><span class="ic">📅</span>Thời khoá biểu</div>
+      <div class="ni" onclick="window.location='module6-tro-choi.html'"><span class="ic">🎮</span>Trò chơi</div>
+      <div class="ni" onclick="window.location='module7-kho-tai-lieu.html'"><span class="ic">📁</span>Tài liệu</div>
+      <div class="ni" onclick="window.location='module8-thong-bao.html'"><span class="ic">📣</span>Thông báo</div>
+      <div class="ni" onclick="window.location='module9-tro-ly-ai.html'"><span class="ic">🤖</span>Trợ lý AI</div>
+    </nav>
+    <div class="sb-bot"><div class="tc"><div class="ta">NL</div><div><div class="tn">Nguyễn Thanh Liêm</div><div class="tr-r">GV GDCD · THCS Hùng Vương</div></div></div></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="tl">
+        <h1>Soạn Giáo án</h1>
+        <p>Theo chuẩn Bộ GD&ĐT · Có hỗ trợ AI gợi ý</p>
+      </div>
+      <div class="tr2">
+        <button class="btn btn-ol btn-sm" onclick="window.location='edupro-home.html'" style="font-size:11px;padding:4px 10px">🏠 Trang chủ</button>
+        <button class="btn btn-ol" onclick="exportLessonPlan()">⬇ Xuất Word</button>
+        <button class="btn btn-ol" onclick="showToast('🖨 Đang in...')">🖨 In</button>
+        <button class="btn btn-ol" onclick="duplicateLesson()">📋 Sao chép GA</button>
+        <button class="btn btn-ol" onclick="openPreview()">👁 Xem trước</button>
+        <button class="btn btn-jade" onclick="saveLesson()">💾 Lưu giáo án</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="panel-wrap">
+        <!-- LEFT: LIBRARY -->
+        <div class="lib-panel">
+          <!-- TEMPLATES -->
+          <div class="card">
+            <div class="ch"><h2>📄 Mẫu giáo án</h2></div>
+            <div class="tpl-list" id="tplList">
+              <div class="tpl-item active" onclick="loadTemplate('5step',this)">
+                <div class="tpl-title">Mô hình 5 bước</div>
+                <div class="tpl-meta">Chuẩn Bộ GD&ĐT 2021</div>
+                <span class="tpl-badge" style="background:var(--jade-l);color:var(--jade-d)">Phổ biến nhất</span>
+              </div>
+              <div class="tpl-item" onclick="loadTemplate('4step',this)">
+                <div class="tpl-title">Mô hình 4 hoạt động</div>
+                <div class="tpl-meta">Khởi động – HT – LT – VD</div>
+                <span class="tpl-badge" style="background:var(--blue-l);color:var(--blue)">Đơn giản</span>
+              </div>
+              <div class="tpl-item" onclick="loadTemplate('project',this)">
+                <div class="tpl-title">Dạy học dự án</div>
+                <div class="tpl-meta">Project-based learning</div>
+                <span class="tpl-badge" style="background:var(--purple-l);color:var(--purple)">Sáng tạo</span>
+              </div>
+              <div class="tpl-item" onclick="loadTemplate('stem',this)">
+                <div class="tpl-title">STEM / Tích hợp</div>
+                <div class="tpl-meta">Liên môn, thực hành</div>
+                <span class="tpl-badge" style="background:var(--amber-l);color:var(--amber)">Mới</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SAVED LESSONS -->
+          <div class="card">
+            <div class="ch"><h2>📁 Đã lưu</h2><button class="btn btn-sm btn-jade" onclick="showToast('📂 Mở thư viện giáo án...')">Tất cả</button></div>
+            <div class="saved-list" id="savedList">
+              <div class="saved-item" onclick="loadSaved('Quyền và nghĩa vụ công dân')">
+                <div class="saved-icon">📋</div>
+                <div class="saved-text"><div class="st">Quyền và nghĩa vụ công dân</div><div class="sm">GDCD 8 · Tiết 3 · 10/04</div></div>
+              </div>
+              <div class="saved-item" onclick="loadSaved('Pháp luật và kỷ luật')">
+                <div class="saved-icon">📋</div>
+                <div class="saved-text"><div class="st">Pháp luật và kỷ luật</div><div class="sm">GDCD 8 · Tiết 5 · 05/04</div></div>
+              </div>
+              <div class="saved-item" onclick="loadSaved('Sống có đạo đức')">
+                <div class="saved-icon">📋</div>
+                <div class="saved-text"><div class="st">Sống có đạo đức</div><div class="sm">GDCD 7 · Tiết 2 · 01/04</div></div>
+              </div>
+              <div class="saved-item" onclick="loadSaved('Tự chủ trong cuộc sống')">
+                <div class="saved-icon">📋</div>
+                <div class="saved-text"><div class="st">Tự chủ trong cuộc sống</div><div class="sm">GDCD 6 · Tiết 8 · 28/03</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: EDITOR -->
+        <div class="editor-panel">
+          <!-- PROGRESS BAR -->
+          <div style="background:var(--surface);border-radius:10px;border:1px solid var(--border);padding:12px 16px;margin-bottom:4px;box-shadow:var(--sh)">
+            <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;margin-bottom:6px">
+              <span>📊 Mức độ hoàn thiện giáo án</span>
+              <span id="completePct" style="color:var(--jade)">0%</span>
+            </div>
+            <div style="background:var(--border);border-radius:100px;height:8px;overflow:hidden">
+              <div id="completeBar" style="height:100%;background:linear-gradient(90deg,var(--jade),var(--jd));border-radius:100px;width:0%;transition:width .5s ease"></div>
+            </div>
+            <div style="display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--ink3);flex-wrap:wrap">
+              <span id="wc_display">📝 0 từ</span>
+              <span id="act_display">⚡ 0 hoạt động</span>
+              <span id="time_display">⏱ 0 phút</span>
+            </div>
+          </div>
+
+          <!-- AI PANEL -->
+          <div class="ai-panel">
+            <h3>🤖 Trợ lý AI gợi ý</h3>
+            <p>Nhập tên bài học và chọn gợi ý bên dưới để AI tự động điền nội dung phù hợp.</p>
+            <div class="ai-chips">
+              <span class="ai-chip" onclick="aiSuggest('mucTieu')">🎯 Gợi ý mục tiêu</span>
+              <span class="ai-chip" onclick="aiSuggest('hoatDong')">⚡ Gợi ý hoạt động</span>
+              <span class="ai-chip" onclick="aiSuggest('cauHoi')">💬 Gợi ý câu hỏi</span>
+              <span class="ai-chip" onclick="aiSuggest('khaiQuat')">📝 Tóm tắt bài học</span>
+            </div>
+            <div class="ai-loading" id="aiLoading"><div class="spinner"></div><span id="aiLoadingText">AI đang soạn...</span></div>
+            <div class="ai-result" id="aiResult"></div>
+          </div>
+
+          <!-- SECTION 1: THÔNG TIN CHUNG -->
+          <div class="section-card">
+            <div class="sc-head" onclick="toggleSection('s1')">
+              <div class="sc-num" style="background:var(--jade-l);color:var(--jade-d)">1</div>
+              <div class="sc-title">Thông tin chung</div>
+              <span class="sc-badge" style="background:var(--jade-l);color:var(--jade-d)">Bắt buộc</span>
+              <span class="sc-arrow open" id="arr-s1">▼</span>
+            </div>
+            <div class="sc-body" id="s1">
+              <div class="fr2">
+                <div class="fg"><label>Tên bài học *</label><input type="text" class="fi" id="tenBai" placeholder="VD: Quyền và nghĩa vụ của công dân" oninput="updateTitle()"></div>
+                <div class="fg"><label>Môn học</label>
+                  <select class="select-fi" id="monHoc">
+                    <option>GDCD</option><option>Toán</option><option>Văn</option><option>Anh</option><option>Lý</option><option>Hoá</option><option>Sinh</option><option>Sử</option><option>Địa</option>
+                  </select>
+                </div>
+              </div>
+              <div class="fr3">
+                <div class="fg"><label>Khối / Lớp</label>
+                  <select class="select-fi" id="khoi">
+                    <option>8A1</option><option>8A2</option><option>7B1</option><option>7B2</option><option>6C1</option>
+                  </select>
+                </div>
+                <div class="fg"><label>Tiết thứ</label><input type="number" class="fi" id="tietThu" value="1" min="1"></div>
+                <div class="fg"><label>Thời lượng</label>
+                  <select class="select-fi" id="thoiLuong">
+                    <option value="45">45 phút</option><option value="90">90 phút</option><option value="135">135 phút</option>
+                  </select>
+                </div>
+              </div>
+              <div class="fr2">
+                <div class="fg"><label>Ngày dạy</label><input type="date" class="fi" id="ngayDay"></div>
+                <div class="fg"><label>Học kỳ</label>
+                  <select class="select-fi" id="hocKy"><option>Học kỳ 1</option><option>Học kỳ 2</option></select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 2: MỤC TIÊU -->
+          <div class="section-card">
+            <div class="sc-head" onclick="toggleSection('s2')">
+              <div class="sc-num" style="background:var(--blue-l);color:var(--blue)">2</div>
+              <div class="sc-title">Mục tiêu bài học</div>
+              <span class="sc-badge" style="background:var(--blue-l);color:var(--blue)">Theo Bloom</span>
+              <span class="sc-arrow open" id="arr-s2">▼</span>
+            </div>
+            <div class="sc-body" id="s2">
+              <div class="fg"><label>🧠 Kiến thức — Học sinh biết / hiểu</label>
+                <textarea class="fi" id="mt_kienThuc" oninput="updateWordCount()" placeholder="Sau bài học, học sinh sẽ:&#10;- Nêu được khái niệm...&#10;- Hiểu được ý nghĩa...&#10;- Trình bày được các đặc điểm..."></textarea>
+              </div>
+              <div class="fg"><label>🛠 Kĩ năng — Học sinh làm được gì</label>
+                <textarea class="fi" id="mt_kiNang" oninput="updateWordCount()" placeholder="- Vận dụng được kiến thức vào thực tiễn...&#10;- Phân tích tình huống...&#10;- Đề xuất giải pháp..."></textarea>
+              </div>
+              <div class="fg"><label>💡 Thái độ — Phẩm chất hướng tới</label>
+                <textarea class="fi" id="mt_thaiDo" placeholder="- Có ý thức chấp hành...&#10;- Tôn trọng...&#10;- Yêu thích môn học..."></textarea>
+              </div>
+              <div class="fg"><label>🌟 Năng lực cốt lõi</label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px" id="nlChips">
+                  <label class="nl-chip"><input type="checkbox" checked> <span>Tự chủ</span></label>
+                  <label class="nl-chip"><input type="checkbox" checked> <span>Giao tiếp</span></label>
+                  <label class="nl-chip"><input type="checkbox"> <span>Hợp tác</span></label>
+                  <label class="nl-chip"><input type="checkbox"> <span>Giải quyết vấn đề</span></label>
+                  <label class="nl-chip"><input type="checkbox"> <span>Sáng tạo</span></label>
+                  <label class="nl-chip"><input type="checkbox"> <span>Tin học</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 3: CHUẨN BỊ -->
+          <div class="section-card">
+            <div class="sc-head" onclick="toggleSection('s3')">
+              <div class="sc-num" style="background:var(--amber-l);color:var(--amber)">3</div>
+              <div class="sc-title">Chuẩn bị</div>
+              <span class="sc-badge" style="background:var(--amber-l);color:var(--amber)">Giáo viên & HS</span>
+              <span class="sc-arrow" id="arr-s3">▼</span>
+            </div>
+            <div class="sc-body collapsed" id="s3">
+              <div class="fr2">
+                <div class="fg"><label>Giáo viên chuẩn bị</label>
+                  <textarea class="fi" id="gv_chuanBi" placeholder="- SGK, SGV GDCD 8&#10;- Máy chiếu, slide bài giảng&#10;- Phiếu học tập số 1, 2&#10;- Video tình huống..."></textarea>
+                </div>
+                <div class="fg"><label>Học sinh chuẩn bị</label>
+                  <textarea class="fi" id="hs_chuanBi" placeholder="- Đọc trước bài ở nhà&#10;- Làm bài tập trong SGK&#10;- Sưu tầm tranh ảnh liên quan..."></textarea>
+                </div>
+              </div>
+              <div class="fg"><label>Phương pháp / Kĩ thuật dạy học</label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+                  <label class="nl-chip"><input type="checkbox" checked><span>Thảo luận nhóm</span></label>
+                  <label class="nl-chip"><input type="checkbox" checked><span>Vấn đáp</span></label>
+                  <label class="nl-chip"><input type="checkbox"><span>Đóng vai</span></label>
+                  <label class="nl-chip"><input type="checkbox"><span>Dự án</span></label>
+                  <label class="nl-chip"><input type="checkbox"><span>Trò chơi</span></label>
+                  <label class="nl-chip"><input type="checkbox"><span>Sơ đồ tư duy</span></label>
+                  <label class="nl-chip"><input type="checkbox"><span>KWL</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SECTION 4: CÁC HOẠT ĐỘNG -->
+          <div class="section-card">
+            <div class="sc-head" onclick="toggleSection('s4')">
+              <div class="sc-num" style="background:var(--purple-l);color:var(--purple)">4</div>
+              <div class="sc-title">Tiến trình dạy học</div>
+              <span class="sc-badge" style="background:var(--purple-l);color:var(--purple)">Các hoạt động</span>
+              <span class="sc-arrow open" id="arr-s4">▼</span>
+            </div>
+            <div class="sc-body" id="s4">
+              <div class="activity-list" id="activityList"></div>
+              <button class="add-act-btn" onclick="addActivity()">＋ Thêm hoạt động</button>
+      <div style="margin-top:10px;text-align:right;font-size:12px;color:var(--ink3)">
+        ⏱ Tổng thời gian: <strong id="totalTimeDisplay">phút</strong>
+      </div>
+            </div>
+          </div>
+
+          <!-- SECTION 5: ĐÁNH GIÁ & DẶN DÒ -->
+          <div class="section-card">
+            <div class="sc-head" onclick="toggleSection('s5')">
+              <div class="sc-num" style="background:var(--red-l);color:var(--red)">5</div>
+              <div class="sc-title">Đánh giá & Dặn dò</div>
+              <span class="sc-badge" style="background:var(--red-l);color:var(--red)">Củng cố</span>
+              <span class="sc-arrow" id="arr-s5">▼</span>
+            </div>
+            <div class="sc-body collapsed" id="s5">
+              <div class="fg"><label>Câu hỏi củng cố / Đánh giá</label>
+                <textarea class="fi" id="cuHoi_cuNG" placeholder="1. Câu hỏi trắc nghiệm (2–3 câu)&#10;2. Câu hỏi mở: Theo em, ...?&#10;3. Bài tập tình huống nhanh..."></textarea>
+              </div>
+              <div class="fr2">
+                <div class="fg"><label>Dặn dò về nhà</label>
+                  <textarea class="fi" id="danDo" placeholder="- Học thuộc phần ghi nhớ&#10;- Làm bài tập trang... SGK&#10;- Chuẩn bị bài tiếp theo: ..."></textarea>
+                </div>
+                <div class="fg"><label>Rút kinh nghiệm (sau tiết dạy)</label>
+                  <textarea class="fi" id="rutKinhNghiem" placeholder="Ghi sau khi dạy xong:&#10;- Ưu điểm:&#10;- Hạn chế:&#10;- Điều chỉnh lần sau:"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- PREVIEW MODAL -->
+<div class="overlay" id="previewOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="preview-modal">
+    <div class="pm-head">
+      <h3>👁 Xem trước Giáo án</h3>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-sm btn-jade" onclick="exportLessonPlan()">⬇ Xuất Word</button>
+        <button class="btn btn-sm btn-ol" onclick="showToast('🖨 Đang in...')">🖨 In</button>
+        <button class="xbtn" onclick="document.getElementById('previewOverlay').classList.remove('open')">✕</button>
+      </div>
+    </div>
+    <div class="pm-body" id="previewBody"></div>
+    <div class="pm-footer">
+      <button class="btn btn-jade" onclick="saveLessonAndClose()">💾 Lưu giáo án</button>
+      <button class="btn btn-ol" onclick="document.getElementById('previewOverlay').classList.remove('open')">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<style>
+.nl-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:100px;border:1.5px solid var(--border);background:var(--surface2);cursor:pointer;font-size:12px;font-weight:500;transition:all .15s}
+.nl-chip:has(input:checked){background:var(--jade-l);border-color:var(--jade);color:var(--jade-d)}
+.nl-chip input{display:none}
+</style>
+
+<script>
+// ── ACTIVITIES ───────────────────────────────────
+const DEFAULT_ACTIVITIES_5STEP=[
+  {name:'Hoạt động 1: Khởi động',time:'5',content:'Giáo viên tổ chức trò chơi / chiếu video / kể câu chuyện ngắn liên quan đến bài học để tạo hứng thú và dẫn vào bài mới.'},
+  {name:'Hoạt động 2: Hình thành kiến thức mới',time:'15',content:'GV tổ chức cho HS đọc SGK, quan sát tình huống, thảo luận nhóm để khám phá khái niệm và nội dung chính của bài.'},
+  {name:'Hoạt động 3: Luyện tập',time:'10',content:'HS làm bài tập trong phiếu học tập / SGK. GV quan sát, hỗ trợ và nhận xét.'},
+  {name:'Hoạt động 4: Vận dụng',time:'10',content:'HS liên hệ thực tiễn, xử lý tình huống, đề xuất hành động cụ thể trong cuộc sống.'},
+  {name:'Hoạt động 5: Củng cố & Dặn dò',time:'5',content:'GV tóm tắt nội dung chính. HS ghi nhớ. GV giao bài về nhà và giới thiệu bài học tiếp theo.'},
+];
+const DEFAULT_ACTIVITIES_4STEP=[
+  {name:'Khởi động',time:'5',content:'Tạo tình huống kích thích tư duy, kết nối với kiến thức cũ.'},
+  {name:'Hình thành kiến thức',time:'20',content:'Nghiên cứu tài liệu, thảo luận nhóm, trình bày và phản hồi.'},
+  {name:'Luyện tập',time:'12',content:'Bài tập củng cố kiến thức, thực hành kĩ năng.'},
+  {name:'Vận dụng',time:'8',content:'Liên hệ thực tiễn, xử lý tình huống, đề xuất hành động.'},
+];
+const DEFAULT_ACTIVITIES_PROJECT=[
+  {name:'Giới thiệu dự án',time:'10',content:'GV trình bày chủ đề, mục tiêu và sản phẩm dự án kỳ vọng.'},
+  {name:'Phân nhóm & Lập kế hoạch',time:'10',content:'HS chia nhóm, phân công vai trò, lên kế hoạch thực hiện.'},
+  {name:'Nghiên cứu & Thu thập thông tin',time:'15',content:'Các nhóm tìm kiếm, phân tích thông tin, chuẩn bị báo cáo.'},
+  {name:'Báo cáo & Phản biện',time:'10',content:'Đại diện nhóm trình bày, các nhóm khác đặt câu hỏi.'},
+];
+const DEFAULT_ACTIVITIES_STEM=[
+  {name:'Xác định vấn đề',time:'8',content:'Nêu vấn đề thực tiễn cần giải quyết, liên kết với kiến thức các môn.'},
+  {name:'Nghiên cứu kiến thức nền',time:'12',content:'HS tìm hiểu kiến thức khoa học liên quan qua tài liệu, video.'},
+  {name:'Đề xuất & Thiết kế giải pháp',time:'10',content:'Nhóm thảo luận, vẽ sơ đồ/mô hình giải pháp và thuyết trình.'},
+  {name:'Thực hành & Đánh giá',time:'15',content:'Thực hiện giải pháp, đánh giá kết quả, điều chỉnh nếu cần.'},
+];
+
+let activities=[];
+let actIdCounter=1;
+
+function loadActivitiesTemplate(arr){
+  activities=arr.map(a=>({id:actIdCounter++,...a}));
+  renderActivities();
+}
+
+function getTotalTime(){
+  return activities.reduce((s,a)=>s+(parseInt(a.time)||0),0);
+}
+
+function renderActivities(){
+  const list=document.getElementById('activityList');
+  list.innerHTML=activities.map((a,i)=>`
+    <div class="activity-item" id="act-${a.id}">
+      <div class="act-head">
+        <div class="act-num">${i+1}</div>
+        <input class="act-name-inp" type="text" value="${a.name}" placeholder="Tên hoạt động..." oninput="updateActivity(${a.id},'name',this.value)">
+        <input class="act-time" type="number" value="${a.time}" min="1" max="90" oninput="updateActivity(${a.id},'time',this.value);updateTotalTime()" title="Thời gian (phút)">
+        <span style="font-size:11px;color:var(--ink3);flex-shrink:0">phút</span>
+        <button class="act-del" onclick="deleteActivity(${a.id})" title="Xoá hoạt động">✕</button>
+      </div>
+      <div class="act-body">
+        <textarea oninput="updateActivity(${a.id},'content',this.value);updateWordCount()" placeholder="Mô tả nội dung, cách tổ chức hoạt động này..." rows="3">${a.content}</textarea>
+      </div>
+    </div>
+  `).join('');
+  updateTotalTime();
+}
+
+function updateTotalTime(){
+  const total = getTotalTime();
+  const el = document.getElementById('totalTimeDisplay');
+  if(el) el.textContent = total + ' phút';
+}
+
+function updateActivity(id,key,val){
+  const a=activities.find(x=>x.id===id);
+  if(a) a[key]=val;
+}
+
+function addActivity(){
+  activities.push({id:actIdCounter++,name:`Hoạt động ${activities.length+1}`,time:'10',content:''});
+  renderActivities();
+  setTimeout(()=>{
+    const items=document.querySelectorAll('.activity-item');
+    if(items.length) items[items.length-1].scrollIntoView({behavior:'smooth',block:'nearest'});
+  },50);
+}
+
+function deleteActivity(id){
+  activities=activities.filter(a=>a.id!==id);
+  renderActivities();
+  showToast('🗑 Đã xoá hoạt động');
+}
+
+// ── TEMPLATE LOADER ───────────────────────────────
+function loadTemplate(type,el){
+  document.querySelectorAll('.tpl-item').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const maps={
+    '5step':DEFAULT_ACTIVITIES_5STEP,
+    '4step':DEFAULT_ACTIVITIES_4STEP,
+    'project':DEFAULT_ACTIVITIES_PROJECT,
+    'stem':DEFAULT_ACTIVITIES_STEM
+  };
+  loadActivitiesTemplate(maps[type]||DEFAULT_ACTIVITIES_5STEP);
+  showToast(`✅ Đã tải mẫu: ${el.querySelector('.tpl-title').textContent}`);
+}
+
+function loadSaved(title){
+  document.getElementById('tenBai').value=title;
+  updateTitle();
+  showToast(`📂 Đã mở: "${title}"`);
+}
+
+
+// ── WORD COUNT & COMPLETENESS ─────────────────────────
+function updateWordCount(){
+  const fields=['mt_kienThuc','mt_kiNang','mt_thaiDo','gv_chuanBi','cuHoi_cuNG','danDo'];
+  let totalWords=0;
+  fields.forEach(function(id){
+    const el=document.getElementById(id);
+    if(el&&el.value) totalWords+=el.value.trim().split(/\s+/).filter(function(w){return w.length>0;}).length;
+  });
+  const tenBai=(document.getElementById('tenBai')?document.getElementById('tenBai').value:'').trim();
+  const hasMT=((document.getElementById('mt_kienThuc')?document.getElementById('mt_kienThuc').value:'')).trim().length>10;
+  const hasCB=((document.getElementById('gv_chuanBi')?document.getElementById('gv_chuanBi').value:'')).trim().length>5;
+  const hasActs=activities.length>0;
+  const hasCH=((document.getElementById('cuHoi_cuNG')?document.getElementById('cuHoi_cuNG').value:'')).trim().length>5;
+  const score=(tenBai?20:0)+(hasMT?20:0)+(hasCB?15:0)+(hasActs?30:0)+(hasCH?15:0);
+  const pctEl=document.getElementById('completePct');
+  const barEl=document.getElementById('completeBar');
+  if(pctEl) pctEl.textContent=score+'%';
+  if(barEl){
+    barEl.style.width=score+'%';
+    barEl.style.background=score>=80?'linear-gradient(90deg,#16a34a,#15803d)':score>=50?'linear-gradient(90deg,#d97706,#b45309)':'linear-gradient(90deg,#dc2626,#b91c1c)';
+  }
+  const wcEl=document.getElementById('wc_display');
+  const actEl=document.getElementById('act_display');
+  const tmEl=document.getElementById('time_display');
+  if(wcEl) wcEl.textContent='📝 '+totalWords+' từ';
+  if(actEl) actEl.textContent='⚡ '+activities.length+' hoạt động';
+  if(tmEl) tmEl.textContent='⏱ '+getTotalTime()+' phút';
+}
+
+
+// ── EXPORT UTILITIES ─────────────────────────────────
+function exportTextAsFile(content, filename, mimeType='text/plain'){
+  const blob = new Blob([content], {type: mimeType + ';charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+function exportCSV(rows, filename){
+  const csv = rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(',')).join('\n');
+  exportTextAsFile('\uFEFF'+csv, filename, 'text/csv');
+}
+function exportHTML(htmlStr, filename){
+  exportTextAsFile(htmlStr, filename, 'text/html');
+}
+function printAsPDF(selector, title){
+  const el = document.querySelector(selector);
+  const w = window.open('','_blank','width=900,height=700');
+  w.document.write('<html><head><title>'+title+'</title><style>body{font-family:sans-serif;padding:20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:6px 10px;font-size:12px}th{background:#0d9488;color:#fff}@media print{button{display:none}}</style></head><body>');
+  w.document.write('<h2 style="color:#0d9488">'+title+'</h2>');
+  if(el) w.document.write(el.outerHTML); else w.document.write(htmlStr||'');
+  w.document.write('<br><button onclick="window.print()">🖨 In / Lưu PDF</button></body></html>');
+  w.document.close();
+}
+
+function exportLessonPlan(){
+  const ten  = document.getElementById('tenBai')?.value||'Giáo án';
+  const mon  = document.getElementById('monHoc')?.value||'GDCD';
+  const khoi = document.getElementById('khoi')?.value||'';
+  const mt1  = document.getElementById('mt_kienThuc')?.value||'';
+  const mt2  = document.getElementById('mt_kiNang')?.value||'';
+  const mt3  = document.getElementById('mt_thaiDo')?.value||'';
+  let body = `GIÁO ÁN\n${'='.repeat(60)}\nBài: ${ten}\nMôn: ${mon}  ${khoi}\nNgày: ${new Date().toLocaleDateString('vi-VN')}\n\nMỤC TIÊU\n${'-'.repeat(40)}\nKiến thức: ${mt1}\nKĩ năng: ${mt2}\nThái độ: ${mt3}\n\nHOẠT ĐỘNG DẠY HỌC\n${'-'.repeat(40)}\n`;
+  activities.forEach((a,i)=>{ body += `\n${i+1}. ${a.name} (${a.time} phút)\n${a.content}\n`; });
+  exportTextAsFile(body, `Giao_an_${ten.replace(/\s+/g,'_')}.txt`);
+  showToast('📥 Đã xuất giáo án ra file TXT!');
+}
+
+// ── SECTIONS ─────────────────────────────────────
+function toggleSection(id){
+  const body=document.getElementById(id);
+  const arr=document.getElementById('arr-'+id);
+  body.classList.toggle('collapsed');
+  arr.classList.toggle('open');
+}
+
+// ── TITLE ────────────────────────────────────────
+function updateTitle(){
+  const t=document.getElementById('tenBai').value;
+  document.querySelector('.tl p').textContent=t?`Đang soạn: "${t}"`:' Theo chuẩn Bộ GD&ĐT · Có hỗ trợ AI gợi ý';
+}
+
+// ── AI SUGGEST ────────────────────────────────────
+async function aiSuggest(type){
+  const bai=document.getElementById('tenBai').value.trim()||'bài học GDCD';
+  const mon=document.getElementById('monHoc').value;
+  const khoi=document.getElementById('khoi').value;
+  const loading=document.getElementById('aiLoading');
+  const result=document.getElementById('aiResult');
+  const loadText=document.getElementById('aiLoadingText');
+
+  const prompts={
+    mucTieu:`Soạn mục tiêu bài học cho bài "${bai}" môn ${mon} lớp ${khoi} (THCS). Theo chuẩn Bloom, gồm 3 phần: Kiến thức, Kĩ năng, Thái độ. Mỗi phần 2-3 ý ngắn gọn. Trả lời tiếng Việt, trình bày rõ ràng.`,
+    hoatDong:`Gợi ý 1 hoạt động dạy học sáng tạo cho bài "${bai}" môn ${mon} lớp ${khoi}. Bao gồm: tên hoạt động, thời gian, cách tổ chức, vai trò GV và HS. Ngắn gọn, thực tế, dễ thực hiện.`,
+    cauHoi:`Đề xuất 4 câu hỏi kiểm tra bài "${bai}" môn ${mon} lớp ${khoi}: 2 câu trắc nghiệm và 2 câu tự luận ngắn. Phù hợp học sinh THCS.`,
+    khaiQuat:`Tóm tắt nội dung chính của bài "${bai}" môn ${mon} lớp ${khoi} THCS trong 3-5 gạch đầu dòng. Súc tích, rõ ràng, dễ ghi nhớ.`
+  };
+
+  const labels={mucTieu:'mục tiêu',hoatDong:'hoạt động',cauHoi:'câu hỏi',khaiQuat:'tóm tắt'};
+  loadText.textContent=`AI đang soạn gợi ý ${labels[type]}...`;
+  loading.classList.add('show');
+  result.classList.remove('show');
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompts[type]}]
+      })
+    });
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'Không nhận được phản hồi.';
+    loading.classList.remove('show');
+    result.innerHTML=text.replace(/\n/g,'<br>');
+    result.classList.add('show');
+
+    // Auto-fill if applicable
+    if(type==='mucTieu'){
+      const lines=text.split('\n').filter(l=>l.trim());
+      if(lines.length>2){
+        const kt=lines.filter(l=>/kiến thức|biết|hiểu/i.test(l)).join('\n');
+        const kn=lines.filter(l=>/kĩ năng|vận dụng|phân tích/i.test(l)).join('\n');
+        const td=lines.filter(l=>/thái độ|ý thức|tôn trọng/i.test(l)).join('\n');
+        if(kt) document.getElementById('mt_kienThuc').value=kt;
+        if(kn) document.getElementById('mt_kiNang').value=kn;
+        if(td) document.getElementById('mt_thaiDo').value=td;
+        showToast('✅ AI đã điền mục tiêu vào form!');
+      }
+    }
+  }catch(e){
+    loading.classList.remove('show');
+    result.innerHTML='⚠️ Không kết nối được AI. Kiểm tra lại mạng.';
+    result.classList.add('show');
+  }
+}
+
+// ── DUPLICATE LESSON ─────────────────────────────────
+function duplicateLesson(){
+  const tenBai=document.getElementById('tenBai').value;
+  if(!tenBai){showToast('⚠️ Chưa có giáo án để sao chép!');return;}
+  document.getElementById('tenBai').value='[Bản sao] '+tenBai;
+  showToast('📋 Đã tạo bản sao! Chỉnh sửa và lưu lại.');
+  updateTitle();
+}
+
+// ── PREVIEW ───────────────────────────────────────
+function openPreview(){
+  const tenBai=document.getElementById('tenBai').value||'(Chưa đặt tên bài)';
+  const mon=document.getElementById('monHoc').value;
+  const khoi=document.getElementById('khoi').value;
+  const tiet=document.getElementById('tietThu').value;
+  const tl=document.getElementById('thoiLuong').value;
+  const ngay=document.getElementById('ngayDay').value;
+  const hk=document.getElementById('hocKy').value;
+  const kt=document.getElementById('mt_kienThuc').value;
+  const kn=document.getElementById('mt_kiNang').value;
+  const td=document.getElementById('mt_thaiDo').value;
+  const gvCB=document.getElementById('gv_chuanBi').value;
+  const hsCB=document.getElementById('hs_chuanBi').value;
+  const cuHoi=document.getElementById('cuHoi_cuNG').value;
+  const danDo=document.getElementById('danDo').value;
+
+  document.getElementById('previewBody').innerHTML=`
+    <div class="pm-title">
+      <h2>${tenBai.toUpperCase()}</h2>
+      <p>Môn ${mon} · Lớp ${khoi} · Tiết ${tiet} · ${tl} phút · ${hk}${ngay?' · '+ngay:''}</p>
+    </div>
+    ${kt||kn||td?`<div class="pm-section"><h4>I. Mục tiêu bài học</h4>
+      ${kt?`<p><strong>1. Kiến thức:</strong><br>${kt.replace(/\n/g,'<br>')}</p>`:''}
+      ${kn?`<p><strong>2. Kĩ năng:</strong><br>${kn.replace(/\n/g,'<br>')}</p>`:''}
+      ${td?`<p><strong>3. Thái độ:</strong><br>${td.replace(/\n/g,'<br>')}</p>`:''}
+    </div>`:''}
+    ${gvCB||hsCB?`<div class="pm-section"><h4>II. Chuẩn bị</h4>
+      ${gvCB?`<p><strong>Giáo viên:</strong> ${gvCB.replace(/\n/g,', ')}</p>`:''}
+      ${hsCB?`<p><strong>Học sinh:</strong> ${hsCB.replace(/\n/g,', ')}</p>`:''}
+    </div>`:''}
+    ${activities.length>0?`<div class="pm-section"><h4>III. Tiến trình dạy học</h4>
+      ${activities.map((a,i)=>`<div class="pm-act">
+        <div class="pa-title">${a.name} <span style="color:var(--ink3);font-weight:400;font-size:12px">(${a.time} phút)</span></div>
+        ${a.content?`<div class="pa-body">${a.content.replace(/\n/g,'<br>')}</div>`:''}
+      </div>`).join('')}
+    </div>`:''}
+    ${cuHoi||danDo?`<div class="pm-section"><h4>IV. Đánh giá & Dặn dò</h4>
+      ${cuHoi?`<p><strong>Củng cố:</strong><br>${cuHoi.replace(/\n/g,'<br>')}</p>`:''}
+      ${danDo?`<p><strong>Dặn dò:</strong><br>${danDo.replace(/\n/g,'<br>')}</p>`:''}
+    </div>`:''}
+    <div style="margin-top:28px;text-align:right;font-size:12px;color:var(--ink3)">
+      <em>THCS Hùng Vương · GV: Nguyễn Thanh Liêm · EduPro All-in-One</em>
+    </div>
+  `;
+  document.getElementById('previewOverlay').classList.add('open');
+}
+
+// ── SAVE+CLOSE ──────────────────────────────────
+function saveLessonAndClose(){
+  saveLesson();
+  document.getElementById('previewOverlay').classList.remove('open');
+}
+
+// ── SAVE ─────────────────────────────────────────
+function saveLesson(){
+  const tenBai = (document.getElementById('tenBai').value || 'Giáo án chưa đặt tên').trim();
+  const mon    = document.getElementById('monHoc').value;
+  const khoi   = document.getElementById('khoi') ? document.getElementById('khoi').value : '';
+  // Persist to EduPro store (triggers DriveSync)
+  const lessons = EduPro.get('savedLessons') || [];
+  if(tenBai && tenBai !== 'Giáo án chưa đặt tên'){
+    lessons.unshift({name: tenBai, mon, khoi, date: new Date().toISOString().split('T')[0]});
+    EduPro.set('savedLessons', lessons.slice(0, 20));
+  }
+  // Update sidebar list UI
+  const today = new Date().toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit'});
+  const list  = document.getElementById('savedList');
+  if(list){
+    const newItem = document.createElement('div');
+    newItem.className = 'saved-item';
+    newItem.innerHTML = `<div class="saved-icon">📋</div><div class="saved-text"><div class="st">${tenBai}</div><div class="sm">${mon} ${khoi} · ${today}</div></div>`;
+    newItem.onclick = ()=>loadSaved(tenBai);
+    list.insertBefore(newItem, list.firstChild);
+  }
+  showToast(`💾 Đã lưu: "${tenBai}"`);
+}
+
+// ── TOAST ─────────────────────────────────────────
+let tt;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+// ── INIT ─────────────────────────────────────────
+// Set today's date
+document.getElementById('ngayDay').value=new Date().toISOString().split('T')[0];
+// Load default template
+loadActivitiesTemplate(DEFAULT_ACTIVITIES_5STEP);
+updateWordCount();
+
+EduProSync.init('module3_giaoan');
+
+// ── ĐỒNG BỘ NĂM HỌC & CƠ SỞ TỪ TRANG CHỦ ─────────────────────────
+(function syncSharedSettings(){
+  const namHoc = localStorage.getItem('edupro_namHoc');
+  if(namHoc){
+    const display = namHoc.replace('-','–');
+    // Cập nhật mọi text hiện "Năm học" trong topbar
+    document.querySelectorAll('.topbar-left p, [id*="topSub"]').forEach(el=>{
+      el.textContent = el.textContent.replace(/Năm học [0-9–]+/, 'Năm học ' + display);
+    });
+    // Cập nhật title nếu có
+    document.querySelectorAll('.sb-bot .tr, .sb-bot .tr-r').forEach(el=>{
+      el.textContent = el.textContent.replace(/[0-9]{4}–[0-9]{4}/, display);
+    });
+  }
+})();
+  EduProSync.loadAll().then(driveData => {
+    if (driveData && driveData.savedLessons) {
+      try {
+        const lessons = driveData.savedLessons;
+        const list = document.getElementById('savedList');
+        if (list && lessons.length) {
+          list.innerHTML = lessons.map(l => `<div class="saved-item"><div class="saved-icon">📋</div><div class="saved-text"><div class="st">\${l.name}</div><div class="sm">\${l.mon||''} \${l.khoi||''} · \${l.date||''}</div></div></div>`).join('');
+        }
+      } catch(e) {}
+    }
+  });
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- EDUPRO FOOTER -->
+<footer style="
+  background:linear-gradient(135deg,#0f172a 0%,#1a2744 60%,#0d1f35 100%);
+  padding:20px 32px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:14px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  position:relative;overflow:hidden;
+">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 15% 50%,rgba(13,148,136,.1),transparent 45%),radial-gradient(ellipse at 85% 50%,rgba(37,99,235,.07),transparent 45%);pointer-events:none"></div>
+
+  <!-- Logo Left -->
+  <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1">
+    <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#0d9488,#0f766e);display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 3px 10px rgba(13,148,136,.35);flex-shrink:0">🎓</div>
+    <div>
+      <div style="font-size:14px;font-weight:900;color:#fff;letter-spacing:-.01em;line-height:1.1">EduPro <span style="color:#2dd4bf">All‑in‑One</span></div>
+      <div style="font-size:10px;color:rgba(255,255,255,.38);margin-top:2px;letter-spacing:.02em">Trợ lý Giáo viên THCS · 9 Module</div>
+    </div>
+  </div>
+
+  <!-- Center: Copyright -->
+  <div style="position:relative;z-index:1;text-align:center">
+    <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:100px;padding:8px 18px">
+      <span style="font-size:13px;color:rgba(255,255,255,.4)">©</span>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#e2e8f0;letter-spacing:.01em">Copyright belongs to <span style="color:#2dd4bf">Liemnguyen</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:1px">
+          <span style="color:#60a5fa;font-weight:600">Zalo</span>&nbsp;·&nbsp;<span style="color:#e2e8f0;font-weight:600;letter-spacing:.04em">0815 899 878</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Zalo Button + Version -->
+  <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1">
+    <a href="https://zalo.me/0815899878" target="_blank" rel="noopener" style="
+      display:inline-flex;align-items:center;gap:7px;
+      padding:8px 16px;border-radius:100px;
+      background:linear-gradient(135deg,#0068ff,#0050d0);
+      color:#fff;text-decoration:none;font-size:12px;font-weight:700;
+      box-shadow:0 3px 12px rgba(0,104,255,.3);
+      transition:transform .18s,box-shadow .18s;
+    " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 18px rgba(0,104,255,.45)'"
+       onmouseout="this.style.transform='';this.style.boxShadow='0 3px 12px rgba(0,104,255,.3)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.02 2 11c0 2.88 1.34 5.46 3.44 7.18L4 22l4.1-1.29C9.31 21.21 10.62 21.5 12 21.5 17.52 21.5 22 17.48 22 13c0-4.97-4.48-9-10-9z"/>
+      </svg>
+      Liên hệ Zalo
+    </a>
+    <div style="text-align:right;line-height:1.5">
+      <div style="font-size:10px;color:rgba(255,255,255,.22);font-weight:600">v1.0 · 2026</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.18)">THCS Hùng Vương</div>
+    </div>
+  </div>
+</footer>
+</body></html>

@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduPro All-in-One — Trợ lý Giáo viên THCS</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f4f8;--surface:#fff;--s2:#f7f9fc;--ink:#1a202c;--ink2:#4a5568;--ink3:#718096;
+  --border:#e2e8f0;--jade:#0d9488;--jl:#ccfbf1;--jd:#0f766e;
+  --blue:#2563eb;--amber:#d97706;--red:#dc2626;--purple:#7c3aed;--green:#16a34a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+
+/* ══ TOPBAR ══ */
+.topbar{background:var(--ink);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:var(--jade);display:flex;align-items:center;justify-content:center;font-size:18px}
+.logo-text{font-size:16px;font-weight:900;color:#fff;letter-spacing:-.02em}
+.logo-sub{font-size:11px;color:rgba(255,255,255,.45);margin-left:2px}
+.top-actions{display:flex;align-items:center;gap:10px}
+.teacher-pill{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border-radius:100px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+.tp-av{width:26px;height:26px;border-radius:50%;background:var(--jade);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff}
+.tp-name{font-size:12px;font-weight:600;color:#fff}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.btn-jade{background:var(--jade);color:#fff}.btn-jade:hover{background:var(--jd)}
+.btn-ol{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2)}.btn-ol:hover{background:rgba(255,255,255,.18)}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:6px}
+
+/* ══ HERO ══ */
+.hero{background:linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f2547 100%);padding:56px 32px 48px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 40%,rgba(13,148,136,.2),transparent 55%),radial-gradient(ellipse at 10% 80%,rgba(124,58,237,.15),transparent 50%);pointer-events:none}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 380px;gap:40px;align-items:center}
+.hero-tag{display:inline-block;background:rgba(13,148,136,.15);color:var(--jade);border:1px solid rgba(13,148,136,.3);border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.08em;padding:4px 14px;margin-bottom:16px;text-transform:uppercase}
+.hero h1{font-size:clamp(28px,4vw,44px);font-weight:900;color:#fff;line-height:1.15;margin-bottom:14px;letter-spacing:-.02em}
+.hero h1 span{color:var(--jade)}
+.hero p{font-size:15px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:24px;max-width:480px}
+.hero-btns{display:flex;gap:10px;flex-wrap:wrap}
+.btn-hero-primary{background:var(--jade);color:#fff;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .2s}
+.btn-hero-primary:hover{background:var(--jd);transform:translateY(-1px);box-shadow:0 8px 24px rgba(13,148,136,.4)}
+.btn-hero-ol{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.2);padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-hero-ol:hover{background:rgba(255,255,255,.15)}
+
+/* HERO STATS */
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.hs-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:16px;text-align:center}
+.hs-num{font-size:28px;font-weight:900;color:#fff;line-height:1}
+.hs-label{font-size:11px;color:rgba(255,255,255,.5);margin-top:4px}
+
+/* ══ QUICK ACCESS ══ */
+.section{padding:32px;max-width:1100px;margin:0 auto}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.section-header h2{font-size:18px;font-weight:800}
+.section-header p{font-size:13px;color:var(--ink3)}
+
+/* MODULE GRID */
+.module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.module-card{background:var(--surface);border-radius:14px;border:1.5px solid var(--border);padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.module-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--mc-color,var(--jade))}
+.module-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.1);border-color:var(--mc-color,var(--jade))}
+.mc-icon{font-size:28px;margin-bottom:12px}
+.mc-title{font-size:14px;font-weight:800;margin-bottom:5px}
+.mc-desc{font-size:12px;color:var(--ink3);line-height:1.5;margin-bottom:12px}
+.mc-features{display:flex;flex-direction:column;gap:3px;margin-bottom:12px}
+.mc-features li{font-size:11px;color:var(--ink2);list-style:none;display:flex;align-items:center;gap:5px}
+.mc-features li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--mc-color,var(--jade));flex-shrink:0}
+.mc-badge{display:inline-block;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;background:var(--mc-color,var(--jade));color:#fff;opacity:.85}
+.mc-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;border-radius:8px;background:var(--mc-color,var(--jade));color:#fff;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:inherit;width:100%;transition:all .15s;margin-top:8px}
+.mc-btn:hover{opacity:.88;transform:scale(.98)}
+
+/* ══ TODAY PANEL ══ */
+.today-grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
+.card{background:var(--surface);border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ch{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ch h3{font-size:14px;font-weight:700}
+
+/* TKB TODAY */
+.tkb-today{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.tkb-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;border:1px solid var(--border)}
+.tkb-tiet{font-size:12px;font-weight:800;color:var(--ink3);width:32px;text-align:center;flex-shrink:0}
+.tkb-time{font-size:11px;color:var(--ink3);width:90px;flex-shrink:0}
+.tkb-info{flex:1}
+.tkb-mon{font-size:13px;font-weight:700}
+.tkb-lop{font-size:11px;color:var(--ink3)}
+.tkb-phong{font-size:11px;font-weight:600;padding:2px 7px;border-radius:100px;flex-shrink:0}
+.now-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;background:#dcfce7;color:#16a34a;flex-shrink:0}
+
+/* UPCOMING EVENTS */
+.event-list{padding:10px 16px;display:flex;flex-direction:column;gap:0}
+.ev-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.ev-item:last-child{border-bottom:none}
+.ev-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.ev-text{font-size:13px;font-weight:600;flex:1}
+.ev-when{font-size:11px;color:var(--ink3);margin-top:2px}
+
+/* ══ QUICK STATS ══ */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--surface);border-radius:12px;border:1px solid var(--border);padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.stat-card .sv{font-size:24px;font-weight:900;line-height:1;margin-bottom:4px}
+.stat-card .sl{font-size:11px;color:var(--ink3)}
+.stat-card .sa{font-size:11px;margin-top:6px;font-weight:600}
+
+/* ══ RECENT ACTIVITY ══ */
+.activity-list{padding:0}
+.act-item{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid var(--border);transition:background .12s;cursor:pointer}
+.act-item:last-child{border-bottom:none}
+.act-item:hover{background:var(--s2)}
+.act-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.act-info{flex:1}
+.act-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.act-meta{font-size:11px;color:var(--ink3)}
+.act-time{font-size:11px;color:var(--ink3);flex-shrink:0}
+
+/* ══ AI QUICK ASK ══ */
+.ai-bar{background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:14px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.ai-bar-left{flex:1;min-width:200px}
+.ai-bar-left h3{font-size:15px;font-weight:800;color:#fff;margin-bottom:4px}
+.ai-bar-left p{font-size:12px;color:rgba(255,255,255,.6)}
+.ai-input-wrap{display:flex;gap:8px;flex:2;min-width:280px}
+.ai-input{flex:1;padding:10px 14px;border-radius:8px;border:none;font-family:inherit;font-size:13px;outline:none;background:rgba(255,255,255,.12);color:#fff}
+.ai-input::placeholder{color:rgba(255,255,255,.4)}
+.ai-send{padding:10px 18px;border-radius:8px;background:var(--jade);color:#fff;border:none;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.ai-send:hover{background:var(--jd)}
+
+/* ══ FOOTER ══ */
+.footer{background:var(--ink);padding:24px 32px;margin-top:40px}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-logo{font-size:15px;font-weight:900;color:#fff}
+.footer-links{display:flex;gap:16px}
+.footer-links a{font-size:12px;color:rgba(255,255,255,.45);text-decoration:none;cursor:pointer}
+.footer-links a:hover{color:rgba(255,255,255,.8)}
+.footer-copy{font-size:12px;color:rgba(255,255,255,.3)}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:100px;font-size:11px;font-weight:600}
+.b-jade{background:var(--jl);color:var(--jd)}
+.b-red{background:#fee2e2;color:var(--red)}
+.b-amber{background:#fef3c7;color:var(--amber)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:999;opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:#cbd5e0;border-radius:99px}
+
+@media(max-width:768px){
+  .hero-inner{grid-template-columns:1fr}
+  .hero-stats{display:none}
+  .today-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .module-grid{grid-template-columns:1fr 1fr}
+  .section{padding:20px}
+  .hero{padding:32px 20px}
+  .topbar{padding:0 16px}
+}
+</style>
+
+<script>
+// ══ EDUPRO SHARED STATE ══
+const EduPro = {
+  get: (key) => { try { return JSON.parse(localStorage.getItem('edupro_'+key)||'null'); } catch(e) { return null; } },
+  set: (key, val) => {
+    try { localStorage.setItem('edupro_'+key, JSON.stringify(val)); } catch(e) {}
+    // ─ DriveSync: tự động đồng bộ lên Drive ─
+    if (window.EduProSync) { EduProSync.save(key, val); }
+  },
+  currentClass: () => EduPro.get('currentClass') || '8A1',
+  teacher: () => EduPro.get('teacher') || {name:'Nguyễn Thanh Liêm', school:'THCS Hùng Vương'},
+};
+</script>
+
+<!-- ═══ EDUPRO DRIVESYNC ═══════════════════════════════════════════ -->
+<script>
+/* --- EduPro DriveSync Embedded --- */
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║        EDUPRO DRIVESYNC — Thư viện đồng bộ Google Drive        ║
+// ║  Nhúng vào mỗi module HTML để tự động lưu dữ liệu lên Drive    ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+window.EduProSync = (function () {
+
+  // ── CẤU HÌNH — ĐỔI URL NÀY SAU KHI DEPLOY APPS SCRIPT ──────────
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec';
+  //  Ví dụ: 'https://script.google.com/macros/s/AKfycb.../exec'
+
+  const DEBOUNCE_MS  = 1500;   // Đợi 1.5 giây sau thay đổi cuối cùng rồi mới lưu
+  const RETRY_MAX    = 3;       // Thử lại tối đa 3 lần nếu lỗi mạng
+  const RETRY_DELAY  = 2000;    // Đợi 2 giây giữa mỗi lần retry
+
+  let _module   = 'unknown';
+  let _timers   = {};           // Debounce timers theo key
+  let _queue    = [];           // Hàng chờ khi offline
+  let _online   = navigator.onLine;
+  let _statusEl = null;
+
+  // ── KHỞI TẠO ─────────────────────────────────────────────────────
+  function init(moduleName) {
+    _module = moduleName;
+    _injectStatusBar();
+    _listenNetworkEvents();
+    _processQueue();           // Xử lý hàng đợi offline khi vừa load
+    _pingServer();             // Kiểm tra kết nối server
+    console.log(`[EduProSync] Module "${_module}" đã khởi tạo`);
+  }
+
+  // ── LƯU DỮ LIỆU (có debounce) ────────────────────────────────────
+  function save(key, data, immediate = false) {
+    // Luôn lưu localStorage trước (fallback tức thì)
+    try {
+      localStorage.setItem('edupro_' + key, JSON.stringify(data));
+    } catch (e) {}
+
+    if (immediate) {
+      _doSave(key, data);
+    } else {
+      // Debounce: hủy timer cũ, đặt timer mới
+      clearTimeout(_timers[key]);
+      _timers[key] = setTimeout(() => _doSave(key, data), DEBOUNCE_MS);
+    }
+  }
+
+  // ── LƯU NGAY (không debounce) ─────────────────────────────────────
+  function saveNow(key, data) {
+    return save(key, data, true);
+  }
+
+  // ── TẢI DỮ LIỆU ──────────────────────────────────────────────────
+  async function load(key) {
+    if (!_online || !_isConfigured()) {
+      // Fallback: đọc từ localStorage
+      try {
+        const val = localStorage.getItem('edupro_' + key);
+        return val ? JSON.parse(val) : null;
+      } catch { return null; }
+    }
+
+    try {
+      const res = await _post({ action: 'load', module: _module, key });
+      if (res.found) {
+        // Cập nhật localStorage với dữ liệu mới nhất từ Drive
+        localStorage.setItem('edupro_' + key, JSON.stringify(res.data));
+        return res.data;
+      }
+      // Key chưa có trên Drive → đọc localStorage
+      const local = localStorage.getItem('edupro_' + key);
+      return local ? JSON.parse(local) : null;
+    } catch (e) {
+      console.warn('[EduProSync] load error, dùng localStorage:', e);
+      try {
+        const val = localStorage.getItem('edupro_' + key);
+        return val ? JSON.parse(val) : null;
+      } catch { return null; }
+    }
+  }
+
+  // ── TẢI TOÀN BỘ DỮ LIỆU MODULE (khi trang tải) ───────────────────
+  async function loadAll() {
+    if (!_online || !_isConfigured()) return null;
+    try {
+      const res = await _post({ action: 'loadAll', module: _module });
+      if (res.found && res.data) {
+        // Ghi vào localStorage để dùng offline
+        Object.entries(res.data).forEach(([k, v]) => {
+          localStorage.setItem('edupro_' + k, JSON.stringify(v));
+        });
+        return res.data;
+      }
+      return null;
+    } catch (e) {
+      console.warn('[EduProSync] loadAll error:', e);
+      return null;
+    }
+  }
+
+  // ── XOÁ DỮ LIỆU ──────────────────────────────────────────────────
+  function remove(key) {
+    try { localStorage.removeItem('edupro_' + key); } catch {}
+    if (_online && _isConfigured()) {
+      _post({ action: 'delete', module: _module, key }).catch(console.warn);
+    }
+  }
+
+  // ── NỘI BỘ: THỰC HIỆN LƯU LÊN DRIVE ─────────────────────────────
+  async function _doSave(key, data, attempt = 1) {
+    if (!_isConfigured()) {
+      _setStatus('warning', '⚠️ Chưa cấu hình Script URL');
+      return;
+    }
+
+    if (!_online) {
+      // Đưa vào hàng chờ offline
+      _queue = _queue.filter(q => !(q.key === key && q.module === _module));
+      _queue.push({ module: _module, key, data, time: Date.now() });
+      _setStatus('offline', '📶 Offline — dữ liệu sẽ đồng bộ khi có mạng');
+      return;
+    }
+
+    _setStatus('saving', '⏫ Đang lưu...');
+    try {
+      const res = await _post({ action: 'save', module: _module, key, data });
+      if (res.ok && res.saved) {
+        _setStatus('ok', '☁️ Đã lưu lên Drive ' + _fmtTime(res.timestamp));
+        _processQueue();
+      } else {
+        throw new Error(res.error || 'Save failed');
+      }
+    } catch (e) {
+      if (attempt < RETRY_MAX) {
+        _setStatus('retry', `🔄 Thử lại (${attempt}/${RETRY_MAX})...`);
+        setTimeout(() => _doSave(key, data, attempt + 1), RETRY_DELAY * attempt);
+      } else {
+        _setStatus('error', '❌ Lỗi đồng bộ — đã lưu cục bộ');
+        _queue.push({ module: _module, key, data, time: Date.now() });
+        console.error('[EduProSync] Lỗi lưu sau', RETRY_MAX, 'lần:', e);
+      }
+    }
+  }
+
+  // ── POST REQUEST ──────────────────────────────────────────────────
+  function _getUrl() {
+    // Ưu tiên URL đã lưu qua showSetup(), rồi mới dùng hardcoded SCRIPT_URL
+    const stored = localStorage.getItem('edupro_scriptUrl');
+    return (stored && stored.startsWith('https://script.google.com')) ? stored : SCRIPT_URL;
+  }
+
+  async function _post(payload, timeout = 10000) {
+    const url  = _getUrl();
+    const ctrl = new AbortController();
+    const id   = setTimeout(() => ctrl.abort(), timeout);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        signal: ctrl.signal,
+        headers: { 'Content-Type': 'text/plain' }
+      });
+      clearTimeout(id);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } catch (e) {
+      clearTimeout(id);
+      throw e;
+    }
+  }
+
+  // ── XỬ LÝ HÀNG ĐỢI OFFLINE ───────────────────────────────────────
+  async function _processQueue() {
+    if (!_online || _queue.length === 0) return;
+    const pending = [..._queue];
+    _queue = [];
+    for (const item of pending) {
+      await _doSave(item.key, item.data);
+      await new Promise(r => setTimeout(r, 300)); // Tránh quá nhiều request cùng lúc
+    }
+  }
+
+  // ── KIỂM TRA KẾT NỐI SERVER ──────────────────────────────────────
+  async function _pingServer() {
+    if (!_isConfigured()) {
+      _setStatus('warning', '⚠️ Chưa cấu hình — xem hướng dẫn cài đặt');
+      return;
+    }
+    try {
+      const res = await _post({ action: 'ping' }, 5000);
+      if (res.ok) _setStatus('ok', '☁️ Drive đã kết nối · ' + (_getUrl().substring(40,60) + '...'))
+    } catch {
+      _setStatus('warning', '⚠️ Không kết nối được Drive — dùng chế độ cục bộ');
+    }
+  }
+
+  // ── THANH TRẠNG THÁI ─────────────────────────────────────────────
+  function _injectStatusBar() {
+    if (document.getElementById('edupro-sync-bar')) return;
+    const bar = document.createElement('div');
+    bar.id = 'edupro-sync-bar';
+    bar.style.cssText = `
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 5px 16px; font-size: 11px; font-family: inherit;
+      background: #f0fdf4; border-top: 1px solid #bbf7d0;
+      color: #166534; transition: all .3s; gap: 12px;
+      box-shadow: 0 -2px 8px rgba(0,0,0,.06);
+    `;
+    bar.innerHTML = `
+      <span id="edupro-sync-msg" style="display:flex;align-items:center;gap:6px">
+        🔄 Đang kiểm tra kết nối Drive...
+      </span>
+      <span style="display:flex;align-items:center;gap:8px;opacity:.7">
+        <span id="edupro-sync-module" style="font-weight:700"></span>
+        <button onclick="EduProSync.showSetup()" style="border:1px solid currentColor;background:transparent;cursor:pointer;padding:1px 8px;border-radius:4px;font-size:10px;font-family:inherit;color:inherit">⚙️ Cấu hình</button>
+      </span>
+    `;
+    document.body.appendChild(bar);
+    _statusEl = bar;
+    document.getElementById('edupro-sync-module').textContent = _module;
+  }
+
+  const STATUS_STYLES = {
+    ok:      { bg: '#f0fdf4', border: '#bbf7d0', color: '#166534' },
+    saving:  { bg: '#eff6ff', border: '#bfdbfe', color: '#1d4ed8' },
+    retry:   { bg: '#fffbeb', border: '#fde68a', color: '#92400e' },
+    error:   { bg: '#fff1f2', border: '#fecdd3', color: '#be123c' },
+    offline: { bg: '#f8fafc', border: '#e2e8f0', color: '#475569' },
+    warning: { bg: '#fffbeb', border: '#fde68a', color: '#92400e' },
+  };
+
+  function _setStatus(type, msg) {
+    if (!_statusEl) return;
+    const s = STATUS_STYLES[type] || STATUS_STYLES.ok;
+    _statusEl.style.background  = s.bg;
+    _statusEl.style.borderColor = s.border;
+    _statusEl.style.color       = s.color;
+    const msgEl = document.getElementById('edupro-sync-msg');
+    if (msgEl) msgEl.textContent = msg;
+  }
+
+  // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
+  function showSetup() {
+    const current = _getUrl() === 'YOUR_APPS_SCRIPT_URL_HERE' ? '' : _getUrl();
+    const url = prompt(
+      '🔧 Nhập URL Google Apps Script:\n\n' +
+      'Cách lấy URL:\n' +
+      '1. Mở script.google.com\n' +
+      '2. Dán nội dung EduPro_DriveSync.gs\n' +
+      '3. Deploy → New deployment → Web app\n' +
+      '4. Sao chép URL và dán vào đây\n\n' +
+      'URL hiện tại: ' + (current || '(chưa cấu hình)'),
+      current
+    );
+    if (url && url.startsWith('https://script.google.com')) {
+      // Lưu URL vào localStorage để các module dùng lại
+      localStorage.setItem('edupro_scriptUrl', url);
+      alert('✅ Đã lưu URL!\n\nVui lòng tải lại trang để áp dụng.\n\n⚠️ Lưu ý: Để cố định vĩnh viễn, cần cập nhật SCRIPT_URL trong mã nguồn.');
+      location.reload();
+    } else if (url !== null) {
+      alert('❌ URL không hợp lệ. Phải bắt đầu bằng https://script.google.com');
+    }
+  }
+
+  // ── NETWORK EVENTS ────────────────────────────────────────────────
+  function _listenNetworkEvents() {
+    window.addEventListener('online', () => {
+      _online = true;
+      _setStatus('ok', '📶 Đã kết nối mạng — đang đồng bộ...');
+      _processQueue();
+    });
+    window.addEventListener('offline', () => {
+      _online = false;
+      _setStatus('offline', '📴 Mất kết nối — dữ liệu lưu cục bộ');
+    });
+    // Lưu hàng chờ trước khi đóng trang
+    window.addEventListener('beforeunload', () => {
+      if (_queue.length > 0) {
+        localStorage.setItem('edupro_offline_queue_' + _module, JSON.stringify(_queue));
+      }
+    });
+    // Khôi phục hàng chờ khi mở lại trang
+    const savedQueue = localStorage.getItem('edupro_offline_queue_' + _module);
+    if (savedQueue) {
+      try {
+        _queue = JSON.parse(savedQueue);
+        localStorage.removeItem('edupro_offline_queue_' + _module);
+      } catch {}
+    }
+  }
+
+  function _isConfigured() {
+    const url = _getUrl();
+    return url !== 'YOUR_APPS_SCRIPT_URL_HERE' && url.startsWith('https://script.google.com');
+  }
+
+  function _fmtTime(iso) {
+    if (!iso) return '';
+    try {
+      return new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    } catch { return ''; }
+  }
+
+  // ── API CÔNG KHAI ─────────────────────────────────────────────────
+  return { init, save, saveNow, load, loadAll, remove, showSetup };
+
+})();
+
+</script>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo" onclick="window.location='edupro-home.html'" style="cursor:pointer">
+    <div class="logo-icon">🎓</div>
+    <div>
+      <div class="logo-text">EduPro <span style="color:var(--jade)">All-in-One</span></div>
+      <div class="logo-sub">THCS Hùng Vương</div>
+    </div>
+  </div>
+  <div class="top-actions">
+    <div class="teacher-pill">
+      <div class="tp-av">NL</div>
+      <div class="tp-name">Nguyễn Thanh Liêm</div>
+    </div>
+    <button class="btn btn-ol btn-sm" onclick="showToast('🔔 Bạn có 3 thông báo mới!')">🔔 <span style="background:#dc2626;color:#fff;font-size:10px;font-weight:800;padding:1px 5px;border-radius:100px">3</span></button>
+    <button class="btn btn-jade btn-sm" onclick="openModule(9)">🤖 Hỏi AI</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.3);border-radius:100px;padding:4px 6px 4px 14px;margin-bottom:16px">
+  <span style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--jade);text-transform:uppercase">🎓 Năm học</span>
+  <select id="selNamHoc" onchange="changeNamHoc(this.value)" style="background:rgba(13,148,136,.18);border:none;border-radius:100px;color:var(--jade);font-size:11px;font-weight:700;letter-spacing:.06em;padding:2px 10px 2px 8px;cursor:pointer;outline:none;font-family:inherit;appearance:none;-webkit-appearance:none">
+    <option value="2025-2026">2025–2026</option>
+    <option value="2026-2027">2026–2027</option>
+    <option value="2027-2028">2027–2028</option>
+    <option value="2028-2029">2028–2029</option>
+    <option value="2029-2030">2029–2030</option>
+    <option value="2030-2031">2030–2031</option>
+  </select>
+</div>
+      <h1>Chào thầy <span>Nguyễn Thanh Liêm</span>!<br>Hôm nay dạy tốt nhé.</h1>
+      <p>EduPro tổng hợp 9 công cụ thiết yếu cho giáo viên THCS — từ quản lý lớp, soạn giáo án, tạo đề kiểm tra đến trò chơi dạy học và trợ lý AI.</p>
+      <div class="hero-btns">
+        <button class="btn-hero-primary" onclick="document.getElementById('modules').scrollIntoView({behavior:'smooth'})">🚀 Vào làm việc</button>
+        <button class="btn-hero-ol" onclick="openModule(9)">🤖 Hỏi AI ngay</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hs-card"><div class="hs-num">16</div><div class="hs-label">Lớp phụ trách</div></div>
+      <div class="hs-card"><div class="hs-num">752</div><div class="hs-label">Học sinh</div></div>
+      <div class="hs-card"><div class="hs-num" id="hero-tiet">3</div><div class="hs-label">Tiết hôm nay</div></div>
+      <div class="hs-card"><div class="hs-num" id="hero-date" style="font-size:18px"></div><div class="hs-label" id="hero-day"></div></div>
+      <div class="hs-card"><div class="hs-num" style="color:#fbbf24">2</div><div class="hs-label">Lịch sắp tới</div></div>
+      <div class="hs-card"><div class="hs-num" style="color:#34d399">9</div><div class="hs-label">Module sẵn sàng</div></div>
+    </div>
+  </div>
+</div>
+
+<div style="max-width:1100px;margin:0 auto;padding:0 32px">
+
+  <!-- AI QUICK ASK -->
+  <div style="margin-top:24px">
+    <div class="ai-bar">
+      <div class="ai-bar-left">
+        <h3>🤖 Hỏi AI nhanh</h3>
+        <p>Soạn giáo án, tạo câu hỏi, viết nhận xét...</p>
+      </div>
+      <div class="ai-input-wrap">
+        <input class="ai-input" id="aiQuickInput" placeholder="VD: Soạn mục tiêu bài Pháp luật là gì..." onkeydown="if(event.key==='Enter')quickAsk()">
+        <button class="ai-send" onclick="quickAsk()">▶ Gửi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="sv" style="color:var(--jade)">47</div>
+      <div class="sl">HS lớp 8A1</div>
+      <div class="sa" style="color:var(--green)">✅ 41 có mặt hôm nay</div>
+    </div>
+    <div class="stat-card">
+      <div class="sv" style="color:var(--blue)">7.4</div>
+      <div class="sl">ĐTB GDCD 8A1</div>
+      <div class="sa" style="color:var(--amber)">📈 Tăng 0.3 so với HK1</div>
+    </div>
+    <div class="stat-card">
+      <div class="sv" style="color:var(--purple)">3</div>
+      <div class="sl">TB chưa đọc</div>
+      <div class="sa" style="color:var(--red)">🔴 1 thông báo khẩn</div>
+    </div>
+    <div class="stat-card">
+      <div class="sv" style="color:var(--amber)">2</div>
+      <div class="sl">Việc cần làm</div>
+      <div class="sa" style="color:var(--amber)">📅 Họp tổ thứ 6 này</div>
+    </div>
+  </div>
+
+  <!-- TODAY -->
+  <div class="today-grid" style="margin-bottom:24px">
+    <div class="card">
+      <div class="ch"><h3>📋 Thời khoá biểu hôm nay — <span id="todayLabel"></span></h3>
+        <button class="btn btn-sm" style="background:var(--jl);color:var(--jd);border:none;cursor:pointer" onclick="openModule(5)">Xem đầy đủ →</button>
+      </div>
+      <div class="tkb-today" id="tkbToday"></div>
+    </div>
+    <div class="card">
+      <div class="ch"><h3>🔔 Sự kiện sắp tới</h3>
+        <button class="btn btn-sm" style="background:var(--jl);color:var(--jd);border:none;cursor:pointer" onclick="openModule(5)">Lịch →</button>
+      </div>
+      <div class="event-list" id="eventList"></div>
+    </div>
+  </div>
+
+  <!-- MODULES -->
+  <div id="modules">
+    <div class="section-header">
+      <div><h2>⚡ 9 Module công cụ</h2><p>Bấm để mở từng module</p></div>
+    </div>
+    <div class="module-grid" id="moduleGrid"></div>
+  </div>
+
+  <!-- RECENT ACTIVITY -->
+  <div style="margin-top:24px;margin-bottom:8px">
+    <div class="section-header"><div><h2>🕐 Hoạt động gần đây</h2></div></div>
+    <div class="card"><div class="activity-list" id="activityList"></div></div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">🎓 EduPro All-in-One</div>
+    <div class="footer-links">
+      <a onclick="showToast('📖 Hướng dẫn sử dụng...')">Hướng dẫn</a>
+      <a onclick="showToast('💬 Liên hệ hỗ trợ...')">Hỗ trợ</a>
+      <a onclick="showToast('🔄 Phiên bản 1.0.0')">v1.0.0</a>
+    </div>
+    <div class="footer-copy">© 2026 EduPro · THCS Hùng Vương · P. Sa Đéc, tỉnh Đồng Tháp</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ MODULES DATA ══
+const MODULES=[
+  {id:1,icon:'👥',title:'Quản lý Lớp & Học sinh',desc:'Danh sách, điểm danh, hồ sơ, theo dõi học sinh',features:['Điểm danh 1 chạm','Hồ sơ chi tiết','Thêm hàng loạt','Xoá học sinh'],color:'#0d9488',badge:'16 lớp'},
+  {id:2,icon:'📊',title:'Quản lý Điểm số',desc:'Nhập điểm, tính ĐTB theo TT22, xếp loại tự động',features:['Nhập điểm nhanh','Theo TT 22/2021','Biểu đồ phân tích','Xuất bảng điểm'],color:'#2563eb',badge:'752 HS'},
+  {id:3,icon:'📋',title:'Soạn Giáo án',desc:'Mẫu chuẩn Bộ GD&ĐT, gợi ý AI, xuất Word/PDF',features:['4 mẫu giáo án','AI gợi ý nội dung','Xem trước đẹp','Lưu & tái dùng'],color:'#16a34a',badge:'AI hỗ trợ'},
+  {id:4,icon:'🎯',title:'Tạo Đề & Ngân hàng',desc:'Ma trận đề, trộn đề tự động, chấm điểm nhanh',features:['Ma trận đề chuẩn','Trộn đề nhiều mã','AI tạo câu hỏi','Xem & in đề'],color:'#7c3aed',badge:'AI ✨'},
+  {id:5,icon:'📅',title:'Thời khoá biểu & Lịch',desc:'TKB cá nhân, lịch công tác, nhắc nhở tự động',features:['TKB 5 tiết × 6 ngày','Lịch tháng/tuần','Việc cần làm','Nhập từ ảnh/vnedu'],color:'#d97706',badge:'Sync GG'},
+  {id:6,icon:'🎮',title:'Trò chơi Dạy học',desc:'Quiz, ô chữ, vòng quay, đường đến chiến thắng',features:['Quiz có đếm giờ','Ô chữ tương tác','Vòng quay may mắn','Đường đến CT'],color:'#db2777',badge:'4 trò chơi'},
+  {id:7,icon:'📁',title:'Kho Tài liệu',desc:'Lưu trữ, tìm kiếm, chia sẻ tài liệu dạy học',features:['Tìm kiếm toàn văn','Google Drive sync','Chia sẻ tổ BM','Kéo thả upload'],color:'#0891b2',badge:'Google Drive'},
+  {id:8,icon:'📣',title:'Thông báo Nội bộ',desc:'Gửi đến HS, phụ huynh, đồng nghiệp, xác nhận đọc',features:['Gửi theo nhóm','Xác nhận đã đọc','5 mẫu thông báo','AI soạn thảo'],color:'#ea580c',badge:'SMS hỗ trợ'},
+  {id:9,icon:'🤖',title:'Trợ lý AI',desc:'Chat AI, soạn giáo án, tạo đề, phân tích học lực',features:['Chat tự do','6 công cụ AI','Viết nhận xét','Phân tích lớp'],color:'#4c1d95',badge:'Powered by Claude'},
+];
+
+// ══ TKB TODAY ══
+const TODAY_TKB=[
+  {tiet:1,time:'07:30–08:15',mon:'GDCD',lop:'8A1',phong:'P.201',color:'#0d9488',now:true},
+  {tiet:3,time:'09:25–10:10',mon:'GDCD',lop:'7B2',phong:'P.304',color:'#2563eb',now:false},
+  {tiet:5,time:'13:30–14:15',mon:'GDCD',lop:'6C2',phong:'P.102',color:'#7c3aed',now:false},
+];
+
+const EVENTS=[
+  {title:'Họp tổ chuyên môn KHXH',when:'Thứ 6, 12/5 · 07:00',dot:'#7c3aed',urgent:false},
+  {title:'Nộp kế hoạch dạy học',when:'Hôm nay · 17:00',dot:'#d97706',urgent:true},
+  {title:'Kiểm tra 45\' — GDCD 8A1',when:'Thứ 2, 13/5 · 07:30',dot:'#dc2626',urgent:false},
+  {title:'Nộp điểm học kỳ',when:'15/5 · 12:00',dot:'#d97706',urgent:false},
+];
+
+const ACTIVITIES=[
+  {icon:'📊',bg:'#dbeafe',title:'Cập nhật điểm TX2 — Lớp 8A1',meta:'Module Điểm số',time:'30 phút trước'},
+  {icon:'📋',bg:'#ccfbf1',title:'Lưu giáo án Bài 3 — Pháp luật & Kỷ luật',meta:'Module Giáo án',time:'2 giờ trước'},
+  {icon:'🎯',bg:'#ede9fe',title:'Tạo đề kiểm tra 45\' GDCD 8 mã 132',meta:'Module Đề kiểm tra',time:'Hôm qua'},
+  {icon:'📣',bg:'#ffedd5',title:'Gửi TB kiểm tra đến PH lớp 8A1 (47 người)',meta:'Module Thông báo · 35/47 đã đọc',time:'Hôm qua'},
+  {icon:'🤖',bg:'#ede9fe',title:'AI soạn mục tiêu bài Quyền công dân',meta:'Module AI',time:'2 ngày trước'},
+];
+
+// ══ RENDER ══
+function renderModules(){
+  document.getElementById('moduleGrid').innerHTML=MODULES.map(m=>`
+    <div class="module-card" style="--mc-color:${m.color}" onclick="openModule(${m.id})">
+      <div class="mc-icon">${m.icon}</div>
+      <div class="mc-title">${m.title}</div>
+      <div class="mc-desc">${m.desc}</div>
+      <ul class="mc-features">${m.features.map(f=>`<li>${f}</li>`).join('')}</ul>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span class="mc-badge" style="background:${m.color}">${m.badge}</span>
+      </div>
+      <button class="mc-btn" style="background:${m.color}">▶ Mở module</button>
+    </div>`).join('');
+}
+
+function renderTKB(){
+  const d=new Date();
+  const days=['CN','Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7'];
+  document.getElementById('todayLabel').textContent=`${days[d.getDay()]}, ${d.getDate()}/${d.getMonth()+1}`;
+  document.getElementById('tkbToday').innerHTML=TODAY_TKB.map(t=>`
+    <div class="tkb-row" style="border-left:3px solid ${t.color};background:${t.color}08">
+      <div class="tkb-tiet" style="color:${t.color}">T${t.tiet}</div>
+      <div class="tkb-time">${t.time}</div>
+      <div class="tkb-info">
+        <div class="tkb-mon">${t.mon}</div>
+        <div class="tkb-lop">${t.lop}</div>
+      </div>
+      <span class="tkb-phong" style="background:${t.color}18;color:${t.color}">${t.phong}</span>
+      ${t.now?'<span class="now-badge">🔴 Đang dạy</span>':''}
+    </div>`).join('');
+}
+
+function renderEvents(){
+  document.getElementById('eventList').innerHTML=EVENTS.map(e=>`
+    <div class="ev-item">
+      <div class="ev-dot" style="background:${e.dot}"></div>
+      <div>
+        <div class="ev-text">${e.title}${e.urgent?` <span class="badge b-red" style="font-size:10px">Hôm nay</span>`:''}</div>
+        <div class="ev-when">📅 ${e.when}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderActivities(){
+  document.getElementById('activityList').innerHTML=ACTIVITIES.map(a=>`
+    <div class="act-item" onclick="showToast('📂 Đang mở: ${a.title}')">
+      <div class="act-icon" style="background:${a.bg}">${a.icon}</div>
+      <div class="act-info">
+        <div class="act-title">${a.title}</div>
+        <div class="act-meta">${a.meta}</div>
+      </div>
+      <div class="act-time">${a.time}</div>
+    </div>`).join('');
+}
+
+function renderHeroDate(){
+  const d=new Date();
+  const days=['CN','T2','T3','T4','T5','T6','T7'];
+  document.getElementById('hero-date').textContent=`${d.getDate()}/${d.getMonth()+1}`;
+  document.getElementById('hero-day').textContent=days[d.getDay()];
+}
+
+// ══ MODULE OPEN ══
+const MODULE_FILES={
+  1:'module1-quan-ly-lop.html',
+  2:'module2-quan-ly-diem.html',
+  3:'module3-soan-giao-an.html',
+  4:'module4-de-kiem-tra.html',
+  5:'module5-tkb-lich.html',
+  6:'module6-tro-choi.html',
+  7:'module7-kho-tai-lieu.html',
+  8:'module8-thong-bao.html',
+  9:'module9-tro-ly-ai.html',
+};
+
+function openModule(id){
+  const file=MODULE_FILES[id];
+  const m=MODULES.find(x=>x.id===id);
+  if(file){
+    showToast(`🚀 Đang mở ${m?.title || 'module '+id}...`);
+    setTimeout(()=>window.open(file,'_blank'),400);
+  }
+}
+
+// ══ QUICK AI ══
+async function quickAsk(){
+  const q=document.getElementById('aiQuickInput').value.trim();
+  if(!q){showToast('⚠️ Nhập câu hỏi cho AI!');return;}
+  showToast('🤖 AI đang xử lý... Mở module AI để xem đầy đủ');
+  setTimeout(()=>openModule(9),1200);
+}
+
+// ══ TOAST ══
+let tt;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2600);}
+
+// ══ LOAD SHARED STATE ══
+function loadSharedStats(){
+  const att = EduPro.get('todayAttendance');
+  if(att) {
+    const statCards = document.querySelectorAll('.stat-card .sv');
+    if(statCards[0]) statCards[0].textContent = att.present + (att.late||0);
+  }
+  const cls = EduPro.get('currentClass');
+  if(cls) {
+    const statsEl = document.querySelector('.stats-row .stat-card:first-child .sl');
+    if(statsEl) statsEl.textContent = 'HS lớp ' + cls;
+    const clsStats = EduPro.get('classStats_'+cls);
+    if(clsStats) {
+      const avgEl = document.querySelectorAll('.stat-card .sv')[1];
+      if(avgEl) avgEl.textContent = clsStats.avg;
+    }
+  }
+}
+
+// ══ INIT ══
+renderModules();
+renderTKB();
+renderEvents();
+renderActivities();
+renderHeroDate();
+loadSharedStats();
+
+// ── NĂM HỌC ──────────────────────────────────────
+function changeNamHoc(val){
+  localStorage.setItem('edupro_namHoc', val);
+  EduPro.set('namHoc', val);
+  showToast('📅 Đã chuyển sang năm học ' + val.replace('-','–'));
+}
+(function restoreNamHoc(){
+  const saved = localStorage.getItem('edupro_namHoc') || '2025-2026';
+  const sel = document.getElementById('selNamHoc');
+  if(sel) sel.value = saved;
+})();
+
+EduProSync.init('home');
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- EDUPRO FOOTER -->
+<footer style="
+  background:linear-gradient(135deg,#0f172a 0%,#1a2744 60%,#0d1f35 100%);
+  padding:20px 32px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:14px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  position:relative;overflow:hidden;
+">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 15% 50%,rgba(13,148,136,.1),transparent 45%),radial-gradient(ellipse at 85% 50%,rgba(37,99,235,.07),transparent 45%);pointer-events:none"></div>
+
+  <!-- Logo Left -->
+  <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1">
+    <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#0d9488,#0f766e);display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 3px 10px rgba(13,148,136,.35);flex-shrink:0">🎓</div>
+    <div>
+      <div style="font-size:14px;font-weight:900;color:#fff;letter-spacing:-.01em;line-height:1.1">EduPro <span style="color:#2dd4bf">All‑in‑One</span></div>
+      <div style="font-size:10px;color:rgba(255,255,255,.38);margin-top:2px;letter-spacing:.02em">Trợ lý Giáo viên THCS · 9 Module</div>
+    </div>
+  </div>
+
+  <!-- Center: Copyright -->
+  <div style="position:relative;z-index:1;text-align:center">
+    <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:100px;padding:8px 18px">
+      <span style="font-size:13px;color:rgba(255,255,255,.4)">©</span>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#e2e8f0;letter-spacing:.01em">Copyright belongs to <span style="color:#2dd4bf">Liemnguyen</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:1px">
+          <span style="color:#60a5fa;font-weight:600">Zalo</span>&nbsp;·&nbsp;<span style="color:#e2e8f0;font-weight:600;letter-spacing:.04em">0815 899 878</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Zalo Button + Version -->
+  <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1">
+    <a href="https://zalo.me/0815899878" target="_blank" rel="noopener" style="
+      display:inline-flex;align-items:center;gap:7px;
+      padding:8px 16px;border-radius:100px;
+      background:linear-gradient(135deg,#0068ff,#0050d0);
+      color:#fff;text-decoration:none;font-size:12px;font-weight:700;
+      box-shadow:0 3px 12px rgba(0,104,255,.3);
+      transition:transform .18s,box-shadow .18s;
+    " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 18px rgba(0,104,255,.45)'"
+       onmouseout="this.style.transform='';this.style.boxShadow='0 3px 12px rgba(0,104,255,.3)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.02 2 11c0 2.88 1.34 5.46 3.44 7.18L4 22l4.1-1.29C9.31 21.21 10.62 21.5 12 21.5 17.52 21.5 22 17.48 22 13c0-4.97-4.48-9-10-9z"/>
+      </svg>
+      Liên hệ Zalo
+    </a>
+    <div style="text-align:right;line-height:1.5">
+      <div style="font-size:10px;color:rgba(255,255,255,.22);font-weight:600">v1.0 · 2026</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.18)">THCS Hùng Vương</div>
+    </div>
+  </div>
+</footer>
+</body></html>

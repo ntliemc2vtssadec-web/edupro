@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trợ lý AI — EduPro THCS</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f4f8;--surface:#fff;--s2:#f7f9fc;--ink:#1a202c;--ink2:#4a5568;--ink3:#718096;
+  --border:#e2e8f0;--jade:#0d9488;--jl:#ccfbf1;--jd:#0f766e;
+  --blue:#2563eb;--bl:#dbeafe;--amber:#d97706;--al:#fef3c7;
+  --red:#dc2626;--rl:#fee2e2;--purple:#7c3aed;--pl:#ede9fe;
+  --green:#16a34a;--gl:#dcfce7;
+  --r:12px;--sh:0 1px 3px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;min-height:100vh}
+.app{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--ink);flex-shrink:0;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.an{font-size:15px;font-weight:800;color:#fff}.as{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.sb-nav{padding:12px 10px;flex:1;overflow-y:auto}
+.nl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:8px 8px 4px}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;color:rgba(255,255,255,.55);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;margin-bottom:2px}
+.ni:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9)}.ni.active{background:var(--jade);color:#fff}
+.ic{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.sb-bot{padding:14px 10px;border-top:1px solid rgba(255,255,255,.07)}
+.ta{width:34px;height:34px;border-radius:50%;background:var(--jade);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.tn{font-size:12px;font-weight:600;color:#fff}.tr-r{font-size:11px;color:rgba(255,255,255,.4)}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.tl h1{font-size:17px;font-weight:700}.tl p{font-size:12px;color:var(--ink3);margin-top:1px}
+.tr2{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.btn:active{transform:scale(.97)}
+.btn-jade{background:var(--jade);color:#fff}.btn-jade:hover{background:var(--jd)}
+.btn-ol{background:transparent;border:1px solid var(--border);color:var(--ink)}.btn-ol:hover{background:var(--s2)}
+.btn-purple{background:var(--purple);color:#fff}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:6px}
+
+/* PAGE TABS */
+.page-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;overflow-x:auto}
+.ptab{padding:12px 16px;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2.5px solid transparent;color:var(--ink3);transition:all .15s;white-space:nowrap}
+.ptab:hover{color:var(--ink)}.ptab.active{color:var(--jade);border-bottom-color:var(--jade)}
+
+/* CONTENT */
+.content{padding:0;flex:1;display:flex;flex-direction:column}
+.page{display:none;flex:1;flex-direction:column}.page.active{display:flex}
+
+/* ══ CHAT UI ══ */
+.chat-layout{display:grid;grid-template-columns:260px 1fr;flex:1;min-height:0}
+
+/* LEFT: HISTORY + TOOLS */
+.chat-left{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.cl-section{padding:14px 16px;border-bottom:1px solid var(--border)}
+.cl-section h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:10px}
+.new-chat-btn{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;background:var(--jade);color:#fff;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;width:100%;margin-bottom:12px;transition:all .15s}
+.new-chat-btn:hover{background:var(--jd)}
+
+/* QUICK PROMPTS */
+.qp-list{display:flex;flex-direction:column;gap:4px;overflow-y:auto;padding:10px 16px;flex:1}
+.qp-item{padding:8px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:500;transition:all .15s;border:1px solid transparent;display:flex;align-items:flex-start;gap:8px;line-height:1.4}
+.qp-item:hover{background:var(--jl);border-color:var(--jade);color:var(--jd)}
+.qp-item .qi{font-size:14px;flex-shrink:0;margin-top:1px}
+.qp-item .qt{flex:1}
+.qp-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);padding:10px 12px 4px}
+
+/* CHAT MAIN */
+.chat-main{display:flex;flex-direction:column;flex:1;min-height:0}
+.chat-messages{flex:1;overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;gap:16px}
+.chat-messages:empty::before{content:'';display:none}
+
+/* MESSAGES */
+.msg{display:flex;gap:12px;max-width:100%;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg-user{flex-direction:row-reverse}
+.msg-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;margin-top:2px}
+.msg-av-ai{background:linear-gradient(135deg,#4c1d95,#7c3aed)}
+.msg-av-user{background:var(--jade);font-size:12px;font-weight:800;color:#fff}
+.msg-bubble{max-width:75%;padding:12px 16px;border-radius:14px;font-size:13px;line-height:1.7}
+.msg-ai .msg-bubble{background:var(--surface);border:1px solid var(--border);border-radius:4px 14px 14px 14px;box-shadow:var(--sh)}
+.msg-user .msg-bubble{background:var(--jade);color:#fff;border-radius:14px 4px 14px 14px}
+.msg-bubble h3{font-size:14px;font-weight:800;margin-bottom:6px;margin-top:10px}
+.msg-bubble h3:first-child{margin-top:0}
+.msg-bubble p{margin-bottom:6px}
+.msg-bubble ul,.msg-bubble ol{padding-left:16px;margin-bottom:8px}
+.msg-bubble li{margin-bottom:4px}
+.msg-bubble strong{font-weight:700}
+.msg-bubble code{background:rgba(0,0,0,.08);padding:1px 5px;border-radius:4px;font-size:12px}
+.msg-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.ma-btn{padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:var(--s2);font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
+.ma-btn:hover{background:var(--jl);border-color:var(--jade);color:var(--jd)}
+
+/* TYPING INDICATOR */
+.typing{display:flex;align-items:center;gap:6px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:4px 14px 14px 14px;width:fit-content}
+.dot-typing{width:8px;height:8px;border-radius:50%;background:var(--ink3);animation:blink 1.2s infinite}
+.dot-typing:nth-child(2){animation-delay:.2s}
+.dot-typing:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+
+/* INPUT BAR */
+.chat-input-wrap{padding:16px 28px;border-top:1px solid var(--border);background:var(--surface)}
+.chat-input-box{display:flex;align-items:flex-end;gap:10px;background:var(--s2);border:1.5px solid var(--border);border-radius:14px;padding:10px 14px;transition:border-color .15s}
+.chat-input-box:focus-within{border-color:var(--jade);background:#fff}
+.chat-input-box textarea{flex:1;border:none;background:transparent;font-family:inherit;font-size:13px;color:var(--ink);outline:none;resize:none;max-height:120px;line-height:1.6}
+.chat-input-box textarea::placeholder{color:var(--ink3)}
+.send-btn{width:36px;height:36px;border-radius:50%;background:var(--jade);color:#fff;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.send-btn:hover{background:var(--jd);transform:scale(1.05)}
+.send-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.input-tools{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.it-btn{padding:4px 10px;border-radius:100px;border:1px solid var(--border);background:transparent;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
+.it-btn:hover{background:var(--jl);border-color:var(--jade);color:var(--jd)}
+
+/* ══ TOOLS PAGE ══ */
+.tools-content{padding:24px 28px;flex:1;overflow-y:auto}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:24px}
+.tool-card{background:var(--surface);border-radius:var(--r);border:1.5px solid var(--border);padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.tool-card:hover{border-color:var(--jade);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--tc-color,var(--jade))}
+.tool-card .tc-icon{font-size:32px;margin-bottom:12px}
+.tool-card h3{font-size:14px;font-weight:800;margin-bottom:6px}
+.tool-card p{font-size:12px;color:var(--ink3);line-height:1.5;margin-bottom:12px}
+.tool-card .tc-use{font-size:12px;font-weight:600;color:var(--jade);display:flex;align-items:center;gap:4px}
+
+/* TOOL FORM */
+.tool-form{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);padding:24px;margin-bottom:16px;display:none}
+.tool-form.active{display:block}
+.tf-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.tf-header h3{font-size:15px;font-weight:800}
+.fg{margin-bottom:13px}
+.fg label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px}
+.fi{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;color:var(--ink);background:var(--s2);outline:none;transition:border-color .15s}
+.fi:focus{border-color:var(--jade);background:#fff}
+textarea.fi{resize:vertical;line-height:1.6}
+.sel{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;background:var(--s2);outline:none;cursor:pointer;color:var(--ink)}
+.sel:focus{border-color:var(--jade)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* RESULT BOX */
+.result-box{background:var(--s2);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-top:14px;font-size:13px;line-height:1.8;white-space:pre-wrap;display:none;position:relative}
+.result-box.show{display:block}
+.result-box h3{font-size:14px;font-weight:800;margin-bottom:8px;color:var(--jade)}
+.rb-actions{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+
+/* SPINNER */
+.spinner-wrap{display:none;align-items:center;gap:10px;padding:14px;color:var(--ink3);font-size:13px}
+.spinner-wrap.show{display:flex}
+.spin{width:20px;height:20px;border:2.5px solid var(--border);border-top-color:var(--jade);border-radius:50%;animation:sp .8s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* WELCOME SCREEN */
+.welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;text-align:center}
+.welcome-icon{font-size:64px;margin-bottom:20px}
+.welcome h2{font-size:22px;font-weight:900;margin-bottom:8px}
+.welcome p{font-size:14px;color:var(--ink3);margin-bottom:28px;max-width:420px;line-height:1.6}
+.welcome-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:560px}
+.welcome-chip{padding:8px 14px;border-radius:100px;border:1.5px solid var(--border);background:var(--surface);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.welcome-chip:hover{border-color:var(--jade);background:var(--jl);color:var(--jd)}
+
+/* CARD */
+.card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
+.ch{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ch h2{font-size:14px;font-weight:700}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:100px;font-size:11px;font-weight:600}
+.b-jade{background:var(--jl);color:var(--jd)}
+.b-purple{background:var(--pl);color:var(--purple)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:999;opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#cbd5e0;border-radius:99px}
+</style>
+
+<script>
+// ══ EDUPRO SHARED STATE ══
+const EduPro = {
+  get: (key) => { try { return JSON.parse(localStorage.getItem('edupro_'+key)||'null'); } catch(e) { return null; } },
+  set: (key, val) => {
+    try { localStorage.setItem('edupro_'+key, JSON.stringify(val)); } catch(e) {}
+    // ─ DriveSync: tự động đồng bộ lên Drive ─
+    if (window.EduProSync) { EduProSync.save(key, val); }
+  },
+  currentClass: () => EduPro.get('currentClass') || '8A1',
+  teacher: () => EduPro.get('teacher') || {name:'Nguyễn Thanh Liêm', school:'THCS Hùng Vương'},
+};
+</script>
+
+<!-- ═══ EDUPRO DRIVESYNC ═══════════════════════════════════════════ -->
+<script>
+/* --- EduPro DriveSync Embedded --- */
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║        EDUPRO DRIVESYNC — Thư viện đồng bộ Google Drive        ║
+// ║  Nhúng vào mỗi module HTML để tự động lưu dữ liệu lên Drive    ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+window.EduProSync = (function () {
+
+  // ── CẤU HÌNH — ĐỔI URL NÀY SAU KHI DEPLOY APPS SCRIPT ──────────
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec';
+  //  Ví dụ: 'https://script.google.com/macros/s/AKfycb.../exec'
+
+  const DEBOUNCE_MS  = 1500;   // Đợi 1.5 giây sau thay đổi cuối cùng rồi mới lưu
+  const RETRY_MAX    = 3;       // Thử lại tối đa 3 lần nếu lỗi mạng
+  const RETRY_DELAY  = 2000;    // Đợi 2 giây giữa mỗi lần retry
+
+  let _module   = 'unknown';
+  let _timers   = {};           // Debounce timers theo key
+  let _queue    = [];           // Hàng chờ khi offline
+  let _online   = navigator.onLine;
+  let _statusEl = null;
+
+  // ── KHỞI TẠO ─────────────────────────────────────────────────────
+  function init(moduleName) {
+    _module = moduleName;
+    _injectStatusBar();
+    _listenNetworkEvents();
+    _processQueue();           // Xử lý hàng đợi offline khi vừa load
+    _pingServer();             // Kiểm tra kết nối server
+    console.log(`[EduProSync] Module "${_module}" đã khởi tạo`);
+  }
+
+  // ── LƯU DỮ LIỆU (có debounce) ────────────────────────────────────
+  function save(key, data, immediate = false) {
+    // Luôn lưu localStorage trước (fallback tức thì)
+    try {
+      localStorage.setItem('edupro_' + key, JSON.stringify(data));
+    } catch (e) {}
+
+    if (immediate) {
+      _doSave(key, data);
+    } else {
+      // Debounce: hủy timer cũ, đặt timer mới
+      clearTimeout(_timers[key]);
+      _timers[key] = setTimeout(() => _doSave(key, data), DEBOUNCE_MS);
+    }
+  }
+
+  // ── LƯU NGAY (không debounce) ─────────────────────────────────────
+  function saveNow(key, data) {
+    return save(key, data, true);
+  }
+
+  // ── TẢI DỮ LIỆU ──────────────────────────────────────────────────
+  async function load(key) {
+    if (!_online || !_isConfigured()) {
+      // Fallback: đọc từ localStorage
+      try {
+        const val = localStorage.getItem('edupro_' + key);
+        return val ? JSON.parse(val) : null;
+      } catch { return null; }
+    }
+
+    try {
+      const res = await _post({ action: 'load', module: _module, key });
+      if (res.found) {
+        // Cập nhật localStorage với dữ liệu mới nhất từ Drive
+        localStorage.setItem('edupro_' + key, JSON.stringify(res.data));
+        return res.data;
+      }
+      // Key chưa có trên Drive → đọc localStorage
+      const local = localStorage.getItem('edupro_' + key);
+      return local ? JSON.parse(local) : null;
+    } catch (e) {
+      console.warn('[EduProSync] load error, dùng localStorage:', e);
+      try {
+        const val = localStorage.getItem('edupro_' + key);
+        return val ? JSON.parse(val) : null;
+      } catch { return null; }
+    }
+  }
+
+  // ── TẢI TOÀN BỘ DỮ LIỆU MODULE (khi trang tải) ───────────────────
+  async function loadAll() {
+    if (!_online || !_isConfigured()) return null;
+    try {
+      const res = await _post({ action: 'loadAll', module: _module });
+      if (res.found && res.data) {
+        // Ghi vào localStorage để dùng offline
+        Object.entries(res.data).forEach(([k, v]) => {
+          localStorage.setItem('edupro_' + k, JSON.stringify(v));
+        });
+        return res.data;
+      }
+      return null;
+    } catch (e) {
+      console.warn('[EduProSync] loadAll error:', e);
+      return null;
+    }
+  }
+
+  // ── XOÁ DỮ LIỆU ──────────────────────────────────────────────────
+  function remove(key) {
+    try { localStorage.removeItem('edupro_' + key); } catch {}
+    if (_online && _isConfigured()) {
+      _post({ action: 'delete', module: _module, key }).catch(console.warn);
+    }
+  }
+
+  // ── NỘI BỘ: THỰC HIỆN LƯU LÊN DRIVE ─────────────────────────────
+  async function _doSave(key, data, attempt = 1) {
+    if (!_isConfigured()) {
+      _setStatus('warning', '⚠️ Chưa cấu hình Script URL');
+      return;
+    }
+
+    if (!_online) {
+      // Đưa vào hàng chờ offline
+      _queue = _queue.filter(q => !(q.key === key && q.module === _module));
+      _queue.push({ module: _module, key, data, time: Date.now() });
+      _setStatus('offline', '📶 Offline — dữ liệu sẽ đồng bộ khi có mạng');
+      return;
+    }
+
+    _setStatus('saving', '⏫ Đang lưu...');
+    try {
+      const res = await _post({ action: 'save', module: _module, key, data });
+      if (res.ok && res.saved) {
+        _setStatus('ok', '☁️ Đã lưu lên Drive ' + _fmtTime(res.timestamp));
+        _processQueue();
+      } else {
+        throw new Error(res.error || 'Save failed');
+      }
+    } catch (e) {
+      if (attempt < RETRY_MAX) {
+        _setStatus('retry', `🔄 Thử lại (${attempt}/${RETRY_MAX})...`);
+        setTimeout(() => _doSave(key, data, attempt + 1), RETRY_DELAY * attempt);
+      } else {
+        _setStatus('error', '❌ Lỗi đồng bộ — đã lưu cục bộ');
+        _queue.push({ module: _module, key, data, time: Date.now() });
+        console.error('[EduProSync] Lỗi lưu sau', RETRY_MAX, 'lần:', e);
+      }
+    }
+  }
+
+  // ── POST REQUEST ──────────────────────────────────────────────────
+  function _getUrl() {
+    // Ưu tiên URL đã lưu qua showSetup(), rồi mới dùng hardcoded SCRIPT_URL
+    const stored = localStorage.getItem('edupro_scriptUrl');
+    return (stored && stored.startsWith('https://script.google.com')) ? stored : SCRIPT_URL;
+  }
+
+  async function _post(payload, timeout = 10000) {
+    const url  = _getUrl();
+    const ctrl = new AbortController();
+    const id   = setTimeout(() => ctrl.abort(), timeout);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        signal: ctrl.signal,
+        headers: { 'Content-Type': 'text/plain' }
+      });
+      clearTimeout(id);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } catch (e) {
+      clearTimeout(id);
+      throw e;
+    }
+  }
+
+  // ── XỬ LÝ HÀNG ĐỢI OFFLINE ───────────────────────────────────────
+  async function _processQueue() {
+    if (!_online || _queue.length === 0) return;
+    const pending = [..._queue];
+    _queue = [];
+    for (const item of pending) {
+      await _doSave(item.key, item.data);
+      await new Promise(r => setTimeout(r, 300)); // Tránh quá nhiều request cùng lúc
+    }
+  }
+
+  // ── KIỂM TRA KẾT NỐI SERVER ──────────────────────────────────────
+  async function _pingServer() {
+    if (!_isConfigured()) {
+      _setStatus('warning', '⚠️ Chưa cấu hình — xem hướng dẫn cài đặt');
+      return;
+    }
+    try {
+      const res = await _post({ action: 'ping' }, 5000);
+      if (res.ok) _setStatus('ok', '☁️ Drive đã kết nối · ' + (_getUrl().substring(40,60) + '...'))
+    } catch {
+      _setStatus('warning', '⚠️ Không kết nối được Drive — dùng chế độ cục bộ');
+    }
+  }
+
+  // ── THANH TRẠNG THÁI ─────────────────────────────────────────────
+  function _injectStatusBar() {
+    if (document.getElementById('edupro-sync-bar')) return;
+    const bar = document.createElement('div');
+    bar.id = 'edupro-sync-bar';
+    bar.style.cssText = `
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 5px 16px; font-size: 11px; font-family: inherit;
+      background: #f0fdf4; border-top: 1px solid #bbf7d0;
+      color: #166534; transition: all .3s; gap: 12px;
+      box-shadow: 0 -2px 8px rgba(0,0,0,.06);
+    `;
+    bar.innerHTML = `
+      <span id="edupro-sync-msg" style="display:flex;align-items:center;gap:6px">
+        🔄 Đang kiểm tra kết nối Drive...
+      </span>
+      <span style="display:flex;align-items:center;gap:8px;opacity:.7">
+        <span id="edupro-sync-module" style="font-weight:700"></span>
+        <button onclick="EduProSync.showSetup()" style="border:1px solid currentColor;background:transparent;cursor:pointer;padding:1px 8px;border-radius:4px;font-size:10px;font-family:inherit;color:inherit">⚙️ Cấu hình</button>
+      </span>
+    `;
+    document.body.appendChild(bar);
+    _statusEl = bar;
+    document.getElementById('edupro-sync-module').textContent = _module;
+  }
+
+  const STATUS_STYLES = {
+    ok:      { bg: '#f0fdf4', border: '#bbf7d0', color: '#166534' },
+    saving:  { bg: '#eff6ff', border: '#bfdbfe', color: '#1d4ed8' },
+    retry:   { bg: '#fffbeb', border: '#fde68a', color: '#92400e' },
+    error:   { bg: '#fff1f2', border: '#fecdd3', color: '#be123c' },
+    offline: { bg: '#f8fafc', border: '#e2e8f0', color: '#475569' },
+    warning: { bg: '#fffbeb', border: '#fde68a', color: '#92400e' },
+  };
+
+  function _setStatus(type, msg) {
+    if (!_statusEl) return;
+    const s = STATUS_STYLES[type] || STATUS_STYLES.ok;
+    _statusEl.style.background  = s.bg;
+    _statusEl.style.borderColor = s.border;
+    _statusEl.style.color       = s.color;
+    const msgEl = document.getElementById('edupro-sync-msg');
+    if (msgEl) msgEl.textContent = msg;
+  }
+
+  // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
+  function showSetup() {
+    const current = _getUrl() === 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec' ? '' : _getUrl();
+    const url = prompt(
+      '🔧 Nhập URL Google Apps Script:\n\n' +
+      'Cách lấy URL:\n' +
+      '1. Mở script.google.com\n' +
+      '2. Dán nội dung EduPro_DriveSync.gs\n' +
+      '3. Deploy → New deployment → Web app\n' +
+      '4. Sao chép URL và dán vào đây\n\n' +
+      'URL hiện tại: ' + (current || '(chưa cấu hình)'),
+      current
+    );
+    if (url && url.startsWith('https://script.google.com')) {
+      // Lưu URL vào localStorage để các module dùng lại
+      localStorage.setItem('edupro_scriptUrl', url);
+      alert('✅ Đã lưu URL!\n\nVui lòng tải lại trang để áp dụng.\n\n⚠️ Lưu ý: Để cố định vĩnh viễn, cần cập nhật SCRIPT_URL trong mã nguồn.');
+      location.reload();
+    } else if (url !== null) {
+      alert('❌ URL không hợp lệ. Phải bắt đầu bằng https://script.google.com');
+    }
+  }
+
+  // ── NETWORK EVENTS ────────────────────────────────────────────────
+  function _listenNetworkEvents() {
+    window.addEventListener('online', () => {
+      _online = true;
+      _setStatus('ok', '📶 Đã kết nối mạng — đang đồng bộ...');
+      _processQueue();
+    });
+    window.addEventListener('offline', () => {
+      _online = false;
+      _setStatus('offline', '📴 Mất kết nối — dữ liệu lưu cục bộ');
+    });
+    // Lưu hàng chờ trước khi đóng trang
+    window.addEventListener('beforeunload', () => {
+      if (_queue.length > 0) {
+        localStorage.setItem('edupro_offline_queue_' + _module, JSON.stringify(_queue));
+      }
+    });
+    // Khôi phục hàng chờ khi mở lại trang
+    const savedQueue = localStorage.getItem('edupro_offline_queue_' + _module);
+    if (savedQueue) {
+      try {
+        _queue = JSON.parse(savedQueue);
+        localStorage.removeItem('edupro_offline_queue_' + _module);
+      } catch {}
+    }
+  }
+
+  function _isConfigured() {
+    const url = _getUrl();
+    return url !== 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec' && url.startsWith('https://script.google.com');
+  }
+
+  function _fmtTime(iso) {
+    if (!iso) return '';
+    try {
+      return new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    } catch { return ''; }
+  }
+
+  // ── API CÔNG KHAI ─────────────────────────────────────────────────
+  return { init, save, saveNow, load, loadAll, remove, showSetup };
+
+})();
+
+</script>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-logo"><div class="an">🎓 EduPro</div><div class="as">THCS All-in-One</div></div>
+    <nav class="sb-nav">
+      <div class="nl">Trang chủ</div>
+      <div class="ni" onclick="window.location='edupro-home.html'"><span class="ic">🏠</span>Trang chủ</div>
+      <div class="nl">Quản lý</div>
+      <div class="ni" onclick="window.location='module1-quan-ly-lop.html'"><span class="ic">👥</span>Lớp & Học sinh</div>
+      <div class="ni" onclick="window.location='module2-quan-ly-diem.html'"><span class="ic">📊</span>Điểm số</div>
+      <div class="ni" onclick="window.location='module3-soan-giao-an.html'"><span class="ic">📋</span>Giáo án</div>
+      <div class="ni" onclick="window.location='module4-de-kiem-tra.html'"><span class="ic">🎯</span>Đề kiểm tra</div>
+      <div class="nl" style="margin-top:8px">Công cụ</div>
+      <div class="ni" onclick="window.location='module5-tkb-lich.html'"><span class="ic">📅</span>Thời khoá biểu</div>
+      <div class="ni" onclick="window.location='module6-tro-choi.html'"><span class="ic">🎮</span>Trò chơi</div>
+      <div class="ni" onclick="window.location='module7-kho-tai-lieu.html'"><span class="ic">📁</span>Tài liệu</div>
+      <div class="ni" onclick="window.location='module8-thong-bao.html'"><span class="ic">📣</span>Thông báo</div>
+      <div class="ni active" onclick="window.location='module9-tro-ly-ai.html'"><span class="ic">🤖</span>Trợ lý AI</div>
+    </nav>
+    <div class="sb-bot"><div style="display:flex;align-items:center;gap:10px;padding:8px 10px">
+      <div class="ta">NL</div>
+      <div><div class="tn">Nguyễn Thanh Liêm</div><div class="tr-r">GV GDCD · THCS Hùng Vương</div></div>
+    </div></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="tl"><h1>🤖 Trợ lý AI</h1><p>Powered by Claude · Hỗ trợ giảng dạy thông minh</p></div>
+      <div class="tr2">
+        <button class="btn btn-ol btn-sm" onclick="window.location='edupro-home.html'" style="font-size:11px;padding:4px 10px">🏠 Trang chủ</button>
+        <span class="badge b-jade">✅ Đang kết nối</span>
+        <button class="btn btn-ol" onclick="clearChat()">🗑 Xoá chat</button>
+        <button class="btn btn-jade" onclick="openPage('tools')">🛠 Công cụ AI</button>
+      </div>
+    </div>
+
+    <div class="page-tabs">
+      <div class="ptab active" id="tab-chat" onclick="openPage('chat')">💬 Chat với AI</div>
+      <div class="ptab" id="tab-tools" onclick="openPage('tools')">🛠 Công cụ chuyên biệt</div>
+      <div class="ptab" id="tab-history" onclick="openPage('history')">📋 Lịch sử</div>
+    </div>
+
+    <!-- ══ CHAT PAGE ══ -->
+    <div class="page active" id="page-chat">
+      <div class="chat-layout">
+        <!-- LEFT PANEL -->
+        <div class="chat-left">
+          <div class="cl-section">
+            <button class="new-chat-btn" onclick="clearChat()">✏️ Cuộc trò chuyện mới</button>
+          </div>
+          <div class="qp-list">
+            <div class="qp-cat">📋 Giáo án</div>
+            <div class="qp-item" onclick="quickPrompt('Soạn mục tiêu bài học cho bài &quot;Quyền và nghĩa vụ công dân&quot; môn GDCD lớp 8 theo chuẩn Bloom')">
+              <span class="qi">🎯</span><span class="qt">Soạn mục tiêu bài học theo Bloom</span>
+            </div>
+            <div class="qp-item" onclick="quickPrompt('Gợi ý 3 hoạt động dạy học sáng tạo cho bài GDCD 8 về pháp luật, phù hợp học sinh THCS, thời lượng 45 phút')">
+              <span class="qi">⚡</span><span class="qt">Gợi ý hoạt động dạy học</span>
+            </div>
+            <div class="qp-item" onclick="quickPrompt('Soạn phần khởi động (5 phút) cho tiết GDCD 8 về chủ đề đạo đức và pháp luật, tạo hứng thú cho học sinh')">
+              <span class="qi">🚀</span><span class="qt">Soạn phần khởi động tiết học</span>
+            </div>
+
+            <div class="qp-cat">🎯 Đề kiểm tra</div>
+            <div class="qp-item" onclick="quickPrompt('Tạo 5 câu hỏi trắc nghiệm GDCD 8 về quyền và nghĩa vụ công dân, theo cấp độ Bloom: 2 Nhận biết, 2 Thông hiểu, 1 Vận dụng')">
+              <span class="qi">📝</span><span class="qt">Tạo câu hỏi trắc nghiệm theo Bloom</span>
+            </div>
+            <div class="qp-item" onclick="quickPrompt('Soạn 2 câu tự luận và gợi ý đáp án cho bài kiểm tra GDCD 8 về chủ đề pháp luật và đạo đức')">
+              <span class="qi">✍️</span><span class="qt">Soạn câu tự luận + đáp án</span>
+            </div>
+
+            <div class="qp-cat">📊 Quản lý lớp</div>
+            <div class="qp-item" onclick="quickPrompt('Viết nhận xét học bạ cuối năm cho học sinh xuất sắc môn GDCD lớp 8. Nhận xét cần đầy đủ về kiến thức, thái độ và hành vi')">
+              <span class="qi">📝</span><span class="qt">Viết nhận xét học bạ học sinh</span>
+            </div>
+            <div class="qp-item" onclick="quickPrompt('Phân tích kết quả học tập của lớp 8A1 môn GDCD: ĐTB lớp 7.2, Giỏi 12%, Khá 45%, Đạt 38%, Yếu 5%. Đưa ra nhận xét và giải pháp cải thiện')">
+              <span class="qi">📊</span><span class="qt">Phân tích kết quả lớp</span>
+            </div>
+            <div class="qp-item" onclick="quickPrompt('Soạn thư liên lạc gửi phụ huynh học sinh cần hỗ trợ thêm về môn GDCD. Học sinh có điểm TB 4.5, hay nghỉ học và thiếu tập trung')">
+              <span class="qi">✉️</span><span class="qt">Soạn thư liên lạc phụ huynh</span>
+            </div>
+
+            <div class="qp-cat">🎮 Trò chơi & Tương tác</div>
+            <div class="qp-item" onclick="quickPrompt('Thiết kế ô chữ 6 hàng ngang cho bài GDCD 8 về pháp luật. Mỗi hàng có gợi ý và đáp án. Từ khoá hàng dọc liên quan đến chủ đề')">
+              <span class="qi">🔤</span><span class="qt">Thiết kế ô chữ bài học</span>
+            </div>
+            <div class="qp-item" onclick="quickPrompt('Đề xuất 3 tình huống thực tế thú vị liên quan đến quyền và nghĩa vụ công dân để học sinh THCS thảo luận nhóm')">
+              <span class="qi">💭</span><span class="qt">Tạo tình huống thảo luận nhóm</span>
+            </div>
+
+            <div class="qp-cat">💡 Khác</div>
+            <div class="qp-item" onclick="quickPrompt('Giải thích đơn giản cho học sinh lớp 8 hiểu về sự khác nhau giữa pháp luật và đạo đức, có ví dụ minh họa thực tế')">
+              <span class="qi">💡</span><span class="qt">Giải thích khái niệm cho HS</span>
+            </div>
+            <div class="qp-item" onclick="quickPrompt('Gợi ý 5 phương pháp dạy học tích cực phù hợp môn GDCD cấp THCS theo chương trình 2018')">
+              <span class="qi">🎓</span><span class="qt">Phương pháp dạy học tích cực</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHAT MAIN -->
+        <div class="chat-main">
+          <div class="chat-messages" id="chatMessages">
+            <div class="welcome" id="welcomeScreen">
+              <div class="welcome-icon">🤖</div>
+              <h2>Xin chào thầy Liêm!</h2>
+              <p>Tôi là trợ lý AI của EduPro, sẵn sàng hỗ trợ mọi công việc giảng dạy của thầy — từ soạn giáo án, tạo đề kiểm tra, đến phân tích học lực và viết nhận xét.</p>
+              <div class="welcome-chips">
+                <div class="welcome-chip" onclick="quickPrompt('Soạn giáo án bài Quyền và nghĩa vụ công dân cho lớp 8 theo mô hình 5 hoạt động')">📋 Soạn giáo án</div>
+                <div class="welcome-chip" onclick="quickPrompt('Tạo 10 câu hỏi trắc nghiệm GDCD 8 về pháp luật và đạo đức')">🎯 Tạo câu hỏi</div>
+                <div class="welcome-chip" onclick="quickPrompt('Viết nhận xét học bạ cho học sinh khá, tích cực và có tiến bộ')">✍️ Viết nhận xét</div>
+                <div class="welcome-chip" onclick="quickPrompt('Phân tích điểm yếu và đề xuất cách cải thiện kết quả học tập môn GDCD cho học sinh lớp 8')">📊 Phân tích học lực</div>
+                <div class="welcome-chip" onclick="quickPrompt('Thiết kế trò chơi khởi động cho tiết GDCD về chủ đề tự chủ và trách nhiệm')">🎮 Trò chơi dạy học</div>
+                <div class="welcome-chip" onclick="quickPrompt('Gợi ý cách xử lý tình huống học sinh không chú ý trong giờ học GDCD')">💡 Xử lý tình huống</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-input-wrap">
+            <div class="input-tools">
+              <button class="it-btn" onclick="insertTemplate('giao_an')">📋 Giáo án</button>
+              <button class="it-btn" onclick="insertTemplate('de_kiem_tra')">🎯 Đề KT</button>
+              <button class="it-btn" onclick="insertTemplate('nhan_xet')">✍️ Nhận xét</button>
+              <button class="it-btn" onclick="insertTemplate('phan_tich')">📊 Phân tích</button>
+              <button class="it-btn" onclick="insertTemplate('tro_choi')">🎮 Trò chơi</button>
+              <button class="it-btn" onclick="insertTemplate('thu_ph')">✉️ Thư PH</button>
+            </div>
+            <div class="chat-input-box">
+              <textarea id="chatInput" placeholder="Hỏi tôi bất cứ điều gì về giảng dạy..." rows="1"
+                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"
+                oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+              <button class="send-btn" id="sendBtn" onclick="sendMsg()">▶</button>
+            </div>
+            <div style="font-size:11px;color:var(--ink3);text-align:center;margin-top:6px">Nhấn Enter để gửi · Shift+Enter để xuống dòng</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TOOLS PAGE ══ -->
+    <div class="page" id="page-tools">
+      <div class="tools-content">
+        <div style="margin-bottom:20px">
+          <div style="font-size:16px;font-weight:800;margin-bottom:4px">🛠 Công cụ AI chuyên biệt</div>
+          <div style="font-size:13px;color:var(--ink3)">Chọn công cụ phù hợp — điền thông tin và AI sẽ tạo ra nội dung hoàn chỉnh ngay lập tức</div>
+        </div>
+
+        <div class="tools-grid">
+          <div class="tool-card" style="--tc-color:#0d9488" onclick="openTool('giaoan')">
+            <div class="tc-icon">📋</div>
+            <h3>Soạn Giáo án tự động</h3>
+            <p>Nhập tên bài và AI soạn giáo án đầy đủ 5 hoạt động theo chuẩn Bộ GD&ĐT 2021</p>
+            <div class="tc-use">→ Dùng ngay</div>
+          </div>
+          <div class="tool-card" style="--tc-color:#2563eb" onclick="openTool('cau_hoi')">
+            <div class="tc-icon">🎯</div>
+            <h3>Tạo Ngân hàng Câu hỏi</h3>
+            <p>Tạo nhanh bộ câu hỏi trắc nghiệm + tự luận theo ma trận Bloom, phân cấp độ</p>
+            <div class="tc-use">→ Dùng ngay</div>
+          </div>
+          <div class="tool-card" style="--tc-color:#7c3aed" onclick="openTool('nhan_xet')">
+            <div class="tc-icon">✍️</div>
+            <h3>Viết Nhận xét Học sinh</h3>
+            <p>AI viết nhận xét học bạ cá nhân hoá theo thông tin từng em, đúng chuẩn hành văn</p>
+            <div class="tc-use">→ Dùng ngay</div>
+          </div>
+          <div class="tool-card" style="--tc-color:#d97706" onclick="openTool('phan_tich')">
+            <div class="tc-icon">📊</div>
+            <h3>Phân tích Học lực Lớp</h3>
+            <p>Nhập số liệu điểm — AI phân tích xu hướng, điểm yếu và đề xuất giải pháp cụ thể</p>
+            <div class="tc-use">→ Dùng ngay</div>
+          </div>
+          <div class="tool-card" style="--tc-color:#dc2626" onclick="openTool('thu_ph')">
+            <div class="tc-icon">✉️</div>
+            <h3>Soạn Thư Phụ huynh</h3>
+            <p>Tự động soạn thư liên lạc, thư mời họp phụ huynh chuyên nghiệp và lịch sự</p>
+            <div class="tc-use">→ Dùng ngay</div>
+          </div>
+          <div class="tool-card" style="--tc-color:#16a34a" onclick="openTool('tro_choi')">
+            <div class="tc-icon">🎮</div>
+            <h3>Thiết kế Trò chơi Dạy học</h3>
+            <p>Tạo ô chữ, câu hỏi quiz, tình huống thảo luận từ nội dung bài học bất kỳ</p>
+            <div class="tc-use">→ Dùng ngay</div>
+          </div>
+        </div>
+
+        <!-- TOOL FORMS -->
+        <div class="tool-form" id="tf-giaoan">
+          <div class="tf-header"><h3>📋 Soạn Giáo án tự động</h3><button class="btn btn-sm btn-ol" onclick="closeTool('giaoan')">✕ Đóng</button></div>
+          <div class="fr3">
+            <div class="fg"><label>Tên bài học *</label><input type="text" class="fi" id="ga_ten" placeholder="VD: Pháp luật là gì?"></div>
+            <div class="fg"><label>Môn / Khối</label>
+              <select class="sel" id="ga_mon"><option>GDCD lớp 8</option><option>GDCD lớp 7</option><option>GDCD lớp 6</option></select>
+            </div>
+            <div class="fg"><label>Thời lượng</label>
+              <select class="sel" id="ga_tl"><option>45 phút</option><option>90 phút</option></select>
+            </div>
+          </div>
+          <div class="fg"><label>Yêu cầu đặc biệt (tuỳ chọn)</label><input type="text" class="fi" id="ga_yc" placeholder="VD: Tích hợp giáo dục địa phương, sử dụng kỹ thuật KWL..."></div>
+          <button class="btn btn-jade" onclick="runTool('giaoan')">✨ AI soạn giáo án</button>
+          <div class="spinner-wrap" id="sp-giaoan"><div class="spin"></div>AI đang soạn giáo án, vui lòng chờ...</div>
+          <div class="result-box" id="rb-giaoan">
+            <div class="rb-actions">
+              <button class="btn btn-sm btn-jade" onclick="copyResult('rb-giaoan')">📋 Sao chép</button>
+              <button class="btn btn-sm btn-ol" onclick="sendToChat('rb-giaoan')">💬 Gửi vào chat</button>
+              <button class="btn btn-sm btn-ol" onclick="exportChatDoc()">⬇ Xuất Word</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-form" id="tf-cau_hoi">
+          <div class="tf-header"><h3>🎯 Tạo Ngân hàng Câu hỏi</h3><button class="btn btn-sm btn-ol" onclick="closeTool('cau_hoi')">✕ Đóng</button></div>
+          <div class="fr2">
+            <div class="fg"><label>Chủ đề / Bài học *</label><input type="text" class="fi" id="ch_chu_de" placeholder="VD: Quyền và nghĩa vụ công dân"></div>
+            <div class="fg"><label>Môn / Khối</label><select class="sel" id="ch_mon"><option>GDCD lớp 8</option><option>GDCD lớp 7</option><option>GDCD lớp 6</option></select></div>
+          </div>
+          <div class="fr3">
+            <div class="fg"><label>Số câu TN</label><input type="number" class="fi" id="ch_tn" value="8" min="1" max="30"></div>
+            <div class="fg"><label>Số câu TL</label><input type="number" class="fi" id="ch_tl" value="2" min="0" max="10"></div>
+            <div class="fg"><label>Cấp độ chính</label><select class="sel" id="ch_cap"><option>Hỗn hợp</option><option>Nhận biết</option><option>Thông hiểu</option><option>Vận dụng</option></select></div>
+          </div>
+          <button class="btn btn-jade" onclick="runTool('cau_hoi')">✨ AI tạo câu hỏi</button>
+          <div class="spinner-wrap" id="sp-cau_hoi"><div class="spin"></div>AI đang tạo câu hỏi...</div>
+          <div class="result-box" id="rb-cau_hoi">
+            <div class="rb-actions">
+              <button class="btn btn-sm btn-jade" onclick="copyResult('rb-cau_hoi')">📋 Sao chép</button>
+              <button class="btn btn-sm btn-ol" onclick="exportToQuestionBank()">📥 Vào ngân hàng</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-form" id="tf-nhan_xet">
+          <div class="tf-header"><h3>✍️ Viết Nhận xét Học sinh</h3><button class="btn btn-sm btn-ol" onclick="closeTool('nhan_xet')">✕ Đóng</button></div>
+          <div class="fr2">
+            <div class="fg"><label>Tên học sinh</label><input type="text" class="fi" id="nx_ten" placeholder="VD: Nguyễn Văn An"></div>
+            <div class="fg"><label>Xếp loại học lực</label><select class="sel" id="nx_xl"><option>Giỏi</option><option>Khá</option><option>Đạt</option><option>Chưa đạt</option></select></div>
+          </div>
+          <div class="fr2">
+            <div class="fg"><label>Điểm TB</label><input type="number" class="fi" id="nx_dtb" placeholder="VD: 8.5" step="0.1"></div>
+            <div class="fg"><label>Hạnh kiểm</label><select class="sel" id="nx_hk"><option>Tốt</option><option>Khá</option><option>Đạt</option></select></div>
+          </div>
+          <div class="fg"><label>Điểm nổi bật / Tính cách cần nhấn mạnh</label>
+            <input type="text" class="fi" id="nx_diem" placeholder="VD: Tích cực phát biểu, giúp đỡ bạn, cần cải thiện tập trung"></div>
+          <div class="fg"><label>Số nhận xét cần tạo</label>
+            <select class="sel" id="nx_so"><option>1 nhận xét</option><option>3 nhận xét (để chọn)</option><option>5 nhận xét</option></select>
+          </div>
+          <button class="btn btn-jade" onclick="runTool('nhan_xet')">✨ AI viết nhận xét</button>
+          <div class="spinner-wrap" id="sp-nhan_xet"><div class="spin"></div>AI đang viết nhận xét...</div>
+          <div class="result-box" id="rb-nhan_xet">
+            <div class="rb-actions">
+              <button class="btn btn-sm btn-jade" onclick="copyResult('rb-nhan_xet')">📋 Sao chép</button>
+              <button class="btn btn-sm btn-ol" onclick="showToast('📝 Đã thêm vào hồ sơ học sinh!')">📝 Lưu vào hồ sơ</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-form" id="tf-phan_tich">
+          <div class="tf-header"><h3>📊 Phân tích Học lực Lớp</h3><button class="btn btn-sm btn-ol" onclick="closeTool('phan_tich')">✕ Đóng</button></div>
+          <div class="fr3">
+            <div class="fg"><label>Lớp</label><input type="text" class="fi" id="pt_lop" value="8A1"></div>
+            <div class="fg"><label>Môn</label><select class="sel" id="pt_mon"><option>GDCD</option><option>Toán</option><option>Văn</option></select></div>
+            <div class="fg"><label>ĐTB lớp</label><input type="number" class="fi" id="pt_dtb" placeholder="VD: 7.2" step="0.1"></div>
+          </div>
+          <div class="fr2" style="margin-bottom:0">
+            <div class="fg"><label>Giỏi (%)</label><input type="number" class="fi" id="pt_gioi" value="12"></div>
+            <div class="fg"><label>Khá (%)</label><input type="number" class="fi" id="pt_kha" value="45"></div>
+            <div class="fg"><label>Đạt (%)</label><input type="number" class="fi" id="pt_dat" value="38"></div>
+            <div class="fg"><label>Chưa đạt (%)</label><input type="number" class="fi" id="pt_yeu" value="5"></div>
+          </div>
+          <div class="fg"><label>Nhận xét riêng của GV (tuỳ chọn)</label><textarea class="fi" id="pt_nhan_xet" rows="2" placeholder="VD: Lớp còn nhiều HS vắng, hay mất tập trung..."></textarea></div>
+          <button class="btn btn-jade" onclick="runTool('phan_tich')">✨ AI phân tích</button>
+          <div class="spinner-wrap" id="sp-phan_tich"><div class="spin"></div>AI đang phân tích...</div>
+          <div class="result-box" id="rb-phan_tich">
+            <div class="rb-actions">
+              <button class="btn btn-sm btn-jade" onclick="copyResult('rb-phan_tich')">📋 Sao chép</button>
+              <button class="btn btn-sm btn-ol" onclick="showToast('📊 Đã lưu báo cáo phân tích!')">💾 Lưu báo cáo</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-form" id="tf-thu_ph">
+          <div class="tf-header"><h3>✉️ Soạn Thư Phụ huynh</h3><button class="btn btn-sm btn-ol" onclick="closeTool('thu_ph')">✕ Đóng</button></div>
+          <div class="fr2">
+            <div class="fg"><label>Loại thư</label>
+              <select class="sel" id="tp_loai"><option>Thông báo kết quả học tập</option><option>Mời họp phụ huynh</option><option>Học sinh cần hỗ trợ</option><option>Khen ngợi học sinh</option><option>Thông báo vi phạm</option></select>
+            </div>
+            <div class="fg"><label>Tên học sinh</label><input type="text" class="fi" id="tp_ten" placeholder="VD: Trần Thị Bình"></div>
+          </div>
+          <div class="fg"><label>Thông tin chính cần đề cập</label><textarea class="fi" id="tp_info" rows="2" placeholder="VD: ĐTB 4.5, hay vắng học không phép, cần phụ huynh quan tâm hơn"></textarea></div>
+          <button class="btn btn-jade" onclick="runTool('thu_ph')">✨ AI soạn thư</button>
+          <div class="spinner-wrap" id="sp-thu_ph"><div class="spin"></div>AI đang soạn thư...</div>
+          <div class="result-box" id="rb-thu_ph">
+            <div class="rb-actions">
+              <button class="btn btn-sm btn-jade" onclick="copyResult('rb-thu_ph')">📋 Sao chép</button>
+              <button class="btn btn-sm btn-ol" onclick="sendToNotification()">📤 Gửi ngay</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tool-form" id="tf-tro_choi">
+          <div class="tf-header"><h3>🎮 Thiết kế Trò chơi Dạy học</h3><button class="btn btn-sm btn-ol" onclick="closeTool('tro_choi')">✕ Đóng</button></div>
+          <div class="fr2">
+            <div class="fg"><label>Chủ đề bài học</label><input type="text" class="fi" id="tc_chu_de" placeholder="VD: Pháp luật và đạo đức"></div>
+            <div class="fg"><label>Loại trò chơi</label>
+              <select class="sel" id="tc_loai"><option>Ô chữ (6 hàng ngang)</option><option>Câu hỏi Quiz nhanh</option><option>Tình huống thảo luận</option><option>Trò chơi khởi động</option></select>
+            </div>
+          </div>
+          <button class="btn btn-jade" onclick="runTool('tro_choi')">✨ AI thiết kế trò chơi</button>
+          <div class="spinner-wrap" id="sp-tro_choi"><div class="spin"></div>AI đang thiết kế trò chơi...</div>
+          <div class="result-box" id="rb-tro_choi">
+            <div class="rb-actions">
+              <button class="btn btn-sm btn-jade" onclick="copyResult('rb-tro_choi')">📋 Sao chép</button>
+              <button class="btn btn-sm btn-ol" onclick="showToast('🎮 Đã thêm vào module Trò chơi!')">🎮 Thêm vào Trò chơi</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ HISTORY PAGE ══ -->
+    <div class="page" id="page-history">
+      <div style="padding:24px 28px;flex:1">
+        <div class="card">
+          <div class="ch"><h2>📋 Lịch sử sử dụng AI</h2><button class="btn btn-sm btn-ol" onclick="showToast('🗑 Đã xoá lịch sử!')">🗑 Xoá tất cả</button></div>
+          <div id="historyContent" style="padding:14px 18px"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ CHAT ══
+let messages=[];
+let isLoading=false;
+const SYSTEM_PROMPT=`Bạn là trợ lý AI thông minh của EduPro, hỗ trợ giáo viên THCS Việt Nam (đặc biệt giáo viên GDCD). Người dùng hiện tại là thầy Nguyễn Thanh Liêm, giáo viên GDCD tại THCS Hùng Vương, P. Sa Đéc, tỉnh Đồng Tháp, dạy lớp 6, 7, 8.
+
+Hãy trả lời bằng tiếng Việt, chuyên nghiệp nhưng thân thiện. Ưu tiên nội dung thực tế, áp dụng được ngay. Khi soạn giáo án hoặc đề thi, theo đúng chuẩn Bộ GD&ĐT Việt Nam. Sử dụng markdown để trình bày rõ ràng khi cần.`;
+
+const TEMPLATES_INPUT={
+  giao_an:'Soạn giáo án cho bài: [tên bài], môn GDCD lớp [khối], thời lượng 45 phút, theo mô hình 5 hoạt động chuẩn Bộ GD&ĐT 2021',
+  de_kiem_tra:'Tạo đề kiểm tra [thời gian] phút môn GDCD [khối] về chủ đề: [chủ đề]. Gồm [số câu TN] câu trắc nghiệm và [số câu TL] câu tự luận, kèm đáp án',
+  nhan_xet:'Viết nhận xét học bạ cuối năm cho học sinh [tên], lớp [lớp], học lực [xếp loại], hạnh kiểm [hạnh kiểm]. Đặc điểm: [mô tả]',
+  phan_tich:'Phân tích kết quả học tập lớp [lớp] môn [môn]: ĐTB [điểm], Giỏi [%]%, Khá [%]%, Đạt [%]%, Chưa đạt [%]%. Nhận xét và đề xuất giải pháp cải thiện',
+  tro_choi:'Thiết kế trò chơi [loại] cho bài học về [chủ đề] môn GDCD lớp 8. Nội dung phù hợp học sinh THCS, thú vị và dễ tổ chức',
+  thu_ph:'Soạn thư liên lạc gửi phụ huynh học sinh [tên] về [vấn đề]. Thư lịch sự, đúng mực, đề xuất hướng phối hợp'
+};
+
+function insertTemplate(key){
+  const t=TEMPLATES_INPUT[key]||'';
+  document.getElementById('chatInput').value=t;
+  document.getElementById('chatInput').focus();
+}
+
+function quickPrompt(text){
+  hideWelcome();
+  document.getElementById('chatInput').value=text;
+  sendMsg();
+}
+
+function hideWelcome(){
+  const w=document.getElementById('welcomeScreen');
+  if(w) w.style.display='none';
+}
+
+function addMsg(role,text){
+  hideWelcome();
+  const wrap=document.getElementById('chatMessages');
+  const div=document.createElement('div');
+  div.className=`msg msg-${role}`;
+  const avatar=role==='ai'?'<div class="msg-avatar msg-av-ai">🤖</div>':'<div class="msg-avatar msg-av-user">NL</div>';
+  const html=role==='ai'?renderMd(text):text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const actions=role==='ai'?`<div class="msg-actions">
+    <button class="ma-btn" onclick="copyText(this)">📋 Sao chép</button>
+    <button class="ma-btn" onclick="exportChatDoc()">📥 Xuất</button>
+    <button class="ma-btn" onclick="deleteMsgBubble(this)">🗑</button>
+  </div>`:'';
+  div.innerHTML=`${avatar}<div class="msg-bubble"><div class="msg-text">${html}</div>${actions}</div>`;
+  wrap.appendChild(div);
+  wrap.scrollTop=wrap.scrollHeight;
+  if(role==='user') messages.push({role:'user',content:text});
+  else messages.push({role:'assistant',content:text});
+}
+
+function renderMd(text){
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*\*(.+?)\*\*\*/g,'<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`(.+?)`/g,'<code>$1</code>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^# (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^[\*\-] (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g,'<ul>$&</ul>')
+    .replace(/^\d+\. (.+)$/gm,'<li>$1</li>')
+    .replace(/\n\n/g,'</p><p>')
+    .replace(/\n/g,'<br>');
+}
+
+function copyText(btn){
+  const text=btn.closest('.msg-bubble').querySelector('.msg-text').innerText;
+  navigator.clipboard?.writeText(text).catch(()=>{});
+  showToast('📋 Đã sao chép!');
+}
+
+function showTyping(){
+  const wrap=document.getElementById('chatMessages');
+  const div=document.createElement('div');
+  div.className='msg msg-ai';div.id='typingIndicator';
+  div.innerHTML=`<div class="msg-avatar msg-av-ai">🤖</div>
+    <div class="typing"><div class="dot-typing"></div><div class="dot-typing"></div><div class="dot-typing"></div></div>`;
+  wrap.appendChild(div);wrap.scrollTop=wrap.scrollHeight;
+}
+
+function removeTyping(){const el=document.getElementById('typingIndicator');if(el)el.remove();}
+
+async function sendMsg(){
+  if(isLoading) return;
+  const input=document.getElementById('chatInput');
+  const text=input.value.trim();
+  if(!text) return;
+  input.value='';input.style.height='auto';
+  addMsg('user',text);
+  isLoading=true;
+  document.getElementById('sendBtn').disabled=true;
+  showTyping();
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',max_tokens:1000,
+        system:SYSTEM_PROMPT,
+        messages:messages.filter(m=>m.role==='user'||m.role==='assistant').slice(-10)
+      })
+    });
+    const data=await res.json();
+    removeTyping();
+    const reply=data.content?.[0]?.text||'Xin lỗi, tôi không thể trả lời lúc này.';
+    addMsg('ai',reply);
+    addToHistory(text,reply);
+  }catch(e){
+    removeTyping();
+    addMsg('ai','⚠️ Không kết nối được với AI. Vui lòng kiểm tra mạng và thử lại.');
+  }finally{
+    isLoading=false;
+    document.getElementById('sendBtn').disabled=false;
+  }
+}
+
+function clearChat(){
+  messages=[];
+  const wrap=document.getElementById('chatMessages');
+  wrap.innerHTML=`<div class="welcome" id="welcomeScreen">
+    <div class="welcome-icon">🤖</div>
+    <h2>Cuộc trò chuyện mới!</h2>
+    <p>Tôi sẵn sàng hỗ trợ thầy Liêm. Chọn gợi ý hoặc nhập câu hỏi bên dưới.</p>
+    <div class="welcome-chips">
+      <div class="welcome-chip" onclick="quickPrompt('Soạn giáo án bài Quyền và nghĩa vụ công dân cho lớp 8')">📋 Soạn giáo án</div>
+      <div class="welcome-chip" onclick="quickPrompt('Tạo 10 câu hỏi trắc nghiệm GDCD 8')">🎯 Tạo câu hỏi</div>
+      <div class="welcome-chip" onclick="quickPrompt('Viết nhận xét học bạ cho học sinh khá')">✍️ Viết nhận xét</div>
+      <div class="welcome-chip" onclick="quickPrompt('Phân tích học lực lớp 8A1')">📊 Phân tích</div>
+    </div>
+  </div>`;
+  showToast('🗑 Đã xoá cuộc trò chuyện');
+}
+
+// ══ TOOLS ══
+function openTool(key){
+  document.querySelectorAll('.tool-form').forEach(f=>f.classList.remove('active'));
+  const tf=document.getElementById(`tf-${key}`);
+  if(tf){tf.classList.add('active');tf.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+
+function closeTool(key){
+  const tf=document.getElementById(`tf-${key}`);
+  if(tf) tf.classList.remove('active');
+}
+
+const TOOL_PROMPTS={
+  giaoan:()=>{
+    const ten=document.getElementById('ga_ten').value.trim()||'Pháp luật và đạo đức';
+    const mon=document.getElementById('ga_mon').value;
+    const tl=document.getElementById('ga_tl').value;
+    const yc=document.getElementById('ga_yc').value.trim();
+    return `Soạn giáo án đầy đủ theo mô hình 5 hoạt động cho bài "${ten}", ${mon}, thời lượng ${tl}. Bao gồm: mục tiêu (kiến thức/kỹ năng/thái độ), chuẩn bị, và 5 hoạt động chi tiết (Khởi động, Hình thành kiến thức mới, Luyện tập, Vận dụng, Củng cố). ${yc?'Yêu cầu thêm: '+yc:''}`;
+  },
+  cau_hoi:()=>{
+    const cd=document.getElementById('ch_chu_de').value.trim()||'Quyền và nghĩa vụ';
+    const mon=document.getElementById('ch_mon').value;
+    const tn=document.getElementById('ch_tn').value;
+    const tl=document.getElementById('ch_tl').value;
+    const cap=document.getElementById('ch_cap').value;
+    return `Tạo ${tn} câu trắc nghiệm và ${tl} câu tự luận về "${cd}" cho ${mon}. Cấp độ: ${cap}. Mỗi câu TN có 4 đáp án A/B/C/D và đáp án đúng. Câu TL kèm gợi ý đáp án. Trình bày rõ ràng, đánh số thứ tự.`;
+  },
+  nhan_xet:()=>{
+    const ten=document.getElementById('nx_ten').value.trim()||'học sinh';
+    const xl=document.getElementById('nx_xl').value;
+    const dtb=document.getElementById('nx_dtb').value;
+    const hk=document.getElementById('nx_hk').value;
+    const diem=document.getElementById('nx_diem').value.trim();
+    const so=document.getElementById('nx_so').value;
+    const n=so.startsWith('3')?3:so.startsWith('5')?5:1;
+    return `Viết ${n} nhận xét học bạ cuối năm cho học sinh ${ten}, học lực ${xl}${dtb?' (ĐTB '+dtb+')':''}, hạnh kiểm ${hk}. ${diem?'Đặc điểm: '+diem+'.':''} Nhận xét ngắn gọn (3-5 dòng), lịch sự, đúng văn phong giáo dục, có thể dùng ngay. Đánh số từng mẫu nếu có nhiều.`;
+  },
+  phan_tich:()=>{
+    const lop=document.getElementById('pt_lop').value;
+    const mon=document.getElementById('pt_mon').value;
+    const dtb=document.getElementById('pt_dtb').value;
+    const gioi=document.getElementById('pt_gioi').value;
+    const kha=document.getElementById('pt_kha').value;
+    const dat=document.getElementById('pt_dat').value;
+    const yeu=document.getElementById('pt_yeu').value;
+    const nx=document.getElementById('pt_nhan_xet').value.trim();
+    return `Phân tích kết quả học tập lớp ${lop} môn ${mon}: ĐTB lớp ${dtb}, Giỏi ${gioi}%, Khá ${kha}%, Đạt ${dat}%, Chưa đạt ${yeu}%. ${nx?'Nhận xét của GV: '+nx+'.':''} Hãy: 1) Đánh giá tổng quan, 2) Phân tích điểm mạnh/yếu, 3) So sánh với chuẩn, 4) Đề xuất 3-5 giải pháp cụ thể, thực tế.`;
+  },
+  thu_ph:()=>{
+    const loai=document.getElementById('tp_loai').value;
+    const ten=document.getElementById('tp_ten').value.trim()||'học sinh';
+    const info=document.getElementById('tp_info').value.trim();
+    return `Soạn thư "${loai}" gửi phụ huynh học sinh ${ten}. Thông tin: ${info||'học sinh cần được quan tâm hơn'}. Thư lịch sự, đúng mực, có tiêu đề, lời chào đầu/cuối, đề xuất hướng phối hợp. Ký tên GV Nguyễn Thanh Liêm, THCS Hùng Vương.`;
+  },
+  tro_choi:()=>{
+    const cd=document.getElementById('tc_chu_de').value.trim()||'pháp luật';
+    const loai=document.getElementById('tc_loai').value;
+    return `Thiết kế "${loai}" cho bài học về "${cd}" môn GDCD lớp 8. Trình bày đầy đủ: tên trò chơi, mục tiêu, cách chơi, nội dung chi tiết (câu hỏi/đáp án/gợi ý), cách tổ chức trên lớp. Phù hợp học sinh THCS, dễ thực hiện trong 10-15 phút.`;
+  }
+};
+
+async function runTool(key){
+  const prompt=TOOL_PROMPTS[key]?.();
+  if(!prompt) return;
+  const sp=document.getElementById(`sp-${key}`);
+  const rb=document.getElementById(`rb-${key}`);
+  sp.classList.add('show');rb.classList.remove('show');
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM_PROMPT,
+        messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'Không nhận được phản hồi.';
+    sp.classList.remove('show');
+    rb.querySelector('.rb-actions').before(Object.assign(document.createElement('div'),{innerHTML:renderMd(text),style:'margin-bottom:12px'}));
+    rb.classList.add('show');
+    addToHistory(prompt.substring(0,80)+'...',text);
+    showToast('✅ AI đã tạo xong! Xem kết quả bên dưới.');
+  }catch(e){
+    sp.classList.remove('show');
+    showToast('⚠️ Không kết nối được AI.');
+  }
+}
+
+function copyResult(rbId){
+  const rb=document.getElementById(rbId);
+  const text=rb.querySelector('div:first-child')?.innerText||'';
+  navigator.clipboard?.writeText(text).catch(()=>{});
+  showToast('📋 Đã sao chép kết quả!');
+}
+
+function sendToChat(rbId){
+  const rb=document.getElementById(rbId);
+  const text=rb.querySelector('div:first-child')?.innerText||'';
+  openPage('chat');
+  addMsg('ai',text);
+  showToast('💬 Đã gửi vào chat!');
+}
+
+// ══ AI GEN QUESTIONS (for external use) ══
+async function aiGenQ(){
+  const topic=(document.getElementById('ai_topic')?document.getElementById('ai_topic').value:'').trim()||'pháp luật GDCD lớp 8';
+  const num=parseInt(document.getElementById('ai_num')?document.getElementById('ai_num').value:5)||5;
+  showToast('🤖 AI đang tạo '+num+' câu hỏi về "'+topic+'"...');
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,
+        system:'Bạn là AI hỗ trợ giáo viên GDCD THCS Việt Nam.',
+        messages:[{role:'user',content:'Tạo '+num+' câu hỏi trắc nghiệm về "'+topic+'" môn GDCD lớp 8. JSON thuần: [{"text":"...","a":"...","b":"...","c":"...","d":"...","correct":"A"}]'}]})
+    });
+    const data=await res.json();
+    const raw=(data.content?.[0]?.text||'[]').replace(/```json|```/g,'').trim();
+    const qs=JSON.parse(raw);
+    if(qs.length) showToast('✅ AI tạo được '+qs.length+' câu! Xem trong module Đề kiểm tra.');
+    else showToast('⚠️ AI không tạo được câu hỏi. Thử lại!');
+  }catch(e){showToast('⚠️ Lỗi kết nối AI: '+e.message);}
+}
+
+// ══ HISTORY ══
+let aiHistory=[];
+function addToHistory(q,a){
+  aiHistory.unshift({q:q.substring(0,80),a:a.substring(0,200),date:new Date().toLocaleString('vi-VN')});
+  if(aiHistory.length>20) aiHistory.pop();
+}
+
+function renderHistory(){
+  document.getElementById('historyContent').innerHTML=aiHistory.length===0
+    ?'<div style="color:var(--ink3);font-size:13px;padding:8px 0">Chưa có lịch sử sử dụng AI</div>'
+    :aiHistory.map((h,i)=>`<div style="padding:12px 0;border-bottom:1px solid var(--border)">
+      <div style="font-size:11px;color:var(--ink3);margin-bottom:4px">📅 ${h.date}</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:4px;color:var(--jade)">🙋 ${h.q}${h.q.length>=80?'...':''}</div>
+      <div style="font-size:12px;color:var(--ink2);line-height:1.5">${h.a.substring(0,160)}${h.a.length>160?'...':''}</div>
+    </div>`).join('');
+}
+
+// ══ DELETE MSG BUBBLE ══
+function deleteMsgBubble(btn){
+  const msg = btn.closest('.msg');
+  if(msg) msg.remove();
+  showToast('🗑 Đã xoá tin nhắn');
+}
+
+// ══ PAGE NAV ══
+function openPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.ptab').forEach(el=>el.classList.remove('active'));
+  document.getElementById(`page-${p}`).classList.add('active');
+  document.getElementById(`tab-${p}`).classList.add('active');
+  if(p==='history') renderHistory();
+}
+
+// ══ TOAST ══
+let tt;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2600);}
+
+EduProSync.init('module9_trolyai');
+
+// ── ĐỒNG BỘ NĂM HỌC & CƠ SỞ TỪ TRANG CHỦ ─────────────────────────
+(function syncSharedSettings(){
+  const namHoc = localStorage.getItem('edupro_namHoc');
+  if(namHoc){
+    const display = namHoc.replace('-','–');
+    // Cập nhật mọi text hiện "Năm học" trong topbar
+    document.querySelectorAll('.topbar-left p, [id*="topSub"]').forEach(el=>{
+      el.textContent = el.textContent.replace(/Năm học [0-9–]+/, 'Năm học ' + display);
+    });
+    // Cập nhật title nếu có
+    document.querySelectorAll('.sb-bot .tr, .sb-bot .tr-r').forEach(el=>{
+      el.textContent = el.textContent.replace(/[0-9]{4}–[0-9]{4}/, display);
+    });
+  }
+})();
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- EDUPRO FOOTER -->
+<footer style="
+  background:linear-gradient(135deg,#0f172a 0%,#1a2744 60%,#0d1f35 100%);
+  padding:20px 32px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:14px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  position:relative;overflow:hidden;
+">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 15% 50%,rgba(13,148,136,.1),transparent 45%),radial-gradient(ellipse at 85% 50%,rgba(37,99,235,.07),transparent 45%);pointer-events:none"></div>
+
+  <!-- Logo Left -->
+  <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1">
+    <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#0d9488,#0f766e);display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 3px 10px rgba(13,148,136,.35);flex-shrink:0">🎓</div>
+    <div>
+      <div style="font-size:14px;font-weight:900;color:#fff;letter-spacing:-.01em;line-height:1.1">EduPro <span style="color:#2dd4bf">All‑in‑One</span></div>
+      <div style="font-size:10px;color:rgba(255,255,255,.38);margin-top:2px;letter-spacing:.02em">Trợ lý Giáo viên THCS · 9 Module</div>
+    </div>
+  </div>
+
+  <!-- Center: Copyright -->
+  <div style="position:relative;z-index:1;text-align:center">
+    <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:100px;padding:8px 18px">
+      <span style="font-size:13px;color:rgba(255,255,255,.4)">©</span>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#e2e8f0;letter-spacing:.01em">Copyright belongs to <span style="color:#2dd4bf">Liemnguyen</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:1px">
+          <span style="color:#60a5fa;font-weight:600">Zalo</span>&nbsp;·&nbsp;<span style="color:#e2e8f0;font-weight:600;letter-spacing:.04em">0815 899 878</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Zalo Button + Version -->
+  <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1">
+    <a href="https://zalo.me/0815899878" target="_blank" rel="noopener" style="
+      display:inline-flex;align-items:center;gap:7px;
+      padding:8px 16px;border-radius:100px;
+      background:linear-gradient(135deg,#0068ff,#0050d0);
+      color:#fff;text-decoration:none;font-size:12px;font-weight:700;
+      box-shadow:0 3px 12px rgba(0,104,255,.3);
+      transition:transform .18s,box-shadow .18s;
+    " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 18px rgba(0,104,255,.45)'"
+       onmouseout="this.style.transform='';this.style.boxShadow='0 3px 12px rgba(0,104,255,.3)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.02 2 11c0 2.88 1.34 5.46 3.44 7.18L4 22l4.1-1.29C9.31 21.21 10.62 21.5 12 21.5 17.52 21.5 22 17.48 22 13c0-4.97-4.48-9-10-9z"/>
+      </svg>
+      Liên hệ Zalo
+    </a>
+    <div style="text-align:right;line-height:1.5">
+      <div style="font-size:10px;color:rgba(255,255,255,.22);font-weight:600">v1.0 · 2026</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.18)">THCS Hùng Vương</div>
+    </div>
+  </div>
+</footer>
+</body></html>

@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kho Tài liệu — EduPro THCS</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f4f8;--surface:#fff;--s2:#f7f9fc;--ink:#1a202c;--ink2:#4a5568;--ink3:#718096;
+  --border:#e2e8f0;--jade:#0d9488;--jl:#ccfbf1;--jd:#0f766e;
+  --blue:#2563eb;--bl:#dbeafe;--amber:#d97706;--al:#fef3c7;
+  --red:#dc2626;--rl:#fee2e2;--purple:#7c3aed;--pl:#ede9fe;
+  --green:#16a34a;--gl:#dcfce7;--pink:#db2777;--pkl:#fce7f3;
+  --r:12px;--sh:0 1px 3px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;min-height:100vh}
+.app{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--ink);flex-shrink:0;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.an{font-size:15px;font-weight:800;color:#fff}.as{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.sb-nav{padding:12px 10px;flex:1;overflow-y:auto}
+.nl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:8px 8px 4px}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;color:rgba(255,255,255,.55);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;margin-bottom:2px}
+.ni:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9)}.ni.active{background:var(--jade);color:#fff}
+.ic{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.sb-bot{padding:14px 10px;border-top:1px solid rgba(255,255,255,.07)}
+.ta{width:34px;height:34px;border-radius:50%;background:var(--jade);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.tn{font-size:12px;font-weight:600;color:#fff}.tr-r{font-size:11px;color:rgba(255,255,255,.4)}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.tl h1{font-size:17px;font-weight:700}.tl p{font-size:12px;color:var(--ink3);margin-top:1px}
+.tr2{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.btn:active{transform:scale(.97)}
+.btn-jade{background:var(--jade);color:#fff}.btn-jade:hover{background:var(--jd)}
+.btn-ol{background:transparent;border:1px solid var(--border);color:var(--ink)}.btn-ol:hover{background:var(--s2)}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#1d4ed8}
+.btn-purple{background:var(--purple);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:6px}
+.btn-red{background:var(--red);color:#fff}
+
+/* CONTENT */
+.content{padding:24px 28px;flex:1}
+
+/* LAYOUT */
+.lib-layout{display:grid;grid-template-columns:240px 1fr;gap:16px;align-items:start}
+.sidebar-panel{position:sticky;top:80px;display:flex;flex-direction:column;gap:12px}
+
+/* CARD */
+.card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px}
+.ch{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ch h2{font-size:14px;font-weight:700}.ca{display:flex;gap:8px}
+
+/* SEARCH BAR */
+.search-bar{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:9px 14px;flex:1;min-width:220px;transition:border-color .15s}
+.search-box:focus-within{border-color:var(--jade)}
+.search-box input{border:none;background:transparent;font-family:inherit;font-size:13px;color:var(--ink);outline:none;width:100%}
+.search-box input::placeholder{color:var(--ink3)}
+.sel{padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;background:var(--surface);outline:none;cursor:pointer;color:var(--ink)}
+.sel:focus{border-color:var(--jade)}
+
+/* VIEW TOGGLE */
+.view-toggle{display:flex;background:var(--s2);border-radius:8px;padding:3px;border:1px solid var(--border)}
+.vt-btn{padding:5px 10px;border-radius:6px;border:none;background:transparent;font-size:14px;cursor:pointer;transition:all .15s}
+.vt-btn.active{background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+
+/* STAT CHIPS */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.stat-chip{background:var(--surface);border-radius:10px;border:1px solid var(--border);padding:12px 14px;box-shadow:var(--sh)}
+.stat-chip .sv{font-size:20px;font-weight:800;line-height:1;margin-bottom:3px}
+.stat-chip .sl{font-size:11px;color:var(--ink3)}
+
+/* CATEGORY FILTER */
+.cat-list{padding:8px}
+.cat-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:all .15s;margin-bottom:2px}
+.cat-item:hover{background:var(--s2)}.cat-item.active{background:var(--jl);color:var(--jd)}
+.cat-icon{font-size:18px;width:28px;text-align:center;flex-shrink:0}
+.cat-name{flex:1;font-size:13px;font-weight:500}
+.cat-count{font-size:11px;font-weight:700;padding:2px 7px;border-radius:100px;background:rgba(0,0,0,.06)}
+.cat-item.active .cat-count{background:rgba(13,148,136,.2);color:var(--jd)}
+
+/* FOLDER BREADCRUMB */
+.breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:14px;font-size:13px}
+.breadcrumb span{color:var(--ink3);cursor:pointer;transition:color .15s}
+.breadcrumb span:hover{color:var(--jade)}
+.breadcrumb span.current{color:var(--ink);font-weight:700;cursor:default}
+.breadcrumb .sep{color:var(--border)}
+
+/* FILE GRID */
+.file-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.file-card{background:var(--surface);border-radius:10px;border:1.5px solid var(--border);padding:14px;cursor:pointer;transition:all .18s;position:relative;text-align:center}
+.file-card:hover{border-color:var(--jade);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.08)}
+.file-card.selected{border-color:var(--jade);background:var(--jl)}
+.file-card .fc-check{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:var(--jade);color:#fff;display:none;align-items:center;justify-content:center;font-size:10px}
+.file-card.selected .fc-check{display:flex}
+.file-icon{font-size:36px;margin-bottom:10px;display:block}
+.file-name{font-size:12px;font-weight:600;line-height:1.4;margin-bottom:4px;word-break:break-word}
+.file-meta{font-size:10px;color:var(--ink3)}
+.file-actions{display:flex;gap:4px;justify-content:center;margin-top:8px;opacity:0;transition:opacity .15s}
+.file-card:hover .file-actions{opacity:1}
+.fa-btn{width:26px;height:26px;border-radius:6px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.fa-btn:hover{background:var(--jl);border-color:var(--jade)}
+
+/* FILE LIST */
+.file-list-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;border:1px solid transparent;cursor:pointer;transition:all .15s}
+.file-list-item:hover{background:var(--s2);border-color:var(--border)}
+.file-list-item.selected{background:var(--jl);border-color:var(--jade)}
+.fli-icon{font-size:22px;flex-shrink:0;width:32px;text-align:center}
+.fli-info{flex:1;min-width:0}
+.fli-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fli-meta{font-size:11px;color:var(--ink3);margin-top:2px}
+.fli-actions{display:flex;gap:6px;opacity:0;transition:opacity .15s;flex-shrink:0}
+.file-list-item:hover .fli-actions{opacity:1}
+
+/* TAGS */
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:600;cursor:pointer}
+.tag:hover{opacity:.8}
+
+/* UPLOAD ZONE */
+.upload-zone{border:2.5px dashed var(--border);border-radius:var(--r);padding:28px;text-align:center;transition:all .2s;cursor:pointer;background:var(--s2);margin-bottom:14px}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--jade);background:var(--jl)}
+.upload-zone .uz-icon{font-size:36px;margin-bottom:10px}
+.upload-zone h3{font-size:14px;font-weight:700;margin-bottom:4px}
+.upload-zone p{font-size:12px;color:var(--ink3)}
+
+/* SELECTION BAR */
+.sel-bar{display:none;align-items:center;gap:12px;background:var(--ink);color:#fff;padding:10px 18px;border-radius:8px;margin-bottom:12px;font-size:13px}
+.sel-bar.visible{display:flex}
+.sel-bar .sc{font-weight:700;flex:1}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:100px;font-size:11px;font-weight:600}
+.b-green{background:var(--gl);color:var(--green)}
+.b-blue{background:var(--bl);color:var(--blue)}
+.b-amber{background:var(--al);color:var(--amber)}
+.b-purple{background:var(--pl);color:var(--purple)}
+.b-jade{background:var(--jl);color:var(--jd)}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:16px;width:100%;max-width:500px;box-shadow:0 24px 60px rgba(0,0,0,.25);animation:su .2s ease;margin:auto}
+.modal-lg{max-width:680px}
+@keyframes su{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mh{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.mh h3{font-size:15px;font-weight:700}
+.mb{padding:20px 24px}
+.mf{padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap}
+.xbtn{background:var(--s2);border:1px solid var(--border);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.fg{margin-bottom:13px}
+.fg label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px}
+.fi{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;color:var(--ink);background:var(--s2);outline:none;transition:border-color .15s}
+.fi:focus{border-color:var(--jade);background:#fff}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* PREVIEW PANEL */
+.preview-panel{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);padding:20px;text-align:center}
+.preview-panel .pp-icon{font-size:64px;margin-bottom:16px}
+.preview-panel h3{font-size:15px;font-weight:700;margin-bottom:6px}
+.preview-panel .pp-meta{font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.6}
+.preview-panel .pp-tags{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+
+/* GOOGLE DRIVE PANEL */
+.gd-panel{background:linear-gradient(135deg,#1a73e8,#0d47a1);border-radius:var(--r);padding:16px 18px;color:#fff;margin-bottom:12px}
+.gd-panel h3{font-size:13px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.gd-panel p{font-size:12px;opacity:.8;margin-bottom:10px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:999;opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#cbd5e0;border-radius:99px}
+</style>
+
+<script>
+// ══ EDUPRO SHARED STATE ══
+const EduPro = {
+  get: (key) => { try { return JSON.parse(localStorage.getItem('edupro_'+key)||'null'); } catch(e) { return null; } },
+  set: (key, val) => {
+    try { localStorage.setItem('edupro_'+key, JSON.stringify(val)); } catch(e) {}
+    // ─ DriveSync: tự động đồng bộ lên Drive ─
+    if (window.EduProSync) { EduProSync.save(key, val); }
+  },
+  currentClass: () => EduPro.get('currentClass') || '8A1',
+  teacher: () => EduPro.get('teacher') || {name:'Nguyễn Thanh Liêm', school:'THCS Hùng Vương'},
+};
+</script>
+
+<!-- ═══ EDUPRO DRIVESYNC ═══════════════════════════════════════════ -->
+<script>
+/* --- EduPro DriveSync Embedded --- */
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║        EDUPRO DRIVESYNC — Thư viện đồng bộ Google Drive        ║
+// ║  Nhúng vào mỗi module HTML để tự động lưu dữ liệu lên Drive    ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+window.EduProSync = (function () {
+
+  // ── CẤU HÌNH — ĐỔI URL NÀY SAU KHI DEPLOY APPS SCRIPT ──────────
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec';
+  //  Ví dụ: 'https://script.google.com/macros/s/AKfycb.../exec'
+
+  const DEBOUNCE_MS  = 1500;   // Đợi 1.5 giây sau thay đổi cuối cùng rồi mới lưu
+  const RETRY_MAX    = 3;       // Thử lại tối đa 3 lần nếu lỗi mạng
+  const RETRY_DELAY  = 2000;    // Đợi 2 giây giữa mỗi lần retry
+
+  let _module   = 'unknown';
+  let _timers   = {};           // Debounce timers theo key
+  let _queue    = [];           // Hàng chờ khi offline
+  let _online   = navigator.onLine;
+  let _statusEl = null;
+
+  // ── KHỞI TẠO ─────────────────────────────────────────────────────
+  function init(moduleName) {
+    _module = moduleName;
+    _injectStatusBar();
+    _listenNetworkEvents();
+    _processQueue();           // Xử lý hàng đợi offline khi vừa load
+    _pingServer();             // Kiểm tra kết nối server
+    console.log(`[EduProSync] Module "${_module}" đã khởi tạo`);
+  }
+
+  // ── LƯU DỮ LIỆU (có debounce) ────────────────────────────────────
+  function save(key, data, immediate = false) {
+    // Luôn lưu localStorage trước (fallback tức thì)
+    try {
+      localStorage.setItem('edupro_' + key, JSON.stringify(data));
+    } catch (e) {}
+
+    if (immediate) {
+      _doSave(key, data);
+    } else {
+      // Debounce: hủy timer cũ, đặt timer mới
+      clearTimeout(_timers[key]);
+      _timers[key] = setTimeout(() => _doSave(key, data), DEBOUNCE_MS);
+    }
+  }
+
+  // ── LƯU NGAY (không debounce) ─────────────────────────────────────
+  function saveNow(key, data) {
+    return save(key, data, true);
+  }
+
+  // ── TẢI DỮ LIỆU ──────────────────────────────────────────────────
+  async function load(key) {
+    if (!_online || !_isConfigured()) {
+      // Fallback: đọc từ localStorage
+      try {
+        const val = localStorage.getItem('edupro_' + key);
+        return val ? JSON.parse(val) : null;
+      } catch { return null; }
+    }
+
+    try {
+      const res = await _post({ action: 'load', module: _module, key });
+      if (res.found) {
+        // Cập nhật localStorage với dữ liệu mới nhất từ Drive
+        localStorage.setItem('edupro_' + key, JSON.stringify(res.data));
+        return res.data;
+      }
+      // Key chưa có trên Drive → đọc localStorage
+      const local = localStorage.getItem('edupro_' + key);
+      return local ? JSON.parse(local) : null;
+    } catch (e) {
+      console.warn('[EduProSync] load error, dùng localStorage:', e);
+      try {
+        const val = localStorage.getItem('edupro_' + key);
+        return val ? JSON.parse(val) : null;
+      } catch { return null; }
+    }
+  }
+
+  // ── TẢI TOÀN BỘ DỮ LIỆU MODULE (khi trang tải) ───────────────────
+  async function loadAll() {
+    if (!_online || !_isConfigured()) return null;
+    try {
+      const res = await _post({ action: 'loadAll', module: _module });
+      if (res.found && res.data) {
+        // Ghi vào localStorage để dùng offline
+        Object.entries(res.data).forEach(([k, v]) => {
+          localStorage.setItem('edupro_' + k, JSON.stringify(v));
+        });
+        return res.data;
+      }
+      return null;
+    } catch (e) {
+      console.warn('[EduProSync] loadAll error:', e);
+      return null;
+    }
+  }
+
+  // ── XOÁ DỮ LIỆU ──────────────────────────────────────────────────
+  function remove(key) {
+    try { localStorage.removeItem('edupro_' + key); } catch {}
+    if (_online && _isConfigured()) {
+      _post({ action: 'delete', module: _module, key }).catch(console.warn);
+    }
+  }
+
+  // ── NỘI BỘ: THỰC HIỆN LƯU LÊN DRIVE ─────────────────────────────
+  async function _doSave(key, data, attempt = 1) {
+    if (!_isConfigured()) {
+      _setStatus('warning', '⚠️ Chưa cấu hình Script URL');
+      return;
+    }
+
+    if (!_online) {
+      // Đưa vào hàng chờ offline
+      _queue = _queue.filter(q => !(q.key === key && q.module === _module));
+      _queue.push({ module: _module, key, data, time: Date.now() });
+      _setStatus('offline', '📶 Offline — dữ liệu sẽ đồng bộ khi có mạng');
+      return;
+    }
+
+    _setStatus('saving', '⏫ Đang lưu...');
+    try {
+      const res = await _post({ action: 'save', module: _module, key, data });
+      if (res.ok && res.saved) {
+        _setStatus('ok', '☁️ Đã lưu lên Drive ' + _fmtTime(res.timestamp));
+        _processQueue();
+      } else {
+        throw new Error(res.error || 'Save failed');
+      }
+    } catch (e) {
+      if (attempt < RETRY_MAX) {
+        _setStatus('retry', `🔄 Thử lại (${attempt}/${RETRY_MAX})...`);
+        setTimeout(() => _doSave(key, data, attempt + 1), RETRY_DELAY * attempt);
+      } else {
+        _setStatus('error', '❌ Lỗi đồng bộ — đã lưu cục bộ');
+        _queue.push({ module: _module, key, data, time: Date.now() });
+        console.error('[EduProSync] Lỗi lưu sau', RETRY_MAX, 'lần:', e);
+      }
+    }
+  }
+
+  // ── POST REQUEST ──────────────────────────────────────────────────
+  function _getUrl() {
+    // Ưu tiên URL đã lưu qua showSetup(), rồi mới dùng hardcoded SCRIPT_URL
+    const stored = localStorage.getItem('edupro_scriptUrl');
+    return (stored && stored.startsWith('https://script.google.com')) ? stored : SCRIPT_URL;
+  }
+
+  async function _post(payload, timeout = 10000) {
+    const url  = _getUrl();
+    const ctrl = new AbortController();
+    const id   = setTimeout(() => ctrl.abort(), timeout);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        signal: ctrl.signal,
+        headers: { 'Content-Type': 'text/plain' }
+      });
+      clearTimeout(id);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } catch (e) {
+      clearTimeout(id);
+      throw e;
+    }
+  }
+
+  // ── XỬ LÝ HÀNG ĐỢI OFFLINE ───────────────────────────────────────
+  async function _processQueue() {
+    if (!_online || _queue.length === 0) return;
+    const pending = [..._queue];
+    _queue = [];
+    for (const item of pending) {
+      await _doSave(item.key, item.data);
+      await new Promise(r => setTimeout(r, 300)); // Tránh quá nhiều request cùng lúc
+    }
+  }
+
+  // ── KIỂM TRA KẾT NỐI SERVER ──────────────────────────────────────
+  async function _pingServer() {
+    if (!_isConfigured()) {
+      _setStatus('warning', '⚠️ Chưa cấu hình — xem hướng dẫn cài đặt');
+      return;
+    }
+    try {
+      const res = await _post({ action: 'ping' }, 5000);
+      if (res.ok) _setStatus('ok', '☁️ Drive đã kết nối · ' + (_getUrl().substring(40,60) + '...'))
+    } catch {
+      _setStatus('warning', '⚠️ Không kết nối được Drive — dùng chế độ cục bộ');
+    }
+  }
+
+  // ── THANH TRẠNG THÁI ─────────────────────────────────────────────
+  function _injectStatusBar() {
+    if (document.getElementById('edupro-sync-bar')) return;
+    const bar = document.createElement('div');
+    bar.id = 'edupro-sync-bar';
+    bar.style.cssText = `
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 5px 16px; font-size: 11px; font-family: inherit;
+      background: #f0fdf4; border-top: 1px solid #bbf7d0;
+      color: #166534; transition: all .3s; gap: 12px;
+      box-shadow: 0 -2px 8px rgba(0,0,0,.06);
+    `;
+    bar.innerHTML = `
+      <span id="edupro-sync-msg" style="display:flex;align-items:center;gap:6px">
+        🔄 Đang kiểm tra kết nối Drive...
+      </span>
+      <span style="display:flex;align-items:center;gap:8px;opacity:.7">
+        <span id="edupro-sync-module" style="font-weight:700"></span>
+        <button onclick="EduProSync.showSetup()" style="border:1px solid currentColor;background:transparent;cursor:pointer;padding:1px 8px;border-radius:4px;font-size:10px;font-family:inherit;color:inherit">⚙️ Cấu hình</button>
+      </span>
+    `;
+    document.body.appendChild(bar);
+    _statusEl = bar;
+    document.getElementById('edupro-sync-module').textContent = _module;
+  }
+
+  const STATUS_STYLES = {
+    ok:      { bg: '#f0fdf4', border: '#bbf7d0', color: '#166534' },
+    saving:  { bg: '#eff6ff', border: '#bfdbfe', color: '#1d4ed8' },
+    retry:   { bg: '#fffbeb', border: '#fde68a', color: '#92400e' },
+    error:   { bg: '#fff1f2', border: '#fecdd3', color: '#be123c' },
+    offline: { bg: '#f8fafc', border: '#e2e8f0', color: '#475569' },
+    warning: { bg: '#fffbeb', border: '#fde68a', color: '#92400e' },
+  };
+
+  function _setStatus(type, msg) {
+    if (!_statusEl) return;
+    const s = STATUS_STYLES[type] || STATUS_STYLES.ok;
+    _statusEl.style.background  = s.bg;
+    _statusEl.style.borderColor = s.border;
+    _statusEl.style.color       = s.color;
+    const msgEl = document.getElementById('edupro-sync-msg');
+    if (msgEl) msgEl.textContent = msg;
+  }
+
+  // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
+  function showSetup() {
+    const current = _getUrl() === 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec' ? '' : _getUrl();
+    const url = prompt(
+      '🔧 Nhập URL Google Apps Script:\n\n' +
+      'Cách lấy URL:\n' +
+      '1. Mở script.google.com\n' +
+      '2. Dán nội dung EduPro_DriveSync.gs\n' +
+      '3. Deploy → New deployment → Web app\n' +
+      '4. Sao chép URL và dán vào đây\n\n' +
+      'URL hiện tại: ' + (current || '(chưa cấu hình)'),
+      current
+    );
+    if (url && url.startsWith('https://script.google.com')) {
+      // Lưu URL vào localStorage để các module dùng lại
+      localStorage.setItem('edupro_scriptUrl', url);
+      alert('✅ Đã lưu URL!\n\nVui lòng tải lại trang để áp dụng.\n\n⚠️ Lưu ý: Để cố định vĩnh viễn, cần cập nhật SCRIPT_URL trong mã nguồn.');
+      location.reload();
+    } else if (url !== null) {
+      alert('❌ URL không hợp lệ. Phải bắt đầu bằng https://script.google.com');
+    }
+  }
+
+  // ── NETWORK EVENTS ────────────────────────────────────────────────
+  function _listenNetworkEvents() {
+    window.addEventListener('online', () => {
+      _online = true;
+      _setStatus('ok', '📶 Đã kết nối mạng — đang đồng bộ...');
+      _processQueue();
+    });
+    window.addEventListener('offline', () => {
+      _online = false;
+      _setStatus('offline', '📴 Mất kết nối — dữ liệu lưu cục bộ');
+    });
+    // Lưu hàng chờ trước khi đóng trang
+    window.addEventListener('beforeunload', () => {
+      if (_queue.length > 0) {
+        localStorage.setItem('edupro_offline_queue_' + _module, JSON.stringify(_queue));
+      }
+    });
+    // Khôi phục hàng chờ khi mở lại trang
+    const savedQueue = localStorage.getItem('edupro_offline_queue_' + _module);
+    if (savedQueue) {
+      try {
+        _queue = JSON.parse(savedQueue);
+        localStorage.removeItem('edupro_offline_queue_' + _module);
+      } catch {}
+    }
+  }
+
+  function _isConfigured() {
+    const url = _getUrl();
+    return url !== 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec' && url.startsWith('https://script.google.com');
+  }
+
+  function _fmtTime(iso) {
+    if (!iso) return '';
+    try {
+      return new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    } catch { return ''; }
+  }
+
+  // ── API CÔNG KHAI ─────────────────────────────────────────────────
+  return { init, save, saveNow, load, loadAll, remove, showSetup };
+
+})();
+
+</script>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-logo"><div class="an">🎓 EduPro</div><div class="as">THCS All-in-One</div></div>
+    <nav class="sb-nav">
+      <div class="nl">Trang chủ</div>
+      <div class="ni" onclick="window.location='edupro-home.html'"><span class="ic">🏠</span>Trang chủ</div>
+      <div class="nl">Quản lý</div>
+      <div class="ni" onclick="window.location='module1-quan-ly-lop.html'"><span class="ic">👥</span>Lớp & Học sinh</div>
+      <div class="ni" onclick="window.location='module2-quan-ly-diem.html'"><span class="ic">📊</span>Điểm số</div>
+      <div class="ni" onclick="window.location='module3-soan-giao-an.html'"><span class="ic">📋</span>Giáo án</div>
+      <div class="ni" onclick="window.location='module4-de-kiem-tra.html'"><span class="ic">🎯</span>Đề kiểm tra</div>
+      <div class="nl" style="margin-top:8px">Công cụ</div>
+      <div class="ni" onclick="window.location='module5-tkb-lich.html'"><span class="ic">📅</span>Thời khoá biểu</div>
+      <div class="ni" onclick="window.location='module6-tro-choi.html'"><span class="ic">🎮</span>Trò chơi</div>
+      <div class="ni active" onclick="window.location='module7-kho-tai-lieu.html'"><span class="ic">📁</span>Tài liệu</div>
+      <div class="ni" onclick="window.location='module8-thong-bao.html'"><span class="ic">📣</span>Thông báo</div>
+      <div class="ni" onclick="window.location='module9-tro-ly-ai.html'"><span class="ic">🤖</span>Trợ lý AI</div>
+    </nav>
+    <div class="sb-bot"><div style="display:flex;align-items:center;gap:10px;padding:8px 10px">
+      <div class="ta">NL</div>
+      <div><div class="tn">Nguyễn Thanh Liêm</div><div class="tr-r">GV GDCD · THCS Hùng Vương</div></div>
+    </div></div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="tl"><h1>📁 Kho Tài liệu</h1><p>Lưu trữ · Tìm kiếm · Chia sẻ tài liệu dạy học</p></div>
+      <div class="tr2">
+        <button class="btn btn-ol btn-sm" onclick="window.location='edupro-home.html'" style="font-size:11px;padding:4px 10px">🏠 Trang chủ</button>
+        <button class="btn btn-ol" onclick="showToast('🔄 Đang đồng bộ Google Drive...')">🔄 Google Drive</button>
+        <button class="btn btn-ol" onclick="openNewFolder()">📂 Tạo thư mục</button>
+        <button class="btn btn-jade" onclick="openUpload()">⬆ Tải lên</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- STATS -->
+      <div class="stat-row">
+        <div class="stat-chip"><div class="sv" style="color:var(--jade)" id="st-total">0</div><div class="sl">Tổng tài liệu</div></div>
+        <div class="stat-chip"><div class="sv" style="color:var(--blue)" id="st-shared">0</div><div class="sl">Đã chia sẻ</div></div>
+        <div class="stat-chip"><div class="sv" style="color:var(--amber)" id="st-recent">0</div><div class="sl">Tuần này</div></div>
+        <div class="stat-chip"><div class="sv" style="color:var(--purple)" id="st-size">0</div><div class="sl">Dung lượng (MB)</div></div>
+      </div>
+
+      <div class="lib-layout">
+        <!-- LEFT PANEL -->
+        <div class="sidebar-panel">
+          <!-- GOOGLE DRIVE -->
+          <div class="gd-panel">
+            <h3>🔗 Google Drive</h3>
+            <p>Đồng bộ tài liệu từ Drive của bạn</p>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,.9);color:#1a73e8;font-weight:700" onclick="showToast('🔄 Đang kết nối Google Drive...')">Kết nối ngay</button>
+          </div>
+
+          <!-- CATEGORIES -->
+          <div class="card" style="margin-bottom:0">
+            <div class="ch"><h2>📂 Danh mục</h2></div>
+            <div class="cat-list" id="catList"></div>
+          </div>
+
+          <!-- TAGS -->
+          <div class="card" style="margin-bottom:0">
+            <div class="ch"><h2>🏷 Thẻ tag</h2></div>
+            <div style="padding:10px 14px;display:flex;flex-wrap:wrap;gap:6px" id="tagCloud"></div>
+          </div>
+
+          <!-- RECENT -->
+          <div class="card" style="margin-bottom:0">
+            <div class="ch"><h2>🕐 Gần đây</h2></div>
+            <div style="padding:8px 14px" id="recentList"></div>
+          </div>
+        </div>
+
+        <!-- MAIN AREA -->
+        <div>
+          <!-- SEARCH BAR -->
+          <div class="search-bar">
+            <div class="search-box">
+              <span style="font-size:16px">🔍</span>
+              <input type="text" placeholder="Tìm kiếm tài liệu, thẻ tag, nội dung..." id="searchInput" oninput="filterDocs()">
+            </div>
+            <select class="sel" id="sortSel" onchange="filterDocs()">
+              <option value="date">Mới nhất</option>
+              <option value="name">Tên A→Z</option>
+              <option value="size">Dung lượng</option>
+              <option value="views">Lượt xem</option>
+            </select>
+            <div class="view-toggle">
+              <button class="vt-btn active" id="vg" onclick="setView('grid')">⊞</button>
+              <button class="vt-btn" id="vl" onclick="setView('list')">☰</button>
+            </div>
+          </div>
+
+          <!-- BREADCRUMB -->
+          <div class="breadcrumb" id="breadcrumb">
+            <span onclick="goRoot()" >🏠 Tất cả</span>
+            <span class="current" id="currentCat">Tất cả tài liệu</span>
+          </div>
+
+          <!-- SELECTION BAR -->
+          <div class="sel-bar" id="selBar">
+            <span class="sc" id="selCount">0 tài liệu được chọn</span>
+            <button class="btn btn-sm btn-ol" style="color:#fff;border-color:rgba(255,255,255,.3)" onclick="clearSelection()">Bỏ chọn</button>
+            <button class="btn btn-sm" style="background:var(--blue);color:#fff" onclick="shareSelected()">📤 Chia sẻ</button>
+            <button class="btn btn-sm btn-red" onclick="deleteSelected()">🗑 Xoá</button>
+          </div>
+
+          <!-- UPLOAD ZONE -->
+          <div class="upload-zone" id="uploadZone" onclick="openUpload()"
+            ondragover="event.preventDefault();this.classList.add('dragover')"
+            ondragleave="this.classList.remove('dragover')"
+            ondrop="event.preventDefault();this.classList.remove('dragover');handleDrop(event)">
+            <div class="uz-icon">📂</div>
+            <h3>Kéo thả tệp vào đây hoặc bấm để tải lên</h3>
+            <p>Hỗ trợ: PDF, Word, PowerPoint, Excel, hình ảnh, video</p>
+          </div>
+
+          <!-- FILE AREA -->
+          <div id="fileArea"></div>
+
+          <!-- PREVIEW PANEL -->
+          <div class="preview-panel" id="previewPanel" style="display:none;margin-top:14px"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- UPLOAD MODAL -->
+<div class="overlay" id="uploadOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <div class="mh"><h3>⬆ Tải tài liệu lên</h3><button class="xbtn" onclick="document.getElementById('uploadOverlay').classList.remove('open')">✕</button></div>
+    <div class="mb">
+      <div class="upload-zone" style="margin-bottom:14px" onclick="showToast('📂 Chọn tệp...')">
+        <div class="uz-icon">📎</div>
+        <h3>Chọn tệp từ máy tính</h3>
+        <p>hoặc kéo thả vào đây</p>
+      </div>
+      <div class="fg"><label>Tên tài liệu</label><input type="text" class="fi" id="up_name" placeholder="VD: Giáo án Bài 3 — Pháp luật và kỷ luật"></div>
+      <div class="fr2">
+        <div class="fg"><label>Danh mục</label>
+          <select class="sel" id="up_cat" style="width:100%">
+            <option value="giaoan">📋 Giáo án</option>
+            <option value="deki">🎯 Đề kiểm tra</option>
+            <option value="sach">📚 Sách / Tài liệu tham khảo</option>
+            <option value="slide">🖥 Slide bài giảng</option>
+            <option value="video">🎬 Video</option>
+            <option value="hinhanh">🖼 Hình ảnh</option>
+            <option value="khac">📌 Khác</option>
+          </select>
+        </div>
+        <div class="fg"><label>Khối / Lớp</label>
+          <select class="sel" id="up_khoi" style="width:100%">
+            <option>Tất cả</option><option>Lớp 6</option><option>Lớp 7</option><option>Lớp 8</option><option>Lớp 9</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label>Thẻ tag (cách nhau bằng dấu phẩy)</label>
+        <input type="text" class="fi" id="up_tags" placeholder="VD: pháp luật, GDCD 8, học kỳ 1">
+      </div>
+      <div class="fg">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;text-transform:none;letter-spacing:0">
+          <input type="checkbox" id="up_share"> Chia sẻ với đồng nghiệp trong trường
+        </label>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-jade" onclick="submitUpload()">⬆ Tải lên</button>
+      <button class="btn btn-blue btn-sm" onclick="showToast('🔄 Đồng bộ từ Google Drive...')">🔗 Từ Google Drive</button>
+      <button class="btn btn-ol" onclick="document.getElementById('uploadOverlay').classList.remove('open')">Huỷ</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW FOLDER MODAL -->
+<div class="overlay" id="folderOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:380px">
+    <div class="mh"><h3>📂 Tạo thư mục mới</h3><button class="xbtn" onclick="document.getElementById('folderOverlay').classList.remove('open')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>Tên thư mục</label><input type="text" class="fi" id="folder_name" placeholder="VD: Giáo án HK2 2025-2026"></div>
+      <div class="fg"><label>Màu sắc</label>
+        <div style="display:flex;gap:8px;margin-top:4px">
+          <div onclick="pickFolderColor('#0d9488',this)" style="width:28px;height:28px;border-radius:50%;background:#0d9488;cursor:pointer;border:2.5px solid #0d9488" class="fc-pick"></div>
+          <div onclick="pickFolderColor('#2563eb',this)" style="width:28px;height:28px;border-radius:50%;background:#2563eb;cursor:pointer;border:2px solid transparent" class="fc-pick"></div>
+          <div onclick="pickFolderColor('#7c3aed',this)" style="width:28px;height:28px;border-radius:50%;background:#7c3aed;cursor:pointer;border:2px solid transparent" class="fc-pick"></div>
+          <div onclick="pickFolderColor('#d97706',this)" style="width:28px;height:28px;border-radius:50%;background:#d97706;cursor:pointer;border:2px solid transparent" class="fc-pick"></div>
+          <div onclick="pickFolderColor('#dc2626',this)" style="width:28px;height:28px;border-radius:50%;background:#dc2626;cursor:pointer;border:2px solid transparent" class="fc-pick"></div>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-jade" onclick="submitNewFolder()">✅ Tạo thư mục</button>
+      <button class="btn btn-ol" onclick="document.getElementById('folderOverlay').classList.remove('open')">Huỷ</button>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="overlay" id="shareOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <div class="mh"><h3>📤 Chia sẻ tài liệu</h3><button class="xbtn" onclick="document.getElementById('shareOverlay').classList.remove('open')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>Chia sẻ với</label>
+        <select class="sel" style="width:100%" id="share_target">
+          <option>Toàn trường</option>
+          <option>Tổ KHXH</option>
+          <option>Tổ KHTN</option>
+          <option>Nhập email cụ thể</option>
+        </select>
+      </div>
+      <div class="fg"><label>Quyền truy cập</label>
+        <select class="sel" style="width:100%"><option>Chỉ xem</option><option>Xem & Tải về</option><option>Chỉnh sửa</option></select>
+      </div>
+      <div class="fg"><label>Link chia sẻ</label>
+        <div style="display:flex;gap:8px">
+          <input type="text" class="fi" value="https://edupro.thcs.vn/share/abc123" readonly id="shareLink">
+          <button class="btn btn-jade btn-sm" onclick="copyLink()">📋 Copy</button>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-jade" onclick="document.getElementById('shareOverlay').classList.remove('open');showToast('✅ Đã chia sẻ tài liệu!')">✅ Chia sẻ</button>
+      <button class="btn btn-ol" onclick="document.getElementById('shareOverlay').classList.remove('open')">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ DATA ══
+const FILE_ICONS={pdf:'📄',docx:'📝',pptx:'🖥',xlsx:'📊',mp4:'🎬',jpg:'🖼',png:'🖼',zip:'🗜',mp3:'🎵',folder:'📂'};
+const CAT_ICONS={all:'🗂',giaoan:'📋',deki:'🎯',sach:'📚',slide:'🖥',video:'🎬',hinhanh:'🖼',khac:'📌'};
+const CAT_LABELS={all:'Tất cả',giaoan:'Giáo án',deki:'Đề kiểm tra',sach:'Sách & Tài liệu',slide:'Slide bài giảng',video:'Video',hinhanh:'Hình ảnh',khac:'Khác'};
+
+let nextDocId=100;
+let selectedIds=new Set();
+let currentCatFilter='all';
+let currentView='grid';
+let folderColor='#0d9488';
+
+let docs=[
+  {id:1,name:'Giáo án Bài 1 — Pháp luật là gì',type:'docx',cat:'giaoan',khoi:'Lớp 8',tags:['pháp luật','GDCD 8','HK1'],size:245,views:12,shared:true,date:'2026-05-05',owner:'Tôi'},
+  {id:2,name:'Đề KT 45 phút GDCD 8 — Mã 132',type:'pdf',cat:'deki',khoi:'Lớp 8',tags:['đề kiểm tra','45 phút','HK1'],size:180,views:8,shared:true,date:'2026-05-04',owner:'Tôi'},
+  {id:3,name:'Slide Bài 2 — Quyền và Nghĩa vụ',type:'pptx',cat:'slide',khoi:'Lớp 8',tags:['slide','quyền','nghĩa vụ'],size:1200,views:20,shared:false,date:'2026-05-03',owner:'Tôi'},
+  {id:4,name:'Sách giáo khoa GDCD 8',type:'pdf',cat:'sach',khoi:'Lớp 8',tags:['SGK','GDCD','NXB Giáo dục'],size:4500,views:35,shared:true,date:'2026-04-28',owner:'Tôi'},
+  {id:5,name:'Video Tình huống Pháp luật',type:'mp4',cat:'video',khoi:'Tất cả',tags:['video','tình huống','pháp luật'],size:85000,views:45,shared:false,date:'2026-04-25',owner:'Tôi'},
+  {id:6,name:'Giáo án Bài 3 — Pháp luật & Kỷ luật',type:'docx',cat:'giaoan',khoi:'Lớp 8',tags:['pháp luật','kỷ luật','GDCD 8'],size:312,views:9,shared:false,date:'2026-04-22',owner:'Tôi'},
+  {id:7,name:'Đề KT 15 phút GDCD 7 — HK1',type:'docx',cat:'deki',khoi:'Lớp 7',tags:['đề kiểm tra','15 phút','GDCD 7'],size:145,views:6,shared:true,date:'2026-04-20',owner:'Tôi'},
+  {id:8,name:'Hình ảnh Sơ đồ Tư duy Bài 1',type:'jpg',cat:'hinhanh',khoi:'Tất cả',tags:['sơ đồ tư duy','hình ảnh'],size:560,views:18,shared:false,date:'2026-04-18',owner:'Tôi'},
+  {id:9,name:'Bảng điểm HK1 — 8A1',type:'xlsx',cat:'khac',khoi:'Lớp 8',tags:['điểm số','HK1','8A1'],size:88,views:5,shared:false,date:'2026-04-15',owner:'Tôi'},
+  {id:10,name:'Giáo án Bài 5 — Sống có đạo đức',type:'docx',cat:'giaoan',khoi:'Lớp 7',tags:['đạo đức','GDCD 7','HK2'],size:290,views:7,shared:true,date:'2026-04-10',owner:'Tôi'},
+  {id:11,name:'Slide GDCD 6 — Tự chủ',type:'pptx',cat:'slide',khoi:'Lớp 6',tags:['tự chủ','GDCD 6','slide'],size:980,views:14,shared:false,date:'2026-04-08',owner:'Tôi'},
+  {id:12,name:'Tài liệu tham khảo Thông tư 22',type:'pdf',cat:'sach',khoi:'Tất cả',tags:['thông tư','đánh giá','pháp luật'],size:320,views:28,shared:true,date:'2026-04-05',owner:'Tổ KHXH'},
+];
+
+// ══ CATEGORIES ══
+function getCats(){
+  const cats=['all','giaoan','deki','slide','sach','video','hinhanh','khac'];
+  return cats.map(c=>({key:c,label:CAT_LABELS[c],icon:CAT_ICONS[c],count:c==='all'?docs.length:docs.filter(d=>d.cat===c).length}));
+}
+
+function renderCategories(){
+  document.getElementById('catList').innerHTML=getCats().map(c=>`
+    <div class="cat-item${c.key===currentCatFilter?' active':''}" onclick="setCat('${c.key}')">
+      <span class="cat-icon">${c.icon}</span>
+      <span class="cat-name">${c.label}</span>
+      <span class="cat-count">${c.count}</span>
+    </div>`).join('');
+}
+
+function setCat(key){
+  currentCatFilter=key;
+  document.getElementById('currentCat').textContent=CAT_LABELS[key]||'Tất cả';
+  renderCategories();
+  filterDocs();
+  clearSelection();
+}
+
+// ══ TAGS ══
+function renderTagCloud(){
+  const allTags={};
+  docs.forEach(d=>d.tags.forEach(t=>{allTags[t]=(allTags[t]||0)+1;}));
+  const tagColors=['#0d9488','#2563eb','#7c3aed','#d97706','#dc2626','#16a34a','#db2777'];
+  let html='';
+  Object.entries(allTags).sort((a,b)=>b[1]-a[1]).slice(0,14).forEach(([tag,cnt],i)=>{
+    const c=tagColors[i%tagColors.length];
+    html+=`<span class="tag" style="background:${c}20;color:${c}" onclick="searchByTag('${tag}')">${tag} <span style="opacity:.6;font-size:10px">${cnt}</span></span>`;
+  });
+  document.getElementById('tagCloud').innerHTML=html;
+}
+
+function searchByTag(tag){
+  document.getElementById('searchInput').value=tag;
+  filterDocs();
+}
+
+// ══ RECENT ══
+function renderRecent(){
+  const recent=docs.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+  document.getElementById('recentList').innerHTML=recent.map(d=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="previewDoc(${d.id})">
+      <span style="font-size:16px">${FILE_ICONS[d.type]||'📄'}</span>
+      <div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.name}</div>
+        <div style="font-size:10px;color:var(--ink3)">${d.date}</div></div>
+    </div>`).join('');
+}
+
+// ══ STATS ══
+function updateStats(){
+  document.getElementById('st-total').textContent=docs.length;
+  document.getElementById('st-shared').textContent=docs.filter(d=>d.shared).length;
+  const weekAgo=new Date(Date.now()-7*24*60*60*1000).toISOString().split('T')[0];
+  document.getElementById('st-recent').textContent=docs.filter(d=>d.date>=weekAgo).length;
+  const totalKB=docs.reduce((s,d)=>s+d.size,0);
+  document.getElementById('st-size').textContent=(totalKB/1024).toFixed(1);
+}
+
+// ══ FILE AREA ══
+function filterDocs(){
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  const sort=document.getElementById('sortSel').value;
+  let list=docs.filter(d=>{
+    if(currentCatFilter!=='all'&&d.cat!==currentCatFilter) return false;
+    if(q) return d.name.toLowerCase().includes(q)||d.tags.some(t=>t.toLowerCase().includes(q));
+    return true;
+  });
+  if(sort==='name') list.sort((a,b)=>a.name.localeCompare(b.name));
+  else if(sort==='size') list.sort((a,b)=>b.size-a.size);
+  else if(sort==='views') list.sort((a,b)=>b.views-a.views);
+  else list.sort((a,b)=>b.date.localeCompare(a.date));
+  renderFiles(list);
+}
+
+function fmtSize(kb){
+  if(kb>=1024*1024) return (kb/1024/1024).toFixed(1)+' GB';
+  if(kb>=1024) return (kb/1024).toFixed(1)+' MB';
+  return kb+' KB';
+}
+
+function renderFiles(list){
+  const area=document.getElementById('fileArea');
+  if(list.length===0){
+    area.innerHTML='<div style="text-align:center;padding:48px 0;color:var(--ink3)"><div style="font-size:48px;margin-bottom:12px">🔍</div><div style="font-size:14px;font-weight:600">Không tìm thấy tài liệu nào</div></div>';
+    return;
+  }
+  if(currentView==='grid'){
+    area.innerHTML=`<div class="file-grid">${list.map(d=>`
+      <div class="file-card${selectedIds.has(d.id)?' selected':''}" id="fc-${d.id}" onclick="toggleSelect(${d.id})">
+        <div class="fc-check">✓</div>
+        <span class="file-icon">${FILE_ICONS[d.type]||'📄'}</span>
+        <div class="file-name">${d.name}</div>
+        <div class="file-meta">${fmtSize(d.size)} · ${d.views} lượt xem</div>
+        ${d.shared?'<div style="margin-top:4px"><span class="badge b-jade" style="font-size:10px">Đã chia sẻ</span></div>':''}
+        <div class="file-actions">
+          <button class="fa-btn" onclick="event.stopPropagation();previewDoc(${d.id})" title="Xem">👁</button>
+          <button class="fa-btn" onclick="event.stopPropagation();downloadDoc(${d.id})" title="Tải về">⬇</button>
+          <button class="fa-btn" onclick="event.stopPropagation();openShare(${d.id})" title="Chia sẻ">📤</button>
+          <button class="fa-btn" onclick="event.stopPropagation();deleteDoc(${d.id})" title="Xoá" style="color:var(--red)">🗑</button>
+        </div>
+      </div>`).join('')}</div>`;
+  } else {
+    area.innerHTML=`<div style="display:flex;flex-direction:column;gap:4px">${list.map(d=>`
+      <div class="file-list-item${selectedIds.has(d.id)?' selected':''}" id="fc-${d.id}" onclick="toggleSelect(${d.id})">
+        <div class="fli-icon">${FILE_ICONS[d.type]||'📄'}</div>
+        <div class="fli-info">
+          <div class="fli-name">${d.name}</div>
+          <div class="fli-meta">${CAT_LABELS[d.cat]} · ${d.khoi} · ${fmtSize(d.size)} · ${d.views} lượt xem · ${d.date}
+            ${d.tags.slice(0,2).map(t=>`<span class="tag" style="background:var(--jl);color:var(--jd);margin-left:4px">${t}</span>`).join('')}
+          </div>
+        </div>
+        ${d.shared?'<span class="badge b-jade">Đã chia sẻ</span>':''}
+        <div class="fli-actions">
+          <button class="fa-btn" onclick="event.stopPropagation();previewDoc(${d.id})" title="Xem">👁</button>
+          <button class="fa-btn" onclick="event.stopPropagation();downloadDoc(${d.id})" title="Tải">⬇</button>
+          <button class="fa-btn" onclick="event.stopPropagation();openShare(${d.id})" title="Chia sẻ">📤</button>
+          <button class="fa-btn" onclick="event.stopPropagation();deleteDoc(${d.id})" title="Xoá" style="color:var(--red)">🗑</button>
+        </div>
+      </div>`).join('')}</div>`;
+  }
+}
+
+// ══ SELECTION ══
+function toggleSelect(id){
+  if(selectedIds.has(id)) selectedIds.delete(id);
+  else selectedIds.add(id);
+  const el=document.getElementById(`fc-${id}`);
+  if(el) el.classList.toggle('selected',selectedIds.has(id));
+  updateSelBar();
+  if(selectedIds.size===1) previewDoc([...selectedIds][0]);
+  else document.getElementById('previewPanel').style.display='none';
+}
+
+function updateSelBar(){
+  const bar=document.getElementById('selBar');
+  const n=selectedIds.size;
+  if(n>0){bar.classList.add('visible');document.getElementById('selCount').textContent=`Đã chọn ${n} tài liệu`;}
+  else bar.classList.remove('visible');
+}
+
+function clearSelection(){selectedIds.clear();filterDocs();updateSelBar();document.getElementById('previewPanel').style.display='none';}
+
+function shareSelected(){
+  if(selectedIds.size===0) return;
+  openShare([...selectedIds][0]);
+}
+
+function deleteSelected(){
+  if(selectedIds.size===0) return;
+  const n=selectedIds.size;
+  docs=docs.filter(d=>!selectedIds.has(d.id));
+  selectedIds.clear();
+  updateSelBar();
+  filterDocs();
+  renderCategories();
+  renderTagCloud();
+  renderRecent();
+  updateStats();
+  showToast(`🗑 Đã xoá ${n} tài liệu`);
+}
+
+// ══ PREVIEW ══
+function previewDoc(id){
+  const d=docs.find(x=>x.id===id);
+  if(!d) return;
+  const pp=document.getElementById('previewPanel');
+  pp.style.display='block';
+  pp.innerHTML=`
+    <div class="pp-icon">${FILE_ICONS[d.type]||'📄'}</div>
+    <h3>${d.name}</h3>
+    <div class="pp-meta">
+      📂 ${CAT_LABELS[d.cat]} · 📚 ${d.khoi}<br>
+      💾 ${fmtSize(d.size)} · 👁 ${d.views} lượt xem · 📅 ${d.date}<br>
+      👤 ${d.owner} ${d.shared?'· <span style="color:var(--jade)">🌐 Đã chia sẻ</span>':''}
+    </div>
+    <div class="pp-tags">${d.tags.map(t=>`<span class="tag" style="background:var(--jl);color:var(--jd)">${t}</span>`).join('')}</div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-jade btn-sm" onclick="viewDoc(${d.id})">👁 Xem</button>
+      <button class="btn btn-ol btn-sm" onclick="downloadDoc(${d.id})">📥 Tải về</button>
+      <button class="btn btn-blue btn-sm" onclick="openShare(${d.id})">📤 Chia sẻ</button>
+      <button class="btn btn-sm" style="background:var(--rl);color:var(--red);border:none" onclick="deleteDoc(${d.id})">🗑 Xoá</button>
+    </div>`;
+  pp.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+
+function viewDoc(id){
+  const d=docs.find(x=>x.id===id);
+  if(!d){showToast('⚠️ Không tìm thấy tài liệu!');return;}
+  d.views++;filterDocs();
+  if(d.objectUrl){window.open(d.objectUrl,'_blank');showToast('👁 Đang mở: '+d.name);}
+  else showToast('ℹ️ "'+d.name+'" là tài liệu mẫu — tải file thực lên để xem.');
+}
+function downloadDoc(id){
+  const d=docs.find(x=>x.id===id);
+  if(!d){showToast('⚠️ Không tìm thấy tài liệu!');return;}
+  if(d.objectUrl){
+    const a=document.createElement('a');a.href=d.objectUrl;
+    a.download=d.fileName||(d.name+'.'+d.type);
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    showToast('📥 Đang tải: '+d.name);
+  } else showToast('⚠️ "'+d.name+'" là tài liệu mẫu, chưa có file thật.');
+}
+
+// ══ DELETE ══
+function deleteDoc(id){
+  docs=docs.filter(d=>d.id!==id);
+  selectedIds.delete(id);
+  updateSelBar();
+  filterDocs();
+  renderCategories();
+  renderTagCloud();
+  renderRecent();
+  updateStats();
+  document.getElementById('previewPanel').style.display='none';
+  showToast('🗑 Đã xoá tài liệu');
+}
+
+// ══ UPLOAD ══
+function openUpload(){document.getElementById('uploadOverlay').classList.add('open');}
+
+function submitUpload(){
+  const name=document.getElementById('up_name').value.trim();
+  if(!name){showToast('⚠️ Nhập tên tài liệu!');return;}
+  const cat=document.getElementById('up_cat').value;
+  const khoi=document.getElementById('up_khoi').value;
+  const tagsRaw=document.getElementById('up_tags').value;
+  const tags=tagsRaw.split(',').map(t=>t.trim()).filter(t=>t);
+  const shared=document.getElementById('up_share').checked;
+  const ext=cat==='giaoan'?'docx':cat==='deki'?'pdf':cat==='slide'?'pptx':cat==='video'?'mp4':'docx';
+  docs.unshift({id:nextDocId++,name,type:ext,cat,khoi,tags,size:Math.floor(Math.random()*500+100),views:0,shared,date:new Date().toISOString().split('T')[0],owner:'Tôi'});
+  document.getElementById('uploadOverlay').classList.remove('open');
+  filterDocs();renderCategories();renderTagCloud();renderRecent();updateStats();
+  // Reset form
+  ['up_name','up_tags'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const upShare=document.getElementById('up_share');
+  if(upShare) upShare.checked=false;
+  showToast(`✅ Đã tải lên: "${name}"`);
+}
+
+function handleDrop(e){
+  const files=[...e.dataTransfer.files];
+  if(files.length>0){
+    files.forEach(f=>{
+      const ext=f.name.split('.').pop().toLowerCase();
+      docs.unshift({id:nextDocId++,name:f.name.replace('.'+ext,''),type:ext,cat:'khac',khoi:'Tất cả',tags:[],size:Math.floor(f.size/1024),views:0,shared:false,date:new Date().toISOString().split('T')[0],owner:'Tôi'});
+    });
+    filterDocs();renderCategories();renderTagCloud();renderRecent();updateStats();
+    showToast(`✅ Đã tải lên ${files.length} tệp!`);
+  }
+}
+
+// ══ SHARE ══
+function openShare(id){
+  const d=docs.find(x=>x.id===id);
+  if(d){document.getElementById('shareLink').value=`https://edupro.thcs.vn/share/${id}abc`;}
+  document.getElementById('shareOverlay').classList.add('open');
+}
+
+function copyLink(){
+  const v=document.getElementById('shareLink').value;
+  navigator.clipboard?.writeText(v).catch(()=>{});
+  showToast('📋 Đã sao chép link chia sẻ!');
+}
+
+
+
+// ══ NEW FOLDER ══
+function openNewFolder(){document.getElementById('folderOverlay').classList.add('open');}
+
+function pickFolderColor(c,el){
+  folderColor=c;
+  document.querySelectorAll('.fc-pick').forEach(p=>p.style.border='2px solid transparent');
+  el.style.border=`2.5px solid ${c}`;
+}
+
+function submitNewFolder(){
+  const name=document.getElementById('folder_name').value.trim();
+  if(!name){showToast('⚠️ Nhập tên thư mục!');return;}
+  document.getElementById('folderOverlay').classList.remove('open');
+  showToast(`📂 Đã tạo thư mục: "${name}"`);
+}
+
+// ══ VIEW ══
+function setView(v){
+  currentView=v;
+  document.getElementById('vg').classList.toggle('active',v==='grid');
+  document.getElementById('vl').classList.toggle('active',v==='list');
+  filterDocs();
+}
+
+function goRoot(){
+  setCat('all');
+  document.getElementById('searchInput').value='';
+}
+
+// ══ TOAST ══
+let tt;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2600);}
+
+// ══ INIT ══
+renderCategories();
+renderTagCloud();
+renderRecent();
+filterDocs();
+updateStats();
+
+EduProSync.init('module7_tailieu');
+
+// ── ĐỒNG BỘ NĂM HỌC & CƠ SỞ TỪ TRANG CHỦ ─────────────────────────
+(function syncSharedSettings(){
+  const namHoc = localStorage.getItem('edupro_namHoc');
+  if(namHoc){
+    const display = namHoc.replace('-','–');
+    // Cập nhật mọi text hiện "Năm học" trong topbar
+    document.querySelectorAll('.topbar-left p, [id*="topSub"]').forEach(el=>{
+      el.textContent = el.textContent.replace(/Năm học [0-9–]+/, 'Năm học ' + display);
+    });
+    // Cập nhật title nếu có
+    document.querySelectorAll('.sb-bot .tr, .sb-bot .tr-r').forEach(el=>{
+      el.textContent = el.textContent.replace(/[0-9]{4}–[0-9]{4}/, display);
+    });
+  }
+})();
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- EDUPRO FOOTER -->
+<footer style="
+  background:linear-gradient(135deg,#0f172a 0%,#1a2744 60%,#0d1f35 100%);
+  padding:20px 32px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:14px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  position:relative;overflow:hidden;
+">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 15% 50%,rgba(13,148,136,.1),transparent 45%),radial-gradient(ellipse at 85% 50%,rgba(37,99,235,.07),transparent 45%);pointer-events:none"></div>
+
+  <!-- Logo Left -->
+  <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1">
+    <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#0d9488,#0f766e);display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 3px 10px rgba(13,148,136,.35);flex-shrink:0">🎓</div>
+    <div>
+      <div style="font-size:14px;font-weight:900;color:#fff;letter-spacing:-.01em;line-height:1.1">EduPro <span style="color:#2dd4bf">All‑in‑One</span></div>
+      <div style="font-size:10px;color:rgba(255,255,255,.38);margin-top:2px;letter-spacing:.02em">Trợ lý Giáo viên THCS · 9 Module</div>
+    </div>
+  </div>
+
+  <!-- Center: Copyright -->
+  <div style="position:relative;z-index:1;text-align:center">
+    <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:100px;padding:8px 18px">
+      <span style="font-size:13px;color:rgba(255,255,255,.4)">©</span>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#e2e8f0;letter-spacing:.01em">Copyright belongs to <span style="color:#2dd4bf">Liemnguyen</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:1px">
+          <span style="color:#60a5fa;font-weight:600">Zalo</span>&nbsp;·&nbsp;<span style="color:#e2e8f0;font-weight:600;letter-spacing:.04em">0815 899 878</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Zalo Button + Version -->
+  <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1">
+    <a href="https://zalo.me/0815899878" target="_blank" rel="noopener" style="
+      display:inline-flex;align-items:center;gap:7px;
+      padding:8px 16px;border-radius:100px;
+      background:linear-gradient(135deg,#0068ff,#0050d0);
+      color:#fff;text-decoration:none;font-size:12px;font-weight:700;
+      box-shadow:0 3px 12px rgba(0,104,255,.3);
+      transition:transform .18s,box-shadow .18s;
+    " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 18px rgba(0,104,255,.45)'"
+       onmouseout="this.style.transform='';this.style.boxShadow='0 3px 12px rgba(0,104,255,.3)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.02 2 11c0 2.88 1.34 5.46 3.44 7.18L4 22l4.1-1.29C9.31 21.21 10.62 21.5 12 21.5 17.52 21.5 22 17.48 22 13c0-4.97-4.48-9-10-9z"/>
+      </svg>
+      Liên hệ Zalo
+    </a>
+    <div style="text-align:right;line-height:1.5">
+      <div style="font-size:10px;color:rgba(255,255,255,.22);font-weight:600">v1.0 · 2026</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.18)">THCS Hùng Vương</div>
+    </div>
+  </div>
+</footer>
+</body></html>

@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tạo Đề Kiểm Tra — EduPro THCS</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f4f8;--surface:#fff;--s2:#f7f9fc;--ink:#1a202c;--ink2:#4a5568;--ink3:#718096;
+  --border:#e2e8f0;--jade:#0d9488;--jl:#ccfbf1;--jd:#0f766e;
+  --blue:#2563eb;--bl:#dbeafe;--amber:#d97706;--al:#fef3c7;
+  --red:#dc2626;--rl:#fee2e2;--purple:#7c3aed;--pl:#ede9fe;
+  --green:#16a34a;--gl:#dcfce7;
+  --r:12px;--sh:0 1px 3px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--ink);font-size:14px;min-height:100vh}
+.app{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--ink);flex-shrink:0;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.an{font-size:15px;font-weight:800;color:#fff}.as{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.sb-nav{padding:12px 10px;flex:1;overflow-y:auto}
+.nl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3);padding:8px 8px 4px}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;color:rgba(255,255,255,.55);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;margin-bottom:2px}
+.ni:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9)}.ni.active{background:var(--jade);color:#fff}
+.ic{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.sb-bot{padding:14px 10px;border-top:1px solid rgba(255,255,255,.07)}
+.tc{display:flex;align-items:center;gap:10px;padding:8px 10px}
+.ta{width:34px;height:34px;border-radius:50%;background:var(--jade);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.tn{font-size:12px;font-weight:600;color:#fff}.tr-r{font-size:11px;color:rgba(255,255,255,.4)}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.tl h1{font-size:17px;font-weight:700}.tl p{font-size:12px;color:var(--ink3);margin-top:1px}
+.tr2{display:flex;align-items:center;gap:10px}
+
+/* BTN */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.btn:active{transform:scale(.97)}
+.btn-jade{background:var(--jade);color:#fff}.btn-jade:hover{background:var(--jd)}
+.btn-ol{background:transparent;border:1px solid var(--border);color:var(--ink)}.btn-ol:hover{background:var(--s2)}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#1d4ed8}
+.btn-purple{background:var(--purple);color:#fff}.btn-purple:hover{background:#6d28d9}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#b91c1c}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:6px}
+.btn-amber{background:var(--amber);color:#fff}
+
+/* TABS */
+.page-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px}
+.ptab{padding:12px 18px;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2.5px solid transparent;color:var(--ink3);transition:all .15s}
+.ptab:hover{color:var(--ink)}
+.ptab.active{color:var(--jade);border-bottom-color:var(--jade)}
+
+/* CONTENT */
+.content{padding:24px 28px;flex:1}
+.page{display:none}.page.active{display:block}
+
+/* CARD */
+.card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh);overflow:hidden;margin-bottom:16px}
+.ch{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ch h2{font-size:14px;font-weight:700}.ca{display:flex;gap:8px;flex-wrap:wrap}
+
+/* FORM */
+.fg{margin-bottom:13px}
+.fg label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px}
+.fi{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;color:var(--ink);background:var(--s2);outline:none;transition:border-color .15s}
+.fi:focus{border-color:var(--jade);background:#fff}
+textarea.fi{resize:vertical;min-height:70px;line-height:1.6}
+.sel{width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;color:var(--ink);background:var(--s2);outline:none;cursor:pointer}
+.sel:focus{border-color:var(--jade)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:100px;font-size:11px;font-weight:600}
+.b-green{background:var(--gl);color:var(--green)}
+.b-blue{background:var(--bl);color:var(--blue)}
+.b-amber{background:var(--al);color:var(--amber)}
+.b-red{background:var(--rl);color:var(--red)}
+.b-purple{background:var(--pl);color:var(--purple)}
+.b-jade{background:var(--jl);color:var(--jd)}
+
+/* QUESTION BANK */
+.qgrid{display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start}
+.filter-panel{position:sticky;top:80px}
+.filter-item{padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;transition:all .15s;display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+.filter-item:hover{background:var(--s2)}.filter-item.active{background:var(--jl);color:var(--jd);font-weight:700}
+.filter-count{font-size:11px;font-weight:700;padding:1px 7px;border-radius:100px;background:rgba(0,0,0,.06)}
+
+.q-list{display:flex;flex-direction:column;gap:10px}
+.q-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color .15s,box-shadow .15s;cursor:pointer;position:relative}
+.q-card:hover{border-color:var(--jade);box-shadow:0 4px 12px rgba(13,148,136,.1)}
+.q-card.selected{border-color:var(--jade);background:var(--jl)}
+.q-card.selected .q-check{opacity:1}
+.q-check{position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;background:var(--jade);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;opacity:0;transition:opacity .15s}
+.q-meta{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.q-text{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:8px;line-height:1.5}
+.q-answers{display:flex;flex-direction:column;gap:4px}
+.q-ans{font-size:12px;color:var(--ink2);display:flex;align-items:flex-start;gap:6px}
+.q-ans.correct{color:var(--green);font-weight:600}
+.q-ans .alabel{font-size:11px;font-weight:700;width:18px;flex-shrink:0}
+
+/* SEARCH BAR */
+.search-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 12px;flex:1;min-width:200px}
+.search-box input{border:none;background:transparent;font-family:inherit;font-size:13px;color:var(--ink);outline:none;width:100%}
+
+/* MATRIX TABLE */
+.matrix-table{width:100%;border-collapse:collapse}
+.matrix-table th{background:var(--s2);padding:9px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);border-bottom:1px solid var(--border);white-space:nowrap}
+.matrix-table td{padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px}
+.matrix-table tbody tr:last-child td{border-bottom:none}
+.matrix-table tbody tr:hover td{background:var(--s2)}
+.num-inp{width:52px;padding:5px 8px;border:1.5px solid var(--border);border-radius:6px;text-align:center;font-family:inherit;font-size:13px;font-weight:600;outline:none;transition:border-color .15s}
+.num-inp:focus{border-color:var(--jade)}
+.total-row td{background:var(--jl);font-weight:700;color:var(--jd)}
+
+/* EXAM PAPER */
+.exam-paper{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:32px 40px;font-size:14px;line-height:1.8;max-width:800px;margin:0 auto}
+.ep-header{text-align:center;margin-bottom:24px}
+.ep-school{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.ep-title{font-size:18px;font-weight:800;margin:8px 0 4px;text-transform:uppercase}
+.ep-meta{font-size:13px;color:var(--ink2)}
+.ep-info{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1.5px solid var(--ink);margin-bottom:20px}
+.ep-info-cell{padding:6px 12px;font-size:13px;border-right:1.5px solid var(--ink)}
+.ep-info-cell:last-child{border-right:none}
+.ep-section{margin-bottom:20px}
+.ep-section-title{font-size:14px;font-weight:800;text-transform:uppercase;margin-bottom:12px;padding-bottom:6px;border-bottom:1.5px solid var(--ink)}
+.ep-question{margin-bottom:14px}
+.ep-q-num{font-weight:700;color:var(--ink)}
+.ep-answers{margin-top:6px;display:grid;grid-template-columns:1fr 1fr;gap:3px 16px}
+.ep-ans{font-size:13px;display:flex;align-items:flex-start;gap:6px}
+.ep-tf{display:flex;gap:20px;margin-top:6px}
+.ep-tf label{display:flex;align-items:center;gap:6px;font-size:13px}
+.answer-key{background:var(--jl);border:1.5px solid var(--jade);border-radius:10px;padding:16px 20px;margin-top:20px;page-break-before:always}
+.answer-key h3{font-size:13px;font-weight:800;color:var(--jd);margin-bottom:10px;text-transform:uppercase}
+.key-grid{display:flex;flex-wrap:wrap;gap:8px}
+.key-item{background:#fff;border:1px solid var(--jade);border-radius:6px;padding:4px 10px;font-size:13px;font-weight:600;min-width:56px;text-align:center}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:16px;width:100%;max-width:520px;box-shadow:0 24px 60px rgba(0,0,0,.2);animation:su .2s ease;margin:auto}
+.modal-lg{max-width:900px}
+@keyframes su{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mh{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.mh h3{font-size:15px;font-weight:700}
+.mb{padding:20px 24px}
+.mf{padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:8px}
+.xbtn{background:var(--s2);border:1px solid var(--border);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+
+/* ANSWER OPTIONS */
+.ans-options{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.ans-row{display:flex;align-items:center;gap:8px}
+.ans-lbl{width:24px;height:24px;border-radius:50%;background:var(--s2);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.ans-inp{flex:1;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-family:inherit;font-size:13px;outline:none;background:var(--s2)}
+.ans-inp:focus{border-color:var(--jade);background:#fff}
+.ans-correct{width:24px;height:24px;border-radius:50%;background:transparent;border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s}
+.ans-correct.marked{background:var(--green);border-color:var(--green);color:#fff}
+
+/* AI HINT */
+.ai-strip{background:linear-gradient(90deg,#1e1b4b,#312e81);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.ai-strip p{flex:1;font-size:13px;color:rgba(255,255,255,.8)}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;display:none}
+.spinner.show{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:999;opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#cbd5e0;border-radius:99px}
+</style>
+
+<script>
+// ══ EDUPRO SHARED STATE ══
+const EduPro = {
+  get: (key) => { try { return JSON.parse(localStorage.getItem('edupro_'+key)||'null'); } catch(e) { return null; } },
+  set: (key, val) => {
+    try { localStorage.setItem('edupro_'+key, JSON.stringify(val)); } catch(e) {}
+    // ─ DriveSync: tự động đồng bộ lên Drive ─
+    if (window.EduProSync) { EduProSync.save(key, val); }
+  },
+  currentClass: () => EduPro.get('currentClass') || '8A1',
+  teacher: () => EduPro.get('teacher') || {name:'Nguyễn Thanh Liêm', school:'THCS Hùng Vương'},
+};
+</script>
+
+<!-- ═══ EDUPRO DRIVESYNC ═══════════════════════════════════════════ -->
+<script>
+/* --- EduPro DriveSync Embedded --- */
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║        EDUPRO DRIVESYNC — Thư viện đồng bộ Google Drive        ║
+// ║  Nhúng vào mỗi module HTML để tự động lưu dữ liệu lên Drive    ║
+// ╚══════════════════════════════════════════════════════════════════╝
+
+window.EduProSync = (function () {
+
+  // ── CẤU HÌNH — ĐỔI URL NÀY SAU KHI DEPLOY APPS SCRIPT ──────────
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec';
+  //  Ví dụ: 'https://script.google.com/macros/s/AKfycb.../exec'
+
+  const DEBOUNCE_MS  = 1500;   // Đợi 1.5 giây sau thay đổi cuối cùng rồi mới lưu
+  const RETRY_MAX    = 3;       // Thử lại tối đa 3 lần nếu lỗi mạng
+  const RETRY_DELAY  = 2000;    // Đợi 2 giây giữa mỗi lần retry
+
+  let _module   = 'unknown';
+  let _timers   = {};           // Debounce timers theo key
+  let _queue    = [];           // Hàng chờ khi offline
+  let _online   = navigator.onLine;
+  let _statusEl = null;
+
+  // ── KHỞI TẠO ─────────────────────────────────────────────────────
+  function init(moduleName) {
+    _module = moduleName;
+    _injectStatusBar();
+    _listenNetworkEvents();
+    _processQueue();           // Xử lý hàng đợi offline khi vừa load
+    _pingServer();             // Kiểm tra kết nối server
+    console.log(`[EduProSync] Module "${_module}" đã khởi tạo`);
+  }
+
+  // ── LƯU DỮ LIỆU (có debounce) ────────────────────────────────────
+  function save(key, data, immediate = false) {
+    // Luôn lưu localStorage trước (fallback tức thì)
+    try {
+      localStorage.setItem('edupro_' + key, JSON.stringify(data));
+    } catch (e) {}
+
+    if (immediate) {
+      _doSave(key, data);
+    } else {
+      // Debounce: hủy timer cũ, đặt timer mới
+      clearTimeout(_timers[key]);
+      _timers[key] = setTimeout(() => _doSave(key, data), DEBOUNCE_MS);
+    }
+  }
+
+  // ── LƯU NGAY (không debounce) ─────────────────────────────────────
+  function saveNow(key, data) {
+    return save(key, data, true);
+  }
+
+  // ── TẢI DỮ LIỆU ──────────────────────────────────────────────────
+  async function load(key) {
+    if (!_online || !_isConfigured()) {
+      // Fallback: đọc từ localStorage
+      try {
+        const val = localStorage.getItem('edupro_' + key);
+        return val ? JSON.parse(val) : null;
+      } catch { return null; }
+    }
+
+    try {
+      const res = await _post({ action: 'load', module: _module, key });
+      if (res.found) {
+        // Cập nhật localStorage với dữ liệu mới nhất từ Drive
+        localStorage.setItem('edupro_' + key, JSON.stringify(res.data));
+        return res.data;
+      }
+      // Key chưa có trên Drive → đọc localStorage
+      const local = localStorage.getItem('edupro_' + key);
+      return local ? JSON.parse(local) : null;
+    } catch (e) {
+      console.warn('[EduProSync] load error, dùng localStorage:', e);
+      try {
+        const val = localStorage.getItem('edupro_' + key);
+        return val ? JSON.parse(val) : null;
+      } catch { return null; }
+    }
+  }
+
+  // ── TẢI TOÀN BỘ DỮ LIỆU MODULE (khi trang tải) ───────────────────
+  async function loadAll() {
+    if (!_online || !_isConfigured()) return null;
+    try {
+      const res = await _post({ action: 'loadAll', module: _module });
+      if (res.found && res.data) {
+        // Ghi vào localStorage để dùng offline
+        Object.entries(res.data).forEach(([k, v]) => {
+          localStorage.setItem('edupro_' + k, JSON.stringify(v));
+        });
+        return res.data;
+      }
+      return null;
+    } catch (e) {
+      console.warn('[EduProSync] loadAll error:', e);
+      return null;
+    }
+  }
+
+  // ── XOÁ DỮ LIỆU ──────────────────────────────────────────────────
+  function remove(key) {
+    try { localStorage.removeItem('edupro_' + key); } catch {}
+    if (_online && _isConfigured()) {
+      _post({ action: 'delete', module: _module, key }).catch(console.warn);
+    }
+  }
+
+  // ── NỘI BỘ: THỰC HIỆN LƯU LÊN DRIVE ─────────────────────────────
+  async function _doSave(key, data, attempt = 1) {
+    if (!_isConfigured()) {
+      _setStatus('warning', '⚠️ Chưa cấu hình Script URL');
+      return;
+    }
+
+    if (!_online) {
+      // Đưa vào hàng chờ offline
+      _queue = _queue.filter(q => !(q.key === key && q.module === _module));
+      _queue.push({ module: _module, key, data, time: Date.now() });
+      _setStatus('offline', '📶 Offline — dữ liệu sẽ đồng bộ khi có mạng');
+      return;
+    }
+
+    _setStatus('saving', '⏫ Đang lưu...');
+    try {
+      const res = await _post({ action: 'save', module: _module, key, data });
+      if (res.ok && res.saved) {
+        _setStatus('ok', '☁️ Đã lưu lên Drive ' + _fmtTime(res.timestamp));
+        _processQueue();
+      } else {
+        throw new Error(res.error || 'Save failed');
+      }
+    } catch (e) {
+      if (attempt < RETRY_MAX) {
+        _setStatus('retry', `🔄 Thử lại (${attempt}/${RETRY_MAX})...`);
+        setTimeout(() => _doSave(key, data, attempt + 1), RETRY_DELAY * attempt);
+      } else {
+        _setStatus('error', '❌ Lỗi đồng bộ — đã lưu cục bộ');
+        _queue.push({ module: _module, key, data, time: Date.now() });
+        console.error('[EduProSync] Lỗi lưu sau', RETRY_MAX, 'lần:', e);
+      }
+    }
+  }
+
+  // ── POST REQUEST ──────────────────────────────────────────────────
+  function _getUrl() {
+    // Ưu tiên URL đã lưu qua showSetup(), rồi mới dùng hardcoded SCRIPT_URL
+    const stored = localStorage.getItem('edupro_scriptUrl');
+    return (stored && stored.startsWith('https://script.google.com')) ? stored : SCRIPT_URL;
+  }
+
+  async function _post(payload, timeout = 10000) {
+    const url  = _getUrl();
+    const ctrl = new AbortController();
+    const id   = setTimeout(() => ctrl.abort(), timeout);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        signal: ctrl.signal,
+        headers: { 'Content-Type': 'text/plain' }
+      });
+      clearTimeout(id);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return await res.json();
+    } catch (e) {
+      clearTimeout(id);
+      throw e;
+    }
+  }
+
+  // ── XỬ LÝ HÀNG ĐỢI OFFLINE ───────────────────────────────────────
+  async function _processQueue() {
+    if (!_online || _queue.length === 0) return;
+    const pending = [..._queue];
+    _queue = [];
+    for (const item of pending) {
+      await _doSave(item.key, item.data);
+      await new Promise(r => setTimeout(r, 300)); // Tránh quá nhiều request cùng lúc
+    }
+  }
+
+  // ── KIỂM TRA KẾT NỐI SERVER ──────────────────────────────────────
+  async function _pingServer() {
+    if (!_isConfigured()) {
+      _setStatus('warning', '⚠️ Chưa cấu hình — xem hướng dẫn cài đặt');
+      return;
+    }
+    try {
+      const res = await _post({ action: 'ping' }, 5000);
+      if (res.ok) _setStatus('ok', '☁️ Drive đã kết nối · ' + (_getUrl().substring(40,60) + '...'))
+    } catch {
+      _setStatus('warning', '⚠️ Không kết nối được Drive — dùng chế độ cục bộ');
+    }
+  }
+
+  // ── THANH TRẠNG THÁI ─────────────────────────────────────────────
+  function _injectStatusBar() {
+    if (document.getElementById('edupro-sync-bar')) return;
+    const bar = document.createElement('div');
+    bar.id = 'edupro-sync-bar';
+    bar.style.cssText = `
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 99999;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 5px 16px; font-size: 11px; font-family: inherit;
+      background: #f0fdf4; border-top: 1px solid #bbf7d0;
+      color: #166534; transition: all .3s; gap: 12px;
+      box-shadow: 0 -2px 8px rgba(0,0,0,.06);
+    `;
+    bar.innerHTML = `
+      <span id="edupro-sync-msg" style="display:flex;align-items:center;gap:6px">
+        🔄 Đang kiểm tra kết nối Drive...
+      </span>
+      <span style="display:flex;align-items:center;gap:8px;opacity:.7">
+        <span id="edupro-sync-module" style="font-weight:700"></span>
+        <button onclick="EduProSync.showSetup()" style="border:1px solid currentColor;background:transparent;cursor:pointer;padding:1px 8px;border-radius:4px;font-size:10px;font-family:inherit;color:inherit">⚙️ Cấu hình</button>
+      </span>
+    `;
+    document.body.appendChild(bar);
+    _statusEl = bar;
+    document.getElementById('edupro-sync-module').textContent = _module;
+  }
+
+  const STATUS_STYLES = {
+    ok:      { bg: '#f0fdf4', border: '#bbf7d0', color: '#166534' },
+    saving:  { bg: '#eff6ff', border: '#bfdbfe', color: '#1d4ed8' },
+    retry:   { bg: '#fffbeb', border: '#fde68a', color: '#92400e' },
+    error:   { bg: '#fff1f2', border: '#fecdd3', color: '#be123c' },
+    offline: { bg: '#f8fafc', border: '#e2e8f0', color: '#475569' },
+    warning: { bg: '#fffbeb', border: '#fde68a', color: '#92400e' },
+  };
+
+  function _setStatus(type, msg) {
+    if (!_statusEl) return;
+    const s = STATUS_STYLES[type] || STATUS_STYLES.ok;
+    _statusEl.style.background  = s.bg;
+    _statusEl.style.borderColor = s.border;
+    _statusEl.style.color       = s.color;
+    const msgEl = document.getElementById('edupro-sync-msg');
+    if (msgEl) msgEl.textContent = msg;
+  }
+
+  // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
+  function showSetup() {
+    const current = _getUrl() === 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec' ? '' : _getUrl();
+    const url = prompt(
+      '🔧 Nhập URL Google Apps Script:\n\n' +
+      'Cách lấy URL:\n' +
+      '1. Mở script.google.com\n' +
+      '2. Dán nội dung EduPro_DriveSync.gs\n' +
+      '3. Deploy → New deployment → Web app\n' +
+      '4. Sao chép URL và dán vào đây\n\n' +
+      'URL hiện tại: ' + (current || '(chưa cấu hình)'),
+      current
+    );
+    if (url && url.startsWith('https://script.google.com')) {
+      // Lưu URL vào localStorage để các module dùng lại
+      localStorage.setItem('edupro_scriptUrl', url);
+      alert('✅ Đã lưu URL!\n\nVui lòng tải lại trang để áp dụng.\n\n⚠️ Lưu ý: Để cố định vĩnh viễn, cần cập nhật SCRIPT_URL trong mã nguồn.');
+      location.reload();
+    } else if (url !== null) {
+      alert('❌ URL không hợp lệ. Phải bắt đầu bằng https://script.google.com');
+    }
+  }
+
+  // ── NETWORK EVENTS ────────────────────────────────────────────────
+  function _listenNetworkEvents() {
+    window.addEventListener('online', () => {
+      _online = true;
+      _setStatus('ok', '📶 Đã kết nối mạng — đang đồng bộ...');
+      _processQueue();
+    });
+    window.addEventListener('offline', () => {
+      _online = false;
+      _setStatus('offline', '📴 Mất kết nối — dữ liệu lưu cục bộ');
+    });
+    // Lưu hàng chờ trước khi đóng trang
+    window.addEventListener('beforeunload', () => {
+      if (_queue.length > 0) {
+        localStorage.setItem('edupro_offline_queue_' + _module, JSON.stringify(_queue));
+      }
+    });
+    // Khôi phục hàng chờ khi mở lại trang
+    const savedQueue = localStorage.getItem('edupro_offline_queue_' + _module);
+    if (savedQueue) {
+      try {
+        _queue = JSON.parse(savedQueue);
+        localStorage.removeItem('edupro_offline_queue_' + _module);
+      } catch {}
+    }
+  }
+
+  function _isConfigured() {
+    const url = _getUrl();
+    return url !== 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec' && url.startsWith('https://script.google.com');
+  }
+
+  function _fmtTime(iso) {
+    if (!iso) return '';
+    try {
+      return new Date(iso).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    } catch { return ''; }
+  }
+
+  // ── API CÔNG KHAI ─────────────────────────────────────────────────
+  return { init, save, saveNow, load, loadAll, remove, showSetup };
+
+})();
+
+</script>
+<!-- ═══════════════════════════════════════════════════════════════ -->
+
+</head>
+<body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo"><div class="an">🎓 EduPro</div><div class="as">THCS All-in-One</div></div>
+    <nav class="sb-nav">
+      <div class="nl">Trang chủ</div>
+      <div class="ni" onclick="window.location='edupro-home.html'"><span class="ic">🏠</span>Trang chủ</div>
+      <div class="nl">Quản lý</div>
+      <div class="ni" onclick="window.location='module1-quan-ly-lop.html'"><span class="ic">👥</span>Lớp & Học sinh</div>
+      <div class="ni" onclick="window.location='module2-quan-ly-diem.html'"><span class="ic">📊</span>Điểm số</div>
+      <div class="ni" onclick="window.location='module3-soan-giao-an.html'"><span class="ic">📋</span>Giáo án</div>
+      <div class="ni active" onclick="window.location='module4-de-kiem-tra.html'"><span class="ic">🎯</span>Đề kiểm tra</div>
+      <div class="nl" style="margin-top:8px">Công cụ</div>
+      <div class="ni" onclick="window.location='module5-tkb-lich.html'"><span class="ic">📅</span>Thời khoá biểu</div>
+      <div class="ni" onclick="window.location='module6-tro-choi.html'"><span class="ic">🎮</span>Trò chơi</div>
+      <div class="ni" onclick="window.location='module7-kho-tai-lieu.html'"><span class="ic">📁</span>Tài liệu</div>
+      <div class="ni" onclick="window.location='module8-thong-bao.html'"><span class="ic">📣</span>Thông báo</div>
+      <div class="ni" onclick="window.location='module9-tro-ly-ai.html'"><span class="ic">🤖</span>Trợ lý AI</div>
+    </nav>
+    <div class="sb-bot"><div class="tc"><div class="ta">NL</div><div><div class="tn">Nguyễn Thanh Liêm</div><div class="tr-r">GV GDCD · THCS Hùng Vương</div></div></div></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div class="tl">
+        <h1>Tạo Đề & Ngân hàng Câu hỏi</h1>
+        <p id="topSub">GDCD · Lớp 8 · Kiểm tra 45 phút</p>
+      </div>
+      <div class="tr2">
+        <button class="btn btn-ol btn-sm" onclick="window.location='edupro-home.html'" style="font-size:11px;padding:4px 10px">🏠 Trang chủ</button>
+        <button class="btn btn-ol" onclick="exportExamDoc()">⬇ Xuất Word</button>
+        <button class="btn btn-ol" onclick="showToast('🖨 Đang in đề...')">🖨 In đề</button>
+        <button class="btn btn-jade" onclick="openPage('preview')">👁 Xem đề</button>
+      </div>
+    </div>
+
+    <!-- PAGE TABS -->
+    <div class="page-tabs">
+      <div class="ptab active" id="tab-bank" onclick="openPage('bank')">📚 Ngân hàng câu hỏi</div>
+      <div class="ptab" id="tab-matrix" onclick="openPage('matrix')">📊 Ma trận đề</div>
+      <div class="ptab" id="tab-build" onclick="openPage('build')">🔨 Soạn đề</div>
+      <div class="ptab" id="tab-preview" onclick="openPage('preview')">👁 Xem & In</div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ PAGE 1: NGÂN HÀNG ══ -->
+      <div class="page active" id="page-bank">
+        <div class="qgrid">
+          <!-- FILTER -->
+          <div class="filter-panel">
+            <div class="card">
+              <div class="ch"><h2>🔖 Lọc câu hỏi</h2></div>
+              <div style="padding:10px">
+                <div class="nl" style="color:var(--ink3);padding:6px 8px 4px">Cấp độ Bloom</div>
+                <div class="filter-item active" onclick="setFilter('all',this)" id="f-all">Tất cả <span class="filter-count" id="fc-all">0</span></div>
+                <div class="filter-item" onclick="setFilter('NB',this)">Nhận biết <span class="filter-count" id="fc-NB">0</span></div>
+                <div class="filter-item" onclick="setFilter('TH',this)">Thông hiểu <span class="filter-count" id="fc-TH">0</span></div>
+                <div class="filter-item" onclick="setFilter('VD',this)">Vận dụng <span class="filter-count" id="fc-VD">0</span></div>
+                <div class="filter-item" onclick="setFilter('VDC',this)">VD cao <span class="filter-count" id="fc-VDC">0</span></div>
+                <div class="nl" style="color:var(--ink3);padding:10px 8px 4px">Loại câu</div>
+                <div class="filter-item" onclick="setFilter('TN',this)">Trắc nghiệm <span class="filter-count" id="fc-TN">0</span></div>
+                <div class="filter-item" onclick="setFilter('TL',this)">Tự luận <span class="filter-count" id="fc-TL">0</span></div>
+                <div class="filter-item" onclick="setFilter('DDS',this)">Đúng/Sai <span class="filter-count" id="fc-DDS">0</span></div>
+              </div>
+              <div style="padding:10px;border-top:1px solid var(--border)">
+                <div style="font-size:12px;color:var(--ink3);margin-bottom:6px">Đã chọn vào đề: <strong id="selectedCount" style="color:var(--jade)">0</strong> câu</div>
+                <button class="btn btn-jade btn-sm" style="width:100%" onclick="openPage('build')">→ Vào soạn đề</button>
+              </div>
+            </div>
+            <div class="card" style="margin-top:0">
+              <div class="ch"><h2>⚡ Chọn nhanh</h2></div>
+              <div style="padding:10px;display:flex;flex-direction:column;gap:6px">
+                <button class="btn btn-sm btn-jade" style="width:100%" onclick="autoSelect(10,'TN')">🎲 Chọn 10 TN ngẫu nhiên</button>
+                <button class="btn btn-sm btn-ol" style="width:100%" onclick="autoSelect(4,'TL')">🎲 Chọn 4 Tự luận</button>
+                <button class="btn btn-sm btn-ol" style="width:100%" onclick="selectByMatrix()">📊 Theo ma trận</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUESTION LIST -->
+          <div>
+            <div class="search-row">
+              <div class="search-box"><span>🔍</span><input type="text" placeholder="Tìm câu hỏi..." id="qSearch" oninput="renderQuestions()"></div>
+              <button class="btn btn-jade" onclick="openAddQuestion()">+ Thêm câu hỏi</button>
+              <button class="btn btn-purple btn-sm" onclick="aiGenerateQuestions()">🤖 AI tạo câu hỏi</button>
+            </div>
+            <div class="q-list" id="qList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE 2: MA TRẬN ══ -->
+      <div class="page" id="page-matrix">
+        <div class="card">
+          <div class="ch">
+            <h2>📊 Ma trận đề kiểm tra</h2>
+            <div class="ca">
+              <select class="sel" style="width:auto" id="matLoai" onchange="updateMatrix()">
+                <option value="15">Kiểm tra 15 phút</option>
+                <option value="45" selected>Kiểm tra 45 phút</option>
+                <option value="90">Kiểm tra học kỳ (90')</option>
+              </select>
+              <button class="btn btn-jade btn-sm" onclick="autoFillMatrix()">⚡ Tự điền chuẩn</button>
+            </div>
+          </div>
+          <div style="padding:18px">
+            <div class="fr3" style="margin-bottom:16px">
+              <div class="fg"><label>Môn học</label><select class="sel" id="matMon"><option>GDCD</option><option>Toán</option><option>Văn</option></select></div>
+              <div class="fg"><label>Khối lớp</label><select class="sel" id="matKhoi"><option>Lớp 6</option><option>Lớp 7</option><option value="Lớp 8" selected>Lớp 8</option></select></div>
+              <div class="fg"><label>Tổng điểm</label><input type="number" class="fi" id="matTongDiem" value="10" min="1" onchange="updateTotals()"></div>
+            </div>
+            <div style="overflow-x:auto">
+              <table class="matrix-table" id="matrixTable"></table>
+            </div>
+            <div style="margin-top:16px;padding:12px 16px;background:var(--jl);border-radius:8px;font-size:13px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+              <span>Tổng câu: <strong id="mat-total-q" style="color:var(--jd)">0</strong></span>
+              <span>Tổng điểm: <strong id="mat-total-d" style="color:var(--jd)">0</strong></span>
+              <span style="color:var(--ink3)">NB: <strong id="mat-nb">0</strong> · TH: <strong id="mat-th">0</strong> · VD: <strong id="mat-vd">0</strong> · VDC: <strong id="mat-vdc">0</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE 3: SOẠN ĐỀ ══ -->
+      <div class="page" id="page-build">
+        <div class="fr2" style="gap:16px;align-items:start">
+          <div>
+            <!-- ĐỀ INFO -->
+            <div class="card">
+              <div class="ch"><h2>📝 Thông tin đề</h2></div>
+              <div style="padding:16px 18px">
+                <div class="fr2">
+                  <div class="fg"><label>Tên trường</label><input type="text" class="fi" id="b_truong" value="THCS Hùng Vương"></div>
+                  <div class="fg"><label>Môn học</label><select class="sel" id="b_mon"><option>GDCD</option><option>Toán</option><option>Văn</option></select></div>
+                </div>
+                <div class="fr3">
+                  <div class="fg"><label>Khối / Lớp</label><select class="sel" id="b_lop"><option>8A1</option><option>8A2</option><option>7B1</option></select></div>
+                  <div class="fg"><label>Loại đề</label><select class="sel" id="b_loai"><option value="15">KT 15 phút</option><option value="45" selected>KT 45 phút</option><option value="90">KT học kỳ</option></select></div>
+                  <div class="fg"><label>Năm học</label><input type="text" class="fi" id="b_namhoc" value="2025–2026"></div>
+                </div>
+                <div class="fr2">
+                  <div class="fg"><label>Mã đề</label><input type="text" class="fi" id="b_made" value="132"></div>
+                  <div class="fg"><label>Ngày thi</label><input type="date" class="fi" id="b_ngay"></div>
+                </div>
+              </div>
+            </div>
+            <!-- SELECTED QUESTIONS -->
+            <div class="card">
+              <div class="ch">
+                <h2>📋 Câu hỏi trong đề (<span id="buildCount">0</span>)</h2>
+                <div class="ca">
+                  <button class="btn btn-sm btn-ol" onclick="shuffleSelected()">🔀 Trộn câu</button>
+                  <button class="btn btn-sm btn-ol" onclick="shuffleAnswers()">🎲 Xáo đáp án</button>
+                  <button class="btn btn-sm btn-ol" onclick="clearSelected()">🗑 Xoá tất cả</button>
+                </div>
+              </div>
+              <div id="buildList" style="padding:12px 18px;min-height:80px"></div>
+              <div style="padding:12px 18px;border-top:1px solid var(--border);background:var(--s2);display:flex;gap:8px">
+                <button class="btn btn-sm btn-ol" onclick="openPage('bank')">+ Thêm từ ngân hàng</button>
+                <button class="btn btn-sm btn-jade" onclick="openPage('preview')">→ Xem đề ngay</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI GENERATE -->
+          <div>
+            <div class="ai-strip">
+              <span style="font-size:20px">🤖</span>
+              <p>AI có thể tự tạo đề hoàn chỉnh từ chủ đề bạn nhập. Thử ngay!</p>
+              <div class="spinner" id="aiSpin"></div>
+            </div>
+            <div class="card">
+              <div class="ch"><h2>🤖 AI tạo đề tự động</h2></div>
+              <div style="padding:16px 18px">
+                <div class="fg"><label>Chủ đề / Bài học</label><input type="text" class="fi" id="ai_topic" placeholder="VD: Quyền và nghĩa vụ công dân"></div>
+                <div class="fr2">
+                  <div class="fg"><label>Số câu TN</label><input type="number" class="fi" id="ai_tn" value="8" min="0" max="40"></div>
+                  <div class="fg"><label>Số câu TL</label><input type="number" class="fi" id="ai_tl" value="2" min="0" max="10"></div>
+                </div>
+                <button class="btn btn-purple" style="width:100%" onclick="aiCreateExam()">✨ AI tạo đề hoàn chỉnh</button>
+              </div>
+            </div>
+
+            <!-- EXAM STATS -->
+            <div class="card" style="margin-top:16px">
+              <div class="ch"><h2>📊 Thống kê đề</h2></div>
+              <div style="padding:14px 18px;display:flex;flex-direction:column;gap:8px" id="examStats">
+                <div style="font-size:13px;color:var(--ink3)">Chưa có câu hỏi nào</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PAGE 4: XEM ĐỀ ══ -->
+      <div class="page" id="page-preview">
+        <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+          <button class="btn btn-jade" onclick="renderExam()">🔄 Cập nhật đề</button>
+          <button class="btn btn-ol" onclick="exportExamDoc()">⬇ Xuất Word</button>
+          <button class="btn btn-ol" onclick="window.print()">🖨 In</button>
+          <button class="btn btn-purple btn-sm" onclick="generateSecondVersion()">🔀 Tạo đề mã 2</button>
+          <div style="flex:1"></div>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="showAnswers" onchange="renderExam()"> Hiện đáp án
+          </label>
+        </div>
+        <div class="exam-paper" id="examPaper">
+          <div style="text-align:center;color:var(--ink3);padding:40px 0;font-size:14px">
+            ← Thêm câu hỏi và bấm <strong>Cập nhật đề</strong> để xem
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ADD QUESTION MODAL -->
+<div class="overlay" id="addQOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <div class="mh"><h3>➕ Thêm câu hỏi mới</h3><button class="xbtn" onclick="document.getElementById('addQOverlay').classList.remove('open')">✕</button></div>
+    <div class="mb" style="max-height:70vh;overflow-y:auto">
+      <div class="fr3">
+        <div class="fg"><label>Loại câu</label>
+          <select class="sel" id="aq_type" onchange="toggleAnsType()">
+            <option value="TN">Trắc nghiệm</option>
+            <option value="TL">Tự luận</option>
+            <option value="DDS">Đúng/Sai</option>
+          </select>
+        </div>
+        <div class="fg"><label>Cấp độ</label>
+          <select class="sel" id="aq_level">
+            <option value="NB">Nhận biết</option>
+            <option value="TH">Thông hiểu</option>
+            <option value="VD">Vận dụng</option>
+            <option value="VDC">VD cao</option>
+          </select>
+        </div>
+        <div class="fg"><label>Điểm</label><input type="number" class="fi" id="aq_pts" value="0.25" step="0.25" min="0.25"></div>
+      </div>
+      <div class="fg"><label>Nội dung câu hỏi *</label><textarea class="fi" id="aq_text" rows="3" placeholder="Nhập nội dung câu hỏi..."></textarea></div>
+      <!-- TN OPTIONS -->
+      <div id="aq_tn_opts">
+        <label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);display:block;margin-bottom:8px">Đáp án (✓ chọn đáp án đúng)</label>
+        <div class="ans-options" id="ansOptions">
+          <div class="ans-row"><div class="ans-lbl">A</div><input class="ans-inp" placeholder="Đáp án A" id="ans-A"><button class="ans-correct" onclick="markCorrect('A')" id="cor-A" title="Đánh dấu đúng">✓</button></div>
+          <div class="ans-row"><div class="ans-lbl">B</div><input class="ans-inp" placeholder="Đáp án B" id="ans-B"><button class="ans-correct" onclick="markCorrect('B')" id="cor-B">✓</button></div>
+          <div class="ans-row"><div class="ans-lbl">C</div><input class="ans-inp" placeholder="Đáp án C" id="ans-C"><button class="ans-correct" onclick="markCorrect('C')" id="cor-C">✓</button></div>
+          <div class="ans-row"><div class="ans-lbl">D</div><input class="ans-inp" placeholder="Đáp án D" id="ans-D"><button class="ans-correct" onclick="markCorrect('D')" id="cor-D">✓</button></div>
+        </div>
+      </div>
+      <!-- TL GỢI Ý -->
+      <div id="aq_tl_hint" style="display:none">
+        <div class="fg"><label>Gợi ý / Đáp án mẫu</label><textarea class="fi" id="aq_hint" rows="3" placeholder="Ghi hướng dẫn trả lời hoặc đáp án mẫu..."></textarea></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-jade" onclick="submitAddQuestion()">✅ Thêm vào ngân hàng</button>
+      <button class="btn btn-ol" onclick="document.getElementById('addQOverlay').classList.remove('open')">Huỷ</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI GENERATE MODAL -->
+<div class="overlay" id="aiOverlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <div class="mh"><h3>🤖 AI đang tạo câu hỏi...</h3><button class="xbtn" onclick="document.getElementById('aiOverlay').classList.remove('open')">✕</button></div>
+    <div class="mb" style="text-align:center;padding:32px">
+      <div style="width:48px;height:48px;border:3px solid var(--jl);border-top-color:var(--jade);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px"></div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:8px" id="aiModalText">AI đang soạn câu hỏi...</div>
+      <div style="font-size:13px;color:var(--ink3)" id="aiModalSub">Vui lòng chờ trong giây lát</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ DATA ══
+let qBank=[];
+let selectedQIds=new Set();
+let correctAnswer='A';
+let currentFilter='all';
+
+const SAMPLE_QUESTIONS=[
+  {id:1,type:'TN',level:'NB',pts:0.25,text:'Pháp luật là gì?',answers:{A:'Quy tắc xử sự do Nhà nước ban hành',B:'Quy định của tổ chức xã hội',C:'Phong tục tập quán được dân công nhận',D:'Thỏa thuận giữa các cá nhân'},correct:'A',hint:''},
+  {id:2,type:'TN',level:'NB',pts:0.25,text:'Nghĩa vụ của công dân là gì?',answers:{A:'Điều công dân muốn làm',B:'Điều pháp luật quy định công dân phải làm',C:'Quyền lợi được pháp luật bảo vệ',D:'Tất cả các ý trên'},correct:'B',hint:''},
+  {id:3,type:'TN',level:'TH',pts:0.25,text:'Quyền bầu cử của công dân Việt Nam được thực hiện khi nào?',answers:{A:'Đủ 16 tuổi',B:'Đủ 18 tuổi',C:'Đủ 21 tuổi',D:'Khi có việc làm'},correct:'B',hint:''},
+  {id:4,type:'TN',level:'TH',pts:0.25,text:'Hành vi nào sau đây thể hiện ý thức chấp hành pháp luật?',answers:{A:'Vượt đèn đỏ khi vắng',B:'Không đội mũ bảo hiểm ở đường nhỏ',C:'Dừng xe đúng vạch kẻ đường',D:'Đỗ xe lên vỉa hè'},correct:'C',hint:''},
+  {id:5,type:'TN',level:'VD',pts:0.25,text:'Bạn An 17 tuổi cố tình không học bài. Điều này vi phạm:',answers:{A:'Quyền học tập',B:'Nghĩa vụ học tập',C:'Quyền tự do ngôn luận',D:'Không vi phạm gì'},correct:'B',hint:''},
+  {id:6,type:'TN',level:'VD',pts:0.25,text:'Thể hiện lòng yêu nước trong thời đại ngày nay là:',answers:{A:'Chỉ cần yêu quê hương',B:'Học tập tốt góp phần xây dựng đất nước',C:'Không cần làm gì',D:'Chỉ những người lớn mới cần'},correct:'B',hint:''},
+  {id:7,type:'TN',level:'VDC',pts:0.5,text:'Mâu thuẫn giữa quyền tự do ngôn luận và bảo vệ danh dự cá nhân được giải quyết theo nguyên tắc nào?',answers:{A:'Tự do ngôn luận luôn được ưu tiên',B:'Quyền tự do phải trong khuôn khổ pháp luật',C:'Quyền cá nhân luôn quan trọng hơn',D:'Tùy theo từng trường hợp'},correct:'B',hint:''},
+  {id:8,type:'TN',level:'VDC',pts:0.5,text:'Tại sao pháp luật và đạo đức có mối quan hệ chặt chẽ?',answers:{A:'Vì chúng giống nhau hoàn toàn',B:'Vì pháp luật điều chỉnh hành vi, đạo đức hướng dẫn tư tưởng',C:'Vì đạo đức là cơ sở cho pháp luật và ngược lại',D:'Vì chúng có cùng cơ quan ban hành'},correct:'C',hint:''},
+  {id:9,type:'TL',level:'TH',pts:2,text:'Trình bày khái niệm và đặc điểm cơ bản của pháp luật. Lấy 2 ví dụ minh họa.',answers:{},correct:'',hint:'Pháp luật là hệ thống quy tắc xử sự có tính bắt buộc chung, do Nhà nước ban hành và bảo đảm thực hiện. Đặc điểm: tính quy phạm phổ biến, tính quyền lực bắt buộc, tính xác định chặt chẽ.'},
+  {id:10,type:'TL',level:'VD',pts:3,text:'Phân tích mối quan hệ giữa pháp luật và đạo đức. Cho ví dụ về hành vi vừa vi phạm pháp luật vừa vi phạm đạo đức.',answers:{},correct:'',hint:'Pháp luật và đạo đức đều là công cụ điều chỉnh hành vi. Pháp luật bắt buộc, đạo đức khuyến khích. Pháp luật là sự thể chế hóa đạo đức. Ví dụ: trộm cắp.'},
+  {id:11,type:'DDS',level:'NB',pts:0.5,text:'Mọi công dân Việt Nam đều có quyền và nghĩa vụ học tập.',answers:{},correct:'Đúng',hint:'Hiến pháp 2013 quy định giáo dục là quyền và nghĩa vụ của công dân.'},
+  {id:12,type:'DDS',level:'TH',pts:0.5,text:'Người dưới 18 tuổi không phải chịu trách nhiệm pháp lý trong mọi trường hợp.',answers:{},correct:'Sai',hint:'Người từ 14 tuổi trở lên vẫn có thể chịu trách nhiệm hình sự đối với một số tội nghiêm trọng.'},
+];
+
+// ══ INIT ══
+function init(){
+  qBank=[...SAMPLE_QUESTIONS];
+  let nextId=SAMPLE_QUESTIONS.length+1;
+  // set nextId for new additions
+  window._nextQId=nextId;
+  renderQuestions();
+  updateFilterCounts();
+  renderMatrix();
+  renderBuildList();
+  document.getElementById('b_ngay').value=new Date().toISOString().split('T')[0];
+}
+
+// ══ FILTER ══
+function setFilter(f,el){
+  currentFilter=f;
+  document.querySelectorAll('.filter-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  renderQuestions();
+}
+
+function updateFilterCounts(){
+  document.getElementById('fc-all').textContent=qBank.length;
+  ['NB','TH','VD','VDC'].forEach(l=>document.getElementById(`fc-${l}`).textContent=qBank.filter(q=>q.level===l).length);
+  ['TN','TL','DDS'].forEach(t=>document.getElementById(`fc-${t}`).textContent=qBank.filter(q=>q.type===t).length);
+}
+
+// ══ RENDER QUESTIONS ══
+function renderQuestions(){
+  const search=document.getElementById('qSearch').value.toLowerCase();
+  let list=qBank.filter(q=>{
+    if(search&&!q.text.toLowerCase().includes(search)) return false;
+    if(currentFilter==='all') return true;
+    return q.level===currentFilter||q.type===currentFilter;
+  });
+  const lvlMap={NB:{cls:'b-green',label:'Nhận biết'},TH:{cls:'b-blue',label:'Thông hiểu'},VD:{cls:'b-amber',label:'Vận dụng'},VDC:{cls:'b-red',label:'VD cao'}};
+  const typeMap={TN:{cls:'b-jade',label:'Trắc nghiệm'},TL:{cls:'b-purple',label:'Tự luận'},DDS:{cls:'b-blue',label:'Đúng/Sai'}};
+  document.getElementById('qList').innerHTML=list.map(q=>{
+    const lv=lvlMap[q.level]||{cls:'',label:q.level};
+    const tp=typeMap[q.type]||{cls:'',label:q.type};
+    const isSel=selectedQIds.has(q.id);
+    let answersHtml='';
+    if(q.type==='TN'){
+      answersHtml=`<div class="q-answers">${['A','B','C','D'].map(k=>q.answers[k]?`<div class="q-ans${q.correct===k?' correct':''}"><span class="alabel">${k}.</span>${q.answers[k]}${q.correct===k?' ✓':''}</div>`:'').join('')}</div>`;
+    }else if(q.type==='DDS'){
+      answersHtml=`<div class="q-answers"><div class="q-ans correct"><span class="alabel">→</span>Đáp án: ${q.correct}</div></div>`;
+    }else{
+      answersHtml=q.hint?`<div class="q-answers"><div class="q-ans" style="color:var(--ink3)"><span class="alabel">💡</span>${q.hint.substring(0,80)}${q.hint.length>80?'...':''}</div></div>`:'';
+    }
+    return `<div class="q-card${isSel?' selected':''}" id="qc-${q.id}" onclick="toggleQ(${q.id})">
+      <div class="q-check">✓</div>
+      <div class="q-meta">
+        <span class="badge ${lv.cls}">${lv.label}</span>
+        <span class="badge ${tp.cls}">${tp.label}</span>
+        <span style="font-size:11px;color:var(--ink3);margin-left:auto">${q.pts} điểm</span>
+        <button class="btn btn-sm btn-ol" style="padding:2px 8px;font-size:11px" onclick="event.stopPropagation();deleteQ(${q.id})">🗑</button>
+      </div>
+      <div class="q-text">${q.text}</div>
+      ${answersHtml}
+    </div>`;
+  }).join('')||'<div style="padding:20px;text-align:center;color:var(--ink3)">Không có câu hỏi nào</div>';
+  document.getElementById('selectedCount').textContent=selectedQIds.size;
+}
+
+function toggleQ(id){
+  if(selectedQIds.has(id)) selectedQIds.delete(id);
+  else selectedQIds.add(id);
+  const card=document.getElementById(`qc-${id}`);
+  if(card) card.classList.toggle('selected',selectedQIds.has(id));
+  document.getElementById('selectedCount').textContent=selectedQIds.size;
+  renderBuildList();
+  updateExamStats();
+}
+
+function deleteQ(id){
+  qBank=qBank.filter(q=>q.id!==id);
+  selectedQIds.delete(id);
+  renderQuestions();
+  updateFilterCounts();
+  showToast('🗑 Đã xoá câu hỏi');
+}
+
+// ══ AUTO SELECT ══
+function autoSelect(n,type){
+  const pool=qBank.filter(q=>q.type===type);
+  const shuffled=[...pool].sort(()=>Math.random()-.5);
+  shuffled.slice(0,n).forEach(q=>selectedQIds.add(q.id));
+  renderQuestions();
+  renderBuildList();
+  updateExamStats();
+  showToast(`✅ Đã chọn ${Math.min(n,shuffled.length)} câu ${type}`);
+}
+
+function selectByMatrix(){
+  selectedQIds.clear();
+  const levels=['NB','TH','VD','VDC'];
+  levels.forEach(lv=>{
+    const inp=document.getElementById(`mat-${lv}-TN`);
+    const n=inp?parseInt(inp.value)||0:0;
+    const pool=qBank.filter(q=>q.level===lv&&q.type==='TN');
+    const shuffled=[...pool].sort(()=>Math.random()-.5);
+    shuffled.slice(0,n).forEach(q=>selectedQIds.add(q.id));
+  });
+  renderQuestions();
+  renderBuildList();
+  updateExamStats();
+  showToast('✅ Đã chọn theo ma trận!');
+}
+
+// ══ BUILD LIST ══
+function renderBuildList(){
+  const selected=qBank.filter(q=>selectedQIds.has(q.id));
+  document.getElementById('buildCount').textContent=selected.length;
+  const typeMap={TN:'Trắc nghiệm',TL:'Tự luận',DDS:'Đúng/Sai'};
+  document.getElementById('buildList').innerHTML=selected.length===0
+    ?'<div style="color:var(--ink3);font-size:13px;padding:8px 0">Chưa chọn câu nào. Vào <strong>Ngân hàng câu hỏi</strong> để chọn.</div>'
+    :selected.map((q,i)=>`<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:12px;color:var(--ink3);flex-shrink:0;margin-top:2px">${i+1}.</span>
+        <div style="flex:1;font-size:13px;line-height:1.4">${q.text.substring(0,70)}${q.text.length>70?'...':''}</div>
+        <span class="badge b-jade" style="flex-shrink:0">${typeMap[q.type]||q.type}</span>
+        <button onclick="removeFromBuild(${s.id})" style="background:var(--rl);color:var(--red);border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:11px;flex-shrink:0">✕</button>
+      </div>`).join('');
+  updateExamStats();
+}
+
+function shuffleSelected(){
+  const arr=[...selectedQIds];
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+  selectedQIds=new Set(arr);
+  renderBuildList();
+  showToast('🔀 Đã trộn thứ tự câu hỏi!');
+}
+
+function clearSelected(){
+  selectedQIds.clear();
+  renderQuestions();
+  renderBuildList();
+  showToast('🗑 Đã xoá tất cả câu đã chọn');
+}
+
+function updateExamStats(){
+  const selected=qBank.filter(q=>selectedQIds.has(q.id));
+  if(selected.length===0){document.getElementById('examStats').innerHTML='<div style="font-size:13px;color:var(--ink3)">Chưa có câu hỏi nào</div>';return;}
+  const tn=selected.filter(q=>q.type==='TN').length;
+  const tl=selected.filter(q=>q.type==='TL').length;
+  const dds=selected.filter(q=>q.type==='DDS').length;
+  const total=selected.reduce((s,q)=>s+q.pts,0);
+  document.getElementById('examStats').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="background:var(--jl);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--jd)">${selected.length}</div><div style="font-size:11px;color:var(--jd)">Tổng câu</div></div>
+      <div style="background:var(--bl);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:800;color:var(--blue)">${total.toFixed(2)}</div><div style="font-size:11px;color:var(--blue)">Tổng điểm</div></div>
+    </div>
+    <div style="font-size:12px;color:var(--ink2);margin-top:4px">TN: ${tn} · TL: ${tl} · Đ/S: ${dds}</div>
+  `;
+}
+
+// ══ ADD QUESTION ══
+function openAddQuestion(){
+  correctAnswer='A';
+  document.getElementById('aq_text').value='';
+  ['A','B','C','D'].forEach(k=>{document.getElementById(`ans-${k}`).value='';document.getElementById(`cor-${k}`).classList.remove('marked')});
+  document.getElementById('cor-A').classList.add('marked');
+  document.getElementById('aq_hint').value='';
+  toggleAnsType();
+  document.getElementById('addQOverlay').classList.add('open');
+}
+
+function markCorrect(k){
+  correctAnswer=k;
+  ['A','B','C','D'].forEach(l=>document.getElementById(`cor-${l}`).classList.remove('marked'));
+  document.getElementById(`cor-${k}`).classList.add('marked');
+}
+
+function toggleAnsType(){
+  const t=document.getElementById('aq_type').value;
+  document.getElementById('aq_tn_opts').style.display=t==='TN'?'block':'none';
+  document.getElementById('aq_tl_hint').style.display=(t==='TL'||t==='DDS')?'block':'none';
+}
+
+function submitAddQuestion(){
+  const text=document.getElementById('aq_text').value.trim();
+  if(!text){showToast('⚠️ Vui lòng nhập nội dung câu hỏi!');return;}
+  const type=document.getElementById('aq_type').value;
+  const level=document.getElementById('aq_level').value;
+  const pts=parseFloat(document.getElementById('aq_pts').value)||0.25;
+  const answers={};
+  if(type==='TN') ['A','B','C','D'].forEach(k=>answers[k]=document.getElementById(`ans-${k}`).value.trim());
+  const hint=document.getElementById('aq_hint').value.trim();
+  const newQ={id:window._nextQId++,type,level,pts,text,answers,correct:type==='TN'?correctAnswer:'',hint};
+  qBank.push(newQ);
+  document.getElementById('addQOverlay').classList.remove('open');
+  renderQuestions();
+  updateFilterCounts();
+  showToast(`✅ Đã thêm câu hỏi mới vào ngân hàng!`);
+}
+
+// ══ MATRIX ══
+const MATRIX_ROWS=[
+  {label:'GDCD và Cuộc sống',key:'r1'},
+  {label:'Pháp luật cơ bản',key:'r2'},
+  {label:'Quyền và nghĩa vụ',key:'r3'},
+  {label:'Đạo đức và Hành vi',key:'r4'},
+];
+
+function renderMatrix(){
+  const t=document.getElementById('matrixTable');
+  t.innerHTML=`<thead><tr>
+    <th>Chủ đề</th>
+    <th>Nhận biết</th><th>Thông hiểu</th><th>Vận dụng</th><th>VD cao</th>
+    <th>Tổng câu</th><th>Tổng điểm</th>
+  </tr></thead><tbody>
+  ${MATRIX_ROWS.map(r=>`<tr>
+    <td style="font-weight:600">${r.label}</td>
+    ${['NB','TH','VD','VDC'].map(lv=>`<td style="text-align:center"><input type="number" class="num-inp" id="mat-${r.key}-${lv}-q" value="2" min="0" max="20" oninput="updateTotals()"> câu<br><input type="number" class="num-inp" style="margin-top:4px" id="mat-${r.key}-${lv}-d" value="0.25" step="0.25" min="0"> đ</td>`).join('')}
+    <td style="text-align:center;font-weight:700" id="mat-row-q-${r.key}">—</td>
+    <td style="text-align:center;font-weight:700;color:var(--jade)" id="mat-row-d-${r.key}">—</td>
+  </tr>`).join('')}
+  <tr class="total-row">
+    <td>TỔNG</td>
+    <td style="text-align:center" id="mat-col-NB">—</td>
+    <td style="text-align:center" id="mat-col-TH">—</td>
+    <td style="text-align:center" id="mat-col-VD">—</td>
+    <td style="text-align:center" id="mat-col-VDC">—</td>
+    <td style="text-align:center" id="mat-grand-q">—</td>
+    <td style="text-align:center" id="mat-grand-d">—</td>
+  </tr></tbody>`;
+  updateTotals();
+}
+
+function updateTotals(){
+  let grandQ=0,grandD=0;
+  const colQ={NB:0,TH:0,VD:0,VDC:0},colD={NB:0,TH:0,VD:0,VDC:0};
+  MATRIX_ROWS.forEach(r=>{
+    let rowQ=0,rowD=0;
+    ['NB','TH','VD','VDC'].forEach(lv=>{
+      const qi=document.getElementById(`mat-${r.key}-${lv}-q`);
+      const di=document.getElementById(`mat-${r.key}-${lv}-d`);
+      const q=parseInt(qi?.value)||0,d=parseFloat(di?.value)||0;
+      rowQ+=q;rowD+=q*d;colQ[lv]+=q;colD[lv]+=q*d;
+    });
+    const rq=document.getElementById(`mat-row-q-${r.key}`);
+    const rd=document.getElementById(`mat-row-d-${r.key}`);
+    if(rq) rq.textContent=rowQ;
+    if(rd) rd.textContent=rowD.toFixed(2);
+    grandQ+=rowQ;grandD+=rowD;
+  });
+  ['NB','TH','VD','VDC'].forEach(lv=>{
+    const el=document.getElementById(`mat-col-${lv}`);
+    if(el) el.textContent=`${colQ[lv]} câu`;
+  });
+  const gq=document.getElementById('mat-grand-q');
+  const gd=document.getElementById('mat-grand-d');
+  if(gq) gq.textContent=grandQ;
+  if(gd) gd.textContent=grandD.toFixed(2);
+  document.getElementById('mat-total-q').textContent=grandQ;
+  document.getElementById('mat-total-d').textContent=grandD.toFixed(2);
+  document.getElementById('mat-nb').textContent=colQ.NB;
+  document.getElementById('mat-th').textContent=colQ.TH;
+  document.getElementById('mat-vd').textContent=colQ.VD;
+  document.getElementById('mat-vdc').textContent=colQ.VDC;
+}
+
+function autoFillMatrix(){
+  const type=document.getElementById('matLoai').value;
+  const presets={
+    '15':[[2,1,0,0],[2,1,0,0]],
+    '45':[[2,2,1,0],[2,2,1,1],[2,1,1,0],[1,1,1,1]],
+    '90':[[3,2,1,0],[3,2,1,0],[2,2,2,1],[2,2,2,1]]
+  };
+  const pts={'15':0.5,'45':0.25,'90':0.25};
+  const p=presets[type]||presets['45'];
+  MATRIX_ROWS.forEach((r,i)=>{
+    ['NB','TH','VD','VDC'].forEach((lv,j)=>{
+      const qi=document.getElementById(`mat-${r.key}-${lv}-q`);
+      const di=document.getElementById(`mat-${r.key}-${lv}-d`);
+      if(qi) qi.value=p[i]?.[j]||0;
+      if(di) di.value=pts[type];
+    });
+  });
+  updateTotals();
+  showToast('✅ Đã điền ma trận chuẩn!');
+}
+
+function updateMatrix(){updateTotals();autoSuggestCount();}
+
+// ══ RENDER EXAM ══
+function renderExam(){
+  const selected=qBank.filter(q=>selectedQIds.has(q.id));
+  const showAns=document.getElementById('showAnswers').checked;
+  const truong=document.getElementById('b_truong').value||'THCS Hùng Vương';
+  const mon=document.getElementById('b_mon').value||'GDCD';
+  const lop=document.getElementById('b_lop').value||'8A1';
+  const loai=document.getElementById('b_loai').value||'45';
+  const namhoc=document.getElementById('b_namhoc').value||'2025–2026';
+  const made=document.getElementById('b_made').value||'132';
+  const tnQs=selected.filter(q=>q.type==='TN');
+  const tlQs=selected.filter(q=>q.type==='TL');
+  const ddsQs=selected.filter(q=>q.type==='DDS');
+  const totalDiem=selected.reduce((s,q)=>s+q.pts,0);
+  let html=`<div class="ep-header">
+    <div class="ep-school">${truong}</div>
+    <div class="ep-title">Kiểm tra ${loai} phút — Môn: ${mon}</div>
+    <div class="ep-meta">Năm học ${namhoc} · Lớp ${lop} · Mã đề: <strong>${made}</strong></div>
+    <div class="ep-meta" style="margin-top:4px">Tổng điểm: ${totalDiem.toFixed(2)}</div>
+  </div>
+  <div class="ep-info">
+    <div class="ep-info-cell">Họ và tên: ………………………………………………</div>
+    <div class="ep-info-cell">Lớp: ……………… Điểm: ………… Chữ ký GK: …………</div>
+  </div>`;
+
+  let qNum=0;
+  if(tnQs.length>0){
+    html+=`<div class="ep-section"><div class="ep-section-title">Phần I — Trắc nghiệm (${tnQs.length} câu)</div>`;
+    tnQs.forEach(q=>{
+      qNum++;
+      html+=`<div class="ep-question"><div class="ep-q-num">Câu ${qNum}: ${q.text}</div>
+        <div class="ep-answers">${['A','B','C','D'].filter(k=>q.answers[k]).map(k=>`<div class="ep-ans"><strong>${k}.</strong> ${q.answers[k]}${showAns&&q.correct===k?' <span style="color:var(--green);font-weight:700">✓</span>':''}</div>`).join('')}</div>
+      </div>`;
+    });
+    html+='</div>';
+  }
+  if(ddsQs.length>0){
+    html+=`<div class="ep-section"><div class="ep-section-title">Phần II — Đúng / Sai (${ddsQs.length} câu)</div>`;
+    ddsQs.forEach(q=>{
+      qNum++;
+      html+=`<div class="ep-question"><div class="ep-q-num">Câu ${qNum}: ${q.text}</div>
+        <div class="ep-tf"><label><input type="radio" name="tf${q.id}" disabled> Đúng</label><label><input type="radio" name="tf${q.id}" disabled> Sai</label></div>
+        ${showAns?`<div style="font-size:12px;color:var(--green);font-weight:600;margin-top:4px">→ Đáp án: ${q.correct}</div>`:''}
+      </div>`;
+    });
+    html+='</div>';
+  }
+  if(tlQs.length>0){
+    html+=`<div class="ep-section"><div class="ep-section-title">Phần ${ddsQs.length>0?'III':'II'} — Tự luận (${tlQs.length} câu)</div>`;
+    tlQs.forEach(q=>{
+      qNum++;
+      html+=`<div class="ep-question"><div class="ep-q-num">Câu ${qNum} (${q.pts} điểm): ${q.text}</div>
+        <div style="border:1px solid #ccc;border-radius:6px;height:80px;margin-top:8px"></div>
+        ${showAns&&q.hint?`<div style="font-size:12px;color:var(--green);margin-top:6px"><strong>Gợi ý:</strong> ${q.hint}</div>`:''}
+      </div>`;
+    });
+    html+='</div>';
+  }
+  if(showAns&&tnQs.length>0){
+    html+=`<div class="answer-key"><h3>📋 Đáp án Trắc nghiệm</h3><div class="key-grid">`;
+    tnQs.forEach((q,i)=>{html+=`<div class="key-item">Câu ${i+1}: <strong style="color:var(--jade)">${q.correct}</strong></div>`;});
+    html+='</div></div>';
+  }
+  document.getElementById('examPaper').innerHTML=html;
+  EduPro.set('lastExam', {class: document.getElementById('b_lop').value, subject: document.getElementById('b_mon').value, count: selected.length, date: new Date().toISOString().split('T')[0]});
+  showToast('✅ Đề đã được cập nhật!');
+}
+
+function generateSecondVersion(){
+  shuffleSelected();
+  const made=document.getElementById('b_made');
+  made.value=String(parseInt(made.value||'132')+100);
+  renderExam();
+  showToast('🔀 Đã tạo đề mã 2!');
+}
+
+// ══ AI GENERATE ══
+async function aiGenerateQuestions(){
+  const topic=document.getElementById('ai_topic')?.value.trim()||'pháp luật và công dân';
+  document.getElementById('aiModalText').textContent='AI đang tạo câu hỏi trắc nghiệm...';
+  document.getElementById('aiModalSub').textContent=`Chủ đề: ${topic}`;
+  document.getElementById('aiOverlay').classList.add('open');
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:`Tạo 4 câu hỏi trắc nghiệm về chủ đề "${topic}" cho môn GDCD lớp 8. Mỗi câu có 4 đáp án A B C D và đáp án đúng. Trả lời CHÍNH XÁC theo định dạng JSON này (không có markdown):
+[{"text":"Nội dung câu hỏi","answers":{"A":"...","B":"...","C":"...","D":"..."},"correct":"A","level":"NB"}]
+Level: NB/TH/VD/VDC. Trả về JSON thuần, không giải thích.`}]
+      })
+    });
+    const data=await res.json();
+    const raw=data.content?.[0]?.text||'[]';
+    const clean=raw.replace(/```json|```/g,'').trim();
+    const qs=JSON.parse(clean);
+    qs.forEach(q=>{
+      qBank.push({id:window._nextQId++,type:'TN',level:q.level||'NB',pts:0.25,text:q.text,answers:q.answers,correct:q.correct,hint:''});
+    });
+    document.getElementById('aiOverlay').classList.remove('open');
+    renderQuestions();
+    updateFilterCounts();
+    showToast(`✅ AI đã tạo ${qs.length} câu hỏi mới!`);
+  }catch(e){
+    document.getElementById('aiOverlay').classList.remove('open');
+    showToast('⚠️ Không kết nối được AI. Kiểm tra mạng.');
+  }
+}
+
+async function aiCreateExam(){
+  const topic=document.getElementById('ai_topic').value.trim();
+  if(!topic){showToast('⚠️ Vui lòng nhập chủ đề!');return;}
+  const nTN=parseInt(document.getElementById('ai_tn').value)||8;
+  const nTL=parseInt(document.getElementById('ai_tl').value)||2;
+  document.getElementById('aiSpin').classList.add('show');
+  document.getElementById('aiModalText').textContent=`AI đang tạo đề: ${nTN} TN + ${nTL} TL...`;
+  document.getElementById('aiModalSub').textContent=`Chủ đề: ${topic}`;
+  document.getElementById('aiOverlay').classList.add('open');
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:`Tạo ${nTN} câu trắc nghiệm và ${nTL} câu tự luận về "${topic}" môn GDCD lớp 8. JSON thuần, không markdown:
+{"TN":[{"text":"...","answers":{"A":"...","B":"...","C":"...","D":"..."},"correct":"A","level":"NB","pts":0.25}],"TL":[{"text":"...","hint":"...","level":"TH","pts":2}]}`}]
+      })
+    });
+    const data=await res.json();
+    const raw=data.content?.[0]?.text||'{}';
+    const clean=raw.replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(clean);
+    selectedQIds.clear();
+    (parsed.TN||[]).forEach(q=>{const id=window._nextQId++;qBank.push({id,type:'TN',level:q.level||'NB',pts:q.pts||0.25,text:q.text,answers:q.answers,correct:q.correct,hint:''});selectedQIds.add(id);});
+    (parsed.TL||[]).forEach(q=>{const id=window._nextQId++;qBank.push({id,type:'TL',level:q.level||'TH',pts:q.pts||2,text:q.text,answers:{},correct:'',hint:q.hint||''});selectedQIds.add(id);});
+    document.getElementById('aiOverlay').classList.remove('open');
+    document.getElementById('aiSpin').classList.remove('show');
+    renderQuestions();updateFilterCounts();renderBuildList();
+    showToast(`✅ AI tạo xong ${(parsed.TN||[]).length+((parsed.TL||[]).length)} câu! Đã thêm vào đề.`);
+    openPage('build');
+  }catch(e){
+    document.getElementById('aiOverlay').classList.remove('open');
+    document.getElementById('aiSpin').classList.remove('show');
+    showToast('⚠️ Không kết nối được AI.');
+  }
+}
+
+// ══ PAGE NAV ══
+function openPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.ptab').forEach(el=>el.classList.remove('active'));
+  document.getElementById(`page-${p}`).classList.add('active');
+  document.getElementById(`tab-${p}`).classList.add('active');
+  if(p==='preview') renderExam();
+  if(p==='build') renderBuildList();
+}
+
+// ══ REMOVE FROM BUILD ══
+function removeFromBuild(id){
+  selectedQIds.delete(id);
+  renderBuildList();
+  renderQuestions();
+  updateExamStats();
+}
+
+
+// ══ SHUFFLE ANSWERS ══
+function shuffleAnswers(){
+  const sel=qBank.filter(q=>selectedQIds.has(q.id)&&q.type==='TN');
+  if(!sel.length){showToast('⚠️ Chưa chọn câu TN nào!');return;}
+  sel.forEach(q=>{
+    const keys=['A','B','C','D'];
+    const vals=keys.map(k=>q.answers[k]);
+    const correctVal=q.answers[q.correct];
+    for(let i=vals.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[vals[i],vals[j]]=[vals[j],vals[i]];}
+    keys.forEach((k,i)=>q.answers[k]=vals[i]);
+    const ni=vals.indexOf(correctVal);
+    q.correct=keys[ni>=0?ni:0];
+  });
+  renderQuestions();
+  renderBuildList();
+  showToast('🎲 Đã xáo trộn đáp án '+sel.length+' câu TN!');
+}
+
+// ══ AUTO SUGGEST ══
+function autoSuggestCount(){
+  const type=document.getElementById('matLoai')?document.getElementById('matLoai').value:'45';
+  const h={'15':'6 TN×0.5đ=3đ','45':'24 TN×0.25đ + 2 TL×1đ = 8đ','90':'32 TN×0.2đ + 3 TL×1.2đ = 10đ'};
+  showToast('💡 Gợi ý đề '+type+' phút: '+(h[type]||''));
+}
+
+// ══ TOAST ══
+let tt;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+init();
+
+EduProSync.init('module4_kiemtra');
+
+// ── ĐỒNG BỘ NĂM HỌC & CƠ SỞ TỪ TRANG CHỦ ─────────────────────────
+(function syncSharedSettings(){
+  const namHoc = localStorage.getItem('edupro_namHoc');
+  if(namHoc){
+    const display = namHoc.replace('-','–');
+    // Cập nhật mọi text hiện "Năm học" trong topbar
+    document.querySelectorAll('.topbar-left p, [id*="topSub"]').forEach(el=>{
+      el.textContent = el.textContent.replace(/Năm học [0-9–]+/, 'Năm học ' + display);
+    });
+    // Cập nhật title nếu có
+    document.querySelectorAll('.sb-bot .tr, .sb-bot .tr-r').forEach(el=>{
+      el.textContent = el.textContent.replace(/[0-9]{4}–[0-9]{4}/, display);
+    });
+  }
+})();
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- EDUPRO FOOTER -->
+<footer style="
+  background:linear-gradient(135deg,#0f172a 0%,#1a2744 60%,#0d1f35 100%);
+  padding:20px 32px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:14px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  position:relative;overflow:hidden;
+">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 15% 50%,rgba(13,148,136,.1),transparent 45%),radial-gradient(ellipse at 85% 50%,rgba(37,99,235,.07),transparent 45%);pointer-events:none"></div>
+
+  <!-- Logo Left -->
+  <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1">
+    <div style="width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#0d9488,#0f766e);display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 3px 10px rgba(13,148,136,.35);flex-shrink:0">🎓</div>
+    <div>
+      <div style="font-size:14px;font-weight:900;color:#fff;letter-spacing:-.01em;line-height:1.1">EduPro <span style="color:#2dd4bf">All‑in‑One</span></div>
+      <div style="font-size:10px;color:rgba(255,255,255,.38);margin-top:2px;letter-spacing:.02em">Trợ lý Giáo viên THCS · 9 Module</div>
+    </div>
+  </div>
+
+  <!-- Center: Copyright -->
+  <div style="position:relative;z-index:1;text-align:center">
+    <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:100px;padding:8px 18px">
+      <span style="font-size:13px;color:rgba(255,255,255,.4)">©</span>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#e2e8f0;letter-spacing:.01em">Copyright belongs to <span style="color:#2dd4bf">Liemnguyen</span></div>
+        <div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:1px">
+          <span style="color:#60a5fa;font-weight:600">Zalo</span>&nbsp;·&nbsp;<span style="color:#e2e8f0;font-weight:600;letter-spacing:.04em">0815 899 878</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Zalo Button + Version -->
+  <div style="display:flex;align-items:center;gap:12px;position:relative;z-index:1">
+    <a href="https://zalo.me/0815899878" target="_blank" rel="noopener" style="
+      display:inline-flex;align-items:center;gap:7px;
+      padding:8px 16px;border-radius:100px;
+      background:linear-gradient(135deg,#0068ff,#0050d0);
+      color:#fff;text-decoration:none;font-size:12px;font-weight:700;
+      box-shadow:0 3px 12px rgba(0,104,255,.3);
+      transition:transform .18s,box-shadow .18s;
+    " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 18px rgba(0,104,255,.45)'"
+       onmouseout="this.style.transform='';this.style.boxShadow='0 3px 12px rgba(0,104,255,.3)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.02 2 11c0 2.88 1.34 5.46 3.44 7.18L4 22l4.1-1.29C9.31 21.21 10.62 21.5 12 21.5 17.52 21.5 22 17.48 22 13c0-4.97-4.48-9-10-9z"/>
+      </svg>
+      Liên hệ Zalo
+    </a>
+    <div style="text-align:right;line-height:1.5">
+      <div style="font-size:10px;color:rgba(255,255,255,.22);font-weight:600">v1.0 · 2026</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.18)">THCS Hùng Vương</div>
+    </div>
+  </div>
+</footer>
+</body></html>
