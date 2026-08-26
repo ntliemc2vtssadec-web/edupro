@@ -419,7 +419,7 @@ window.EduProSync = (function () {
 
   // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
   function showSetup() {
-    const current = _getUrl() === 'YOUR_APPS_SCRIPT_URL_HERE' ? '' : _getUrl();
+    const current = _getUrl() === 'https://script.google.com/macros/s/AKfycbyr9nQAnsu0KZbnUJ9CJXwbSBvLPM0MrZS9HtyWplgXtmN-ObJ2yOA94rZnZmmvkuYrow/exec' ? '' : _getUrl();
     const url = prompt(
       '🔧 Nhập URL Google Apps Script:\n\n' +
       'Cách lấy URL:\n' +
@@ -469,7 +469,7 @@ window.EduProSync = (function () {
 
   function _isConfigured() {
     const url = _getUrl();
-    return url !== 'YOUR_APPS_SCRIPT_URL_HERE' && url.startsWith('https://script.google.com');
+    return url !== 'https://script.google.com/macros/s/AKfycbyr9nQAnsu0KZbnUJ9CJXwbSBvLPM0MrZS9HtyWplgXtmN-ObJ2yOA94rZnZmmvkuYrow/exec' && url.startsWith('https://script.google.com');
   }
 
   function _fmtTime(iso) {
