@@ -196,7 +196,7 @@ const EduPro = {
 window.EduProSync = (function () {
 
   // ── CẤU HÌNH — ĐỔI URL NÀY SAU KHI DEPLOY APPS SCRIPT ──────────
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec';
+  const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
   //  Ví dụ: 'https://script.google.com/macros/s/AKfycb.../exec'
 
   const DEBOUNCE_MS  = 1500;   // Đợi 1.5 giây sau thay đổi cuối cùng rồi mới lưu
@@ -432,7 +432,7 @@ window.EduProSync = (function () {
 
   // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
   function showSetup() {
-    const current = _getUrl() === 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec' ? '' : _getUrl();
+    const current = _getUrl() === 'YOUR_APPS_SCRIPT_URL_HERE' ? '' : _getUrl();
     const url = prompt(
       '🔧 Nhập URL Google Apps Script:\n\n' +
       'Cách lấy URL:\n' +
@@ -482,7 +482,7 @@ window.EduProSync = (function () {
 
   function _isConfigured() {
     const url = _getUrl();
-    return url !== 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec' && url.startsWith('https://script.google.com');
+    return url !== 'YOUR_APPS_SCRIPT_URL_HERE' && url.startsWith('https://script.google.com');
   }
 
   function _fmtTime(iso) {
@@ -828,6 +828,11 @@ let tkbData = [
   {thu:4,tiet:3,mon:'GDCD',lop:'6C3',phong:'P.103',color:'#7c3aed'},
   {thu:4,tiet:5,mon:'GDCD',lop:'8A3',phong:'P.203',color:'#0d9488'},
 ];
+// Tải TKB đã lưu (ghi đè dữ liệu mẫu nếu có)
+(function(){
+  const saved = localStorage.getItem('edupro_m5_tkb');
+  if(saved){ try{ tkbData = JSON.parse(saved); }catch(e){} }
+})();
 
 // ══ EVENTS DATA ══
 let events = [
@@ -840,6 +845,10 @@ let events = [
   {id:7,title:'Nộp sáng kiến kinh nghiệm',date:'2026-05-20',time:'17:00',cat:'Nộp hồ sơ',remind:2880,note:'',color:'#d97706',done:false},
   {id:8,title:'Kiểm tra 15 phút — GDCD 7B1',date:'2026-05-14',time:'08:25',cat:'Kiểm tra',remind:30,note:'',color:'#dc2626',done:false},
 ];
+(function(){
+  const saved = localStorage.getItem('edupro_m5_events');
+  if(saved){ try{ events = JSON.parse(saved); }catch(e){} }
+})();
 
 // ══ PERIOD TIMES ══
 const PERIOD_TIMES = ['07:30–08:15','08:25–09:10','09:25–10:10','10:20–11:05','13:30–14:15'];
@@ -891,7 +900,7 @@ function editTKBCell(thu,tiet){
   showToast(`✏️ ${cell.mon} · ${cell.lop} · ${DAYS[thu]} Tiết ${tiet}`);
 }
 
-function saveTKBToState(){ EduPro.set('tkbData', tkbData); }
+function saveTKBToState(){ EduPro.set('tkbData', tkbData); _save_tkbData(); }
 
 function addTKBCell(){
   const thuStr = document.getElementById('imp_thu').value;
@@ -1109,7 +1118,7 @@ function toggleDone(id){
 }
 
 function deleteEvent(id){
-  events=events.filter(e=>e.id!==id);
+  _save_events(); events=events.filter(e=>e.id!==id);
   renderTasks();
   renderCalendar();
   renderWeekStrip();
@@ -1226,6 +1235,50 @@ EduProSync.init('module5_tkb');
       try { tkbData = driveData.tkbData; renderTKB(); } catch(e) {}
     }
   });
+
+
+// ── PERSIST: tkbData ───────────────────────────────────────────
+function _save_tkbData() {
+  try {
+    const data = JSON.stringify(tkbData);
+    localStorage.setItem('edupro_m5_tkb', data);
+    if (window.EduProSync) EduProSync.save('m5_tkb', tkbData);
+  } catch(e) { console.warn('Save error [tkbData]:', e); }
+}
+function _load_tkbData(defaultVal) {
+  try {
+    const raw = localStorage.getItem('edupro_m5_tkb');
+    if (raw) { tkbData = JSON.parse(raw); return true; }
+  } catch(e) {}
+  tkbData = defaultVal;
+  return false;
+}
+
+// ── PERSIST: events ───────────────────────────────────────────
+function _save_events() {
+  try {
+    const data = JSON.stringify(events);
+    localStorage.setItem('edupro_m5_events', data);
+    if (window.EduProSync) EduProSync.save('m5_events', events);
+  } catch(e) { console.warn('Save error [events]:', e); }
+}
+function _load_events(defaultVal) {
+  try {
+    const raw = localStorage.getItem('edupro_m5_events');
+    if (raw) { events = JSON.parse(raw); return true; }
+  } catch(e) {}
+  events = defaultVal;
+  return false;
+}
+
+
+
+let _evSaveTimer;
+function _scheduleEventSave(){
+  clearTimeout(_evSaveTimer);
+  _evSaveTimer = setTimeout(_save_events, 800);
+}
+
 </script>
 
 

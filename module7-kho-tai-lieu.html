@@ -204,7 +204,7 @@ const EduPro = {
 window.EduProSync = (function () {
 
   // ── CẤU HÌNH — ĐỔI URL NÀY SAU KHI DEPLOY APPS SCRIPT ──────────
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec';
+  const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
   //  Ví dụ: 'https://script.google.com/macros/s/AKfycb.../exec'
 
   const DEBOUNCE_MS  = 1500;   // Đợi 1.5 giây sau thay đổi cuối cùng rồi mới lưu
@@ -440,7 +440,7 @@ window.EduProSync = (function () {
 
   // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
   function showSetup() {
-    const current = _getUrl() === 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec' ? '' : _getUrl();
+    const current = _getUrl() === 'YOUR_APPS_SCRIPT_URL_HERE' ? '' : _getUrl();
     const url = prompt(
       '🔧 Nhập URL Google Apps Script:\n\n' +
       'Cách lấy URL:\n' +
@@ -490,7 +490,7 @@ window.EduProSync = (function () {
 
   function _isConfigured() {
     const url = _getUrl();
-    return url !== 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec' && url.startsWith('https://script.google.com');
+    return url !== 'YOUR_APPS_SCRIPT_URL_HERE' && url.startsWith('https://script.google.com');
   }
 
   function _fmtTime(iso) {
@@ -765,6 +765,19 @@ let docs=[
   {id:11,name:'Slide GDCD 6 — Tự chủ',type:'pptx',cat:'slide',khoi:'Lớp 6',tags:['tự chủ','GDCD 6','slide'],size:980,views:14,shared:false,date:'2026-04-08',owner:'Tôi'},
   {id:12,name:'Tài liệu tham khảo Thông tư 22',type:'pdf',cat:'sach',khoi:'Tất cả',tags:['thông tư','đánh giá','pháp luật'],size:320,views:28,shared:true,date:'2026-04-05',owner:'Tổ KHXH'},
 ];
+// Tải tài liệu đã lưu (không lưu objectUrl vì đó là blob tạm)
+(function(){
+  const saved=localStorage.getItem('edupro_m7_docs');
+  if(saved){
+    try{
+      const parsed=JSON.parse(saved);
+      if(parsed && parsed.length>0){
+        docs=parsed.map(d=>({...d,objectUrl:undefined}));
+        nextDocId=docs.reduce((m,d)=>Math.max(m,d.id||0),0)+1;
+      }
+    }catch(e){}
+  }
+})();
 
 // ══ CATEGORIES ══
 function getCats(){
@@ -920,7 +933,7 @@ function shareSelected(){
 function deleteSelected(){
   if(selectedIds.size===0) return;
   const n=selectedIds.size;
-  docs=docs.filter(d=>!selectedIds.has(d.id));
+  _save_docs(); docs=docs.filter(d=>!selectedIds.has(d.id));
   selectedIds.clear();
   updateSelBar();
   filterDocs();
@@ -976,7 +989,7 @@ function downloadDoc(id){
 
 // ══ DELETE ══
 function deleteDoc(id){
-  docs=docs.filter(d=>d.id!==id);
+  _save_docs(); docs=docs.filter(d=>d.id!==id);
   selectedIds.delete(id);
   updateSelBar();
   filterDocs();
@@ -1000,7 +1013,7 @@ function submitUpload(){
   const tags=tagsRaw.split(',').map(t=>t.trim()).filter(t=>t);
   const shared=document.getElementById('up_share').checked;
   const ext=cat==='giaoan'?'docx':cat==='deki'?'pdf':cat==='slide'?'pptx':cat==='video'?'mp4':'docx';
-  docs.unshift({id:nextDocId++,name,type:ext,cat,khoi,tags,size:Math.floor(Math.random()*500+100),views:0,shared,date:new Date().toISOString().split('T')[0],owner:'Tôi'});
+  _scheduleDocSave(); docs.unshift({id:nextDocId++,name,type:ext,cat,khoi,tags,size:Math.floor(Math.random()*500+100),views:0,shared,date:new Date().toISOString().split('T')[0],owner:'Tôi'});
   document.getElementById('uploadOverlay').classList.remove('open');
   filterDocs();renderCategories();renderTagCloud();renderRecent();updateStats();
   // Reset form
@@ -1019,6 +1032,7 @@ function handleDrop(e){
     });
     filterDocs();renderCategories();renderTagCloud();renderRecent();updateStats();
     showToast(`✅ Đã tải lên ${files.length} tệp!`);
+  _save_docs();
   }
 }
 
@@ -1094,6 +1108,33 @@ EduProSync.init('module7_tailieu');
     });
   }
 })();
+
+
+// ── PERSIST: docs ───────────────────────────────────────────
+function _save_docs() {
+  try {
+    const data = JSON.stringify(docs);
+    localStorage.setItem('edupro_m7_docs', data);
+    if (window.EduProSync) EduProSync.save('m7_docs', docs);
+  } catch(e) { console.warn('Save error [docs]:', e); }
+}
+function _load_docs(defaultVal) {
+  try {
+    const raw = localStorage.getItem('edupro_m7_docs');
+    if (raw) { docs = JSON.parse(raw); return true; }
+  } catch(e) {}
+  docs = defaultVal;
+  return false;
+}
+
+
+
+let _docSaveTimer;
+function _scheduleDocSave(){
+  clearTimeout(_docSaveTimer);
+  _docSaveTimer = setTimeout(_save_docs, 600);
+}
+
 </script>
 
 

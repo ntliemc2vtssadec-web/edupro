@@ -196,7 +196,7 @@ const EduPro = {
 window.EduProSync = (function () {
 
   // ── CẤU HÌNH — ĐỔI URL NÀY SAU KHI DEPLOY APPS SCRIPT ──────────
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec';
+  const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
   //  Ví dụ: 'https://script.google.com/macros/s/AKfycb.../exec'
 
   const DEBOUNCE_MS  = 1500;   // Đợi 1.5 giây sau thay đổi cuối cùng rồi mới lưu
@@ -432,7 +432,7 @@ window.EduProSync = (function () {
 
   // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
   function showSetup() {
-    const current = _getUrl() === 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec' ? '' : _getUrl();
+    const current = _getUrl() === 'YOUR_APPS_SCRIPT_URL_HERE' ? '' : _getUrl();
     const url = prompt(
       '🔧 Nhập URL Google Apps Script:\n\n' +
       'Cách lấy URL:\n' +
@@ -482,7 +482,7 @@ window.EduProSync = (function () {
 
   function _isConfigured() {
     const url = _getUrl();
-    return url !== 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec' && url.startsWith('https://script.google.com');
+    return url !== 'YOUR_APPS_SCRIPT_URL_HERE' && url.startsWith('https://script.google.com');
   }
 
   function _fmtTime(iso) {
@@ -805,6 +805,10 @@ let questions=[
   {id:7,text:'Quyền tự do ngôn luận của công dân bị giới hạn khi?',a:'Không bao giờ bị giới hạn',b:'Vi phạm danh dự người khác hoặc an ninh quốc gia',c:'Bày tỏ quan điểm cá nhân',d:'Viết báo phê bình',correct:'B'},
   {id:8,text:'Trách nhiệm của HS trong việc thực hiện pháp luật?',a:'Chỉ cần học thuộc',b:'Không liên quan đến HS',c:'Học và làm theo pháp luật trong cuộc sống',d:'Để người lớn thực hiện',correct:'C'},
 ];
+(function(){
+  const saved=localStorage.getItem('edupro_m6_questions');
+  if(saved){ try{ questions=JSON.parse(saved); nextQId=questions.reduce((m,q)=>Math.max(m,q.id||0),0)+1; }catch(e){} }
+})();
 let nextQId=9;
 
 // ══ QUIZ ══
@@ -989,6 +993,11 @@ function revealAll(){
 // ══ LUCKY WHEEL ══
 let wheelItems=[];
 let spinning=false;
+(function(){
+  const saved=localStorage.getItem('edupro_m6_wheel');
+  if(saved){ try{ wheelItems=JSON.parse(saved); }catch(e){} }
+  if(!wheelItems.length) wheelItems=['Học sinh A','Học sinh B','Học sinh C','Học sinh D','Học sinh E'];
+})();
 let wheelAngle=0;
 
 const WHEEL_COLORS=['#0d9488','#2563eb','#7c3aed','#d97706','#dc2626','#16a34a','#db2777','#ea580c','#0891b2','#9333ea'];
@@ -1075,7 +1084,7 @@ function spinWheel(){
   requestAnimationFrame(animate);
 }
 
-function saveWheelItems(){showToast('💾 Đã lưu danh sách vòng quay!');}
+function saveWheelItems(){ _save_wheelItems(); showToast('💾 Đã lưu danh sách vòng quay!'); }
 
 // ══ DDCT ══
 let ddctSteps=0,ddctCorrect=0,ddctWrong=0,ddctStreak=0,ddctQIdx=0,ddctTotal=10,ddctQs=[];
@@ -1156,7 +1165,7 @@ function renderSetupQList(){
     </div>`;
 }
 
-function deleteQ(id){questions=questions.filter(q=>q.id!==id);renderSetupQList();showToast('🗑 Đã xoá câu hỏi');}
+function deleteQ(id){questions=questions.filter(q=>q.id!==id);_save_questions();renderSetupQList();showToast('🗑 Đã xoá câu hỏi');}
 
 function openAddQ(){
   ['aq_text','aq_a','aq_b','aq_c','aq_d'].forEach(id=>document.getElementById(id).value='');
@@ -1170,6 +1179,8 @@ function submitAddQ(){
   document.getElementById('addQOverlay').classList.remove('open');
   renderSetupQList();
   showToast('✅ Đã thêm câu hỏi!');
+
+  _save_questions();
 }
 
 async function aiGenQ(){
@@ -1249,6 +1260,42 @@ EduProSync.init('module6_trochoi');
     });
   }
 })();
+
+
+// ── PERSIST: wheelItems ───────────────────────────────────────────
+function _save_wheelItems() {
+  try {
+    const data = JSON.stringify(wheelItems);
+    localStorage.setItem('edupro_m6_wheel', data);
+    if (window.EduProSync) EduProSync.save('m6_wheel', wheelItems);
+  } catch(e) { console.warn('Save error [wheelItems]:', e); }
+}
+function _load_wheelItems(defaultVal) {
+  try {
+    const raw = localStorage.getItem('edupro_m6_wheel');
+    if (raw) { wheelItems = JSON.parse(raw); return true; }
+  } catch(e) {}
+  wheelItems = defaultVal;
+  return false;
+}
+
+// ── PERSIST: questions ───────────────────────────────────────────
+function _save_questions() {
+  try {
+    const data = JSON.stringify(questions);
+    localStorage.setItem('edupro_m6_questions', data);
+    if (window.EduProSync) EduProSync.save('m6_questions', questions);
+  } catch(e) { console.warn('Save error [questions]:', e); }
+}
+function _load_questions(defaultVal) {
+  try {
+    const raw = localStorage.getItem('edupro_m6_questions');
+    if (raw) { questions = JSON.parse(raw); return true; }
+  } catch(e) {}
+  questions = defaultVal;
+  return false;
+}
+
 </script>
 
 

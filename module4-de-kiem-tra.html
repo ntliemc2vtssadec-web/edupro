@@ -201,7 +201,7 @@ const EduPro = {
 window.EduProSync = (function () {
 
   // ── CẤU HÌNH — ĐỔI URL NÀY SAU KHI DEPLOY APPS SCRIPT ──────────
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec';
+  const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
   //  Ví dụ: 'https://script.google.com/macros/s/AKfycb.../exec'
 
   const DEBOUNCE_MS  = 1500;   // Đợi 1.5 giây sau thay đổi cuối cùng rồi mới lưu
@@ -437,7 +437,7 @@ window.EduProSync = (function () {
 
   // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
   function showSetup() {
-    const current = _getUrl() === 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec' ? '' : _getUrl();
+    const current = _getUrl() === 'YOUR_APPS_SCRIPT_URL_HERE' ? '' : _getUrl();
     const url = prompt(
       '🔧 Nhập URL Google Apps Script:\n\n' +
       'Cách lấy URL:\n' +
@@ -487,7 +487,7 @@ window.EduProSync = (function () {
 
   function _isConfigured() {
     const url = _getUrl();
-    return url !== 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec' && url.startsWith('https://script.google.com');
+    return url !== 'YOUR_APPS_SCRIPT_URL_HERE' && url.startsWith('https://script.google.com');
   }
 
   function _fmtTime(iso) {
@@ -790,6 +790,14 @@ window.EduProSync = (function () {
 // ══ DATA ══
 let qBank=[];
 let selectedQIds=new Set();
+// Tải ngân hàng câu hỏi đã lưu
+(function(){
+  if(!_load_qBank([]) || qBank.length===0){
+    // Dùng câu hỏi mẫu nếu chưa có dữ liệu
+    qBank = typeof SAMPLE_QUESTIONS !== 'undefined' ? [...SAMPLE_QUESTIONS] : [];
+    _save_qBank();
+  }
+})();
 let correctAnswer='A';
 let currentFilter='all';
 
@@ -883,7 +891,7 @@ function toggleQ(id){
 }
 
 function deleteQ(id){
-  qBank=qBank.filter(q=>q.id!==id);
+  qBank=qBank.filter(q=>q.id!==id); _save_qBank();
   selectedQIds.delete(id);
   renderQuestions();
   updateFilterCounts();
@@ -987,7 +995,7 @@ function toggleAnsType(){
   document.getElementById('aq_tl_hint').style.display=(t==='TL'||t==='DDS')?'block':'none';
 }
 
-function submitAddQuestion(){
+function submitAddQuestion(){ 
   const text=document.getElementById('aq_text').value.trim();
   if(!text){showToast('⚠️ Vui lòng nhập nội dung câu hỏi!');return;}
   const type=document.getElementById('aq_type').value;
@@ -1002,6 +1010,8 @@ function submitAddQuestion(){
   renderQuestions();
   updateFilterCounts();
   showToast(`✅ Đã thêm câu hỏi mới vào ngân hàng!`);
+
+  _save_qBank();
 }
 
 // ══ MATRIX ══
@@ -1314,6 +1324,25 @@ EduProSync.init('module4_kiemtra');
     });
   }
 })();
+
+
+// ── PERSIST: qBank ───────────────────────────────────────────
+function _save_qBank() {
+  try {
+    const data = JSON.stringify(qBank);
+    localStorage.setItem('edupro_m4_qbank', data);
+    if (window.EduProSync) EduProSync.save('m4_qbank', qBank);
+  } catch(e) { console.warn('Save error [qBank]:', e); }
+}
+function _load_qBank(defaultVal) {
+  try {
+    const raw = localStorage.getItem('edupro_m4_qbank');
+    if (raw) { qBank = JSON.parse(raw); return true; }
+  } catch(e) {}
+  qBank = defaultVal;
+  return false;
+}
+
 </script>
 
 

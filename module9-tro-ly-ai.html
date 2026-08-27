@@ -206,7 +206,7 @@ const EduPro = {
 window.EduProSync = (function () {
 
   // ── CẤU HÌNH — ĐỔI URL NÀY SAU KHI DEPLOY APPS SCRIPT ──────────
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec';
+  const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
   //  Ví dụ: 'https://script.google.com/macros/s/AKfycb.../exec'
 
   const DEBOUNCE_MS  = 1500;   // Đợi 1.5 giây sau thay đổi cuối cùng rồi mới lưu
@@ -442,7 +442,7 @@ window.EduProSync = (function () {
 
   // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
   function showSetup() {
-    const current = _getUrl() === 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec' ? '' : _getUrl();
+    const current = _getUrl() === 'YOUR_APPS_SCRIPT_URL_HERE' ? '' : _getUrl();
     const url = prompt(
       '🔧 Nhập URL Google Apps Script:\n\n' +
       'Cách lấy URL:\n' +
@@ -492,7 +492,7 @@ window.EduProSync = (function () {
 
   function _isConfigured() {
     const url = _getUrl();
-    return url !== 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec' && url.startsWith('https://script.google.com');
+    return url !== 'YOUR_APPS_SCRIPT_URL_HERE' && url.startsWith('https://script.google.com');
   }
 
   function _fmtTime(iso) {
@@ -847,7 +847,7 @@ window.EduProSync = (function () {
 
 <script>
 // ══ CHAT ══
-let messages=[];
+let messages=[]; localStorage.removeItem('edupro_m9_messages'); if(window.EduProSync) EduProSync.remove('m9_messages');
 let isLoading=false;
 const SYSTEM_PROMPT=`Bạn là trợ lý AI thông minh của EduPro, hỗ trợ giáo viên THCS Việt Nam (đặc biệt giáo viên GDCD). Người dùng hiện tại là thầy Nguyễn Thanh Liêm, giáo viên GDCD tại THCS Hùng Vương, P. Sa Đéc, tỉnh Đồng Tháp, dạy lớp 6, 7, 8.
 
@@ -879,7 +879,7 @@ function hideWelcome(){
   if(w) w.style.display='none';
 }
 
-function addMsg(role,text){
+function addMsg(role,text){ 
   hideWelcome();
   const wrap=document.getElementById('chatMessages');
   const div=document.createElement('div');
@@ -896,6 +896,8 @@ function addMsg(role,text){
   wrap.scrollTop=wrap.scrollHeight;
   if(role==='user') messages.push({role:'user',content:text});
   else messages.push({role:'assistant',content:text});
+
+  _save_messages();
 }
 
 function renderMd(text){
@@ -1106,9 +1108,11 @@ async function aiGenQ(){
 
 // ══ HISTORY ══
 let aiHistory=[];
-function addToHistory(q,a){
+function addToHistory(q,a){ 
   aiHistory.unshift({q:q.substring(0,80),a:a.substring(0,200),date:new Date().toLocaleString('vi-VN')});
   if(aiHistory.length>20) aiHistory.pop();
+
+  _save_aiHistory();
 }
 
 function renderHistory(){
@@ -1158,6 +1162,70 @@ EduProSync.init('module9_trolyai');
     });
   }
 })();
+
+
+// ── PERSIST: messages ───────────────────────────────────────────
+function _save_messages() {
+  try {
+    const data = JSON.stringify(messages);
+    localStorage.setItem('edupro_m9_messages', data);
+    if (window.EduProSync) EduProSync.save('m9_messages', messages);
+  } catch(e) { console.warn('Save error [messages]:', e); }
+}
+function _load_messages(defaultVal) {
+  try {
+    const raw = localStorage.getItem('edupro_m9_messages');
+    if (raw) { messages = JSON.parse(raw); return true; }
+  } catch(e) {}
+  messages = defaultVal;
+  return false;
+}
+
+// ── PERSIST: aiHistory ───────────────────────────────────────────
+function _save_aiHistory() {
+  try {
+    const data = JSON.stringify(aiHistory);
+    localStorage.setItem('edupro_m9_aiHistory', data);
+    if (window.EduProSync) EduProSync.save('m9_aiHistory', aiHistory);
+  } catch(e) { console.warn('Save error [aiHistory]:', e); }
+}
+function _load_aiHistory(defaultVal) {
+  try {
+    const raw = localStorage.getItem('edupro_m9_aiHistory');
+    if (raw) { aiHistory = JSON.parse(raw); return true; }
+  } catch(e) {}
+  aiHistory = defaultVal;
+  return false;
+}
+
+
+
+// Khôi phục lịch sử chat
+(function(){
+  const saved=localStorage.getItem('edupro_m9_messages');
+  if(saved){
+    try{
+      const msgs=JSON.parse(saved);
+      if(msgs && msgs.length>0){
+        messages=msgs;
+        const box=document.getElementById('chatBox')||document.getElementById('msgBox')||document.querySelector('[id*="chat"]');
+        if(box){
+          msgs.forEach(m=>{
+            const div=document.createElement('div');
+            div.className='msg msg-'+(m.role==='user'?'user':'ai');
+            div.innerHTML=`<div class="bubble bubble-${m.role==='user'?'user':'ai'}">${m.content||m.text||''}</div>`;
+            box.appendChild(div);
+          });
+          box.scrollTop=box.scrollHeight;
+        }
+      }
+    }catch(e){}
+  }
+  // Load aiHistory
+  const savedH=localStorage.getItem('edupro_m9_aiHistory');
+  if(savedH){ try{ aiHistory=JSON.parse(savedH); }catch(e){} }
+})();
+
 </script>
 
 

@@ -184,7 +184,7 @@ const EduPro = {
 window.EduProSync = (function () {
 
   // ── CẤU HÌNH — ĐỔI URL NÀY SAU KHI DEPLOY APPS SCRIPT ──────────
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec';
+  const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
   //  Ví dụ: 'https://script.google.com/macros/s/AKfycb.../exec'
 
   const DEBOUNCE_MS  = 1500;   // Đợi 1.5 giây sau thay đổi cuối cùng rồi mới lưu
@@ -420,7 +420,7 @@ window.EduProSync = (function () {
 
   // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
   function showSetup() {
-    const current = _getUrl() === 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec' ? '' : _getUrl();
+    const current = _getUrl() === 'YOUR_APPS_SCRIPT_URL_HERE' ? '' : _getUrl();
     const url = prompt(
       '🔧 Nhập URL Google Apps Script:\n\n' +
       'Cách lấy URL:\n' +
@@ -470,7 +470,7 @@ window.EduProSync = (function () {
 
   function _isConfigured() {
     const url = _getUrl();
-    return url !== 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec' && url.startsWith('https://script.google.com');
+    return url !== 'YOUR_APPS_SCRIPT_URL_HERE' && url.startsWith('https://script.google.com');
   }
 
   function _fmtTime(iso) {
@@ -819,10 +819,17 @@ const DEFAULT_ACTIVITIES_STEM=[
 
 let activities=[];
 let actIdCounter=1;
+// Load saved activities
+(function(){
+  if(_load_activities([])) {
+    actIdCounter = activities.reduce((m,a)=>Math.max(m,a.id||0),0)+1;
+  }
+})();
 
 function loadActivitiesTemplate(arr){
   activities=arr.map(a=>({id:actIdCounter++,...a}));
   renderActivities();
+  _save_activities();
 }
 
 function getTotalTime(){
@@ -862,6 +869,7 @@ function updateActivity(id,key,val){
 function addActivity(){
   activities.push({id:actIdCounter++,name:`Hoạt động ${activities.length+1}`,time:'10',content:''});
   renderActivities();
+  _save_activities();
   setTimeout(()=>{
     const items=document.querySelectorAll('.activity-item');
     if(items.length) items[items.length-1].scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -871,6 +879,7 @@ function addActivity(){
 function deleteActivity(id){
   activities=activities.filter(a=>a.id!==id);
   renderActivities();
+  _save_activities();
   showToast('🗑 Đã xoá hoạt động');
 }
 
@@ -1109,6 +1118,7 @@ function saveLesson(){
   if(tenBai && tenBai !== 'Giáo án chưa đặt tên'){
     lessons.unshift({name: tenBai, mon, khoi, date: new Date().toISOString().split('T')[0]});
     EduPro.set('savedLessons', lessons.slice(0, 20));
+  _save_savedLessons();
   }
   // Update sidebar list UI
   const today = new Date().toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit'});
@@ -1166,6 +1176,65 @@ EduProSync.init('module3_giaoan');
       } catch(e) {}
     }
   });
+
+
+// ── PERSIST: activities ───────────────────────────────────────────
+function _save_activities() {
+  try {
+    const data = JSON.stringify(activities);
+    localStorage.setItem('edupro_m3_activities', data);
+    if (window.EduProSync) EduProSync.save('m3_activities', activities);
+  } catch(e) { console.warn('Save error [activities]:', e); }
+}
+function _load_activities(defaultVal) {
+  try {
+    const raw = localStorage.getItem('edupro_m3_activities');
+    if (raw) { activities = JSON.parse(raw); return true; }
+  } catch(e) {}
+  activities = defaultVal;
+  return false;
+}
+
+// ── PERSIST: savedLessons ───────────────────────────────────────────
+function _save_savedLessons() {
+  try {
+    const data = JSON.stringify(savedLessons);
+    localStorage.setItem('edupro_m3_lessons', data);
+    if (window.EduProSync) EduProSync.save('m3_lessons', savedLessons);
+  } catch(e) { console.warn('Save error [savedLessons]:', e); }
+}
+function _load_savedLessons(defaultVal) {
+  try {
+    const raw = localStorage.getItem('edupro_m3_lessons');
+    if (raw) { savedLessons = JSON.parse(raw); return true; }
+  } catch(e) {}
+  savedLessons = defaultVal;
+  return false;
+}
+
+
+
+// Khôi phục danh sách giáo án đã lưu
+(function(){
+  const saved = localStorage.getItem('edupro_m3_lessons');
+  if(saved){
+    try{
+      const lessons = JSON.parse(saved);
+      const list = document.getElementById('savedList');
+      if(list && lessons.length){
+        list.innerHTML = lessons.map(l=>`
+          <div class="saved-item" onclick="loadSaved('${l.name||''}')">
+            <div class="saved-icon">📋</div>
+            <div class="saved-text">
+              <div class="st">${l.name||'Giáo án'}</div>
+              <div class="sm">${l.mon||''} ${l.khoi||''} · ${l.date||''}</div>
+            </div>
+          </div>`).join('');
+      }
+    }catch(e){}
+  }
+})();
+
 </script>
 
 

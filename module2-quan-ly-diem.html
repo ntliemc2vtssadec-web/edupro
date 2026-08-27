@@ -205,7 +205,7 @@ const EduPro = {
 window.EduProSync = (function () {
 
   // ── CẤU HÌNH — ĐỔI URL NÀY SAU KHI DEPLOY APPS SCRIPT ──────────
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec';
+  const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
   //  Ví dụ: 'https://script.google.com/macros/s/AKfycb.../exec'
 
   const DEBOUNCE_MS  = 1500;   // Đợi 1.5 giây sau thay đổi cuối cùng rồi mới lưu
@@ -441,7 +441,7 @@ window.EduProSync = (function () {
 
   // ── DIALOG CẤU HÌNH URL ──────────────────────────────────────────
   function showSetup() {
-    const current = _getUrl() === 'https://script.google.com/macros/s/AKfycbyzR8JwVnIJE5mZqswWh_zkknxpMEsAR_GB11NuyQycUwkvdpdEvvXRqHuCWJnuq1w/exec' ? '' : _getUrl();
+    const current = _getUrl() === 'YOUR_APPS_SCRIPT_URL_HERE' ? '' : _getUrl();
     const url = prompt(
       '🔧 Nhập URL Google Apps Script:\n\n' +
       'Cách lấy URL:\n' +
@@ -491,7 +491,7 @@ window.EduProSync = (function () {
 
   function _isConfigured() {
     const url = _getUrl();
-    return url !== 'https://script.google.com/macros/s/AKfycbzFm1rtEdHHfq1pDauuUb71PlRmGRS1bD8_utH-EDICiIkVOaXSRIG9MrTlGZ_4occT4A/exec' && url.startsWith('https://script.google.com');
+    return url !== 'YOUR_APPS_SCRIPT_URL_HERE' && url.startsWith('https://script.google.com');
   }
 
   function _fmtTime(iso) {
@@ -727,13 +727,17 @@ function ini(n){const p=n.trim().split(' ');return p.length>=2?(p[0][0]+p[p.leng
 function clr(i){return COLORS[i%COLORS.length]}
 
 let students=[];
-for(let i=1;i<=47;i++){
+// Tải từ localStorage, fallback sang dữ liệu mẫu
+if (!_load_students(null) || !students || students.length === 0) {
+  for(let i=1;i<=47;i++){
   const g=Math.random()>.5?'Nam':'Nữ';
   const fn=rEl(FN);
   const mn=g==='Nam'?rEl(['Văn','Minh','Quốc','Đức','Bảo']):rEl(['Thị','Hồng','Thanh','Kim','Ngọc']);
   const ln=rEl(LN);
   students.push({id:i,name:`${fn} ${mn} ${ln}`,gender:g,color:clr(i),
     scores:{tx1:null,tx2:null,tx3:null,gk1:null,gk2:null,hk:null}});
+}
+  _save_students();
 }
 
 // Pre-fill some scores
@@ -847,8 +851,9 @@ function calcAll(){
 }
 
 // ── NOTES ─────────────────────────────────────────
-const studentNotes = {};
-function saveNote(id, val){
+let studentNotes = {};
+_load_studentNotes({});
+function saveNote(id, val){ _save_studentNotes();
   studentNotes[id] = val;
   EduPro.set('studentNotes', studentNotes);
 }
@@ -1168,6 +1173,42 @@ EduProSync.init('module2_diem');
       try { studentNotes = driveData.studentNotes; } catch(e) {}
     }
   });
+
+
+// ── PERSIST: students ───────────────────────────────────────────
+function _save_students() {
+  try {
+    const data = JSON.stringify(students);
+    localStorage.setItem('edupro_m2_students', data);
+    if (window.EduProSync) EduProSync.save('m2_students', students);
+  } catch(e) { console.warn('Save error [students]:', e); }
+}
+function _load_students(defaultVal) {
+  try {
+    const raw = localStorage.getItem('edupro_m2_students');
+    if (raw) { students = JSON.parse(raw); return true; }
+  } catch(e) {}
+  students = defaultVal;
+  return false;
+}
+
+// ── PERSIST: studentNotes ───────────────────────────────────────────
+function _save_studentNotes() {
+  try {
+    const data = JSON.stringify(studentNotes);
+    localStorage.setItem('edupro_m2_notes', data);
+    if (window.EduProSync) EduProSync.save('m2_notes', studentNotes);
+  } catch(e) { console.warn('Save error [studentNotes]:', e); }
+}
+function _load_studentNotes(defaultVal) {
+  try {
+    const raw = localStorage.getItem('edupro_m2_notes');
+    if (raw) { studentNotes = JSON.parse(raw); return true; }
+  } catch(e) {}
+  studentNotes = defaultVal;
+  return false;
+}
+
 </script>
 
 </body></html>
